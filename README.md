@@ -5,6 +5,7 @@ Free browser tools (no server, no sign-up).
 - `index.html` – home page
 - `resume-generator.html` – resume maker
 - `application-generator.html` – application / letter / affidavit maker
+- `pro-studio.html` – document crop, photo and ID card sheet maker
 
 ## Publish free with GitHub Pages
 1. Create a new **public** repository on github.com.
