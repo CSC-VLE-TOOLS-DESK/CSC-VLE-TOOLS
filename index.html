@@ -1,20 +1,180 @@
 <!DOCTYPE html>
-<html lang="en"><head><meta charset="UTF-8"><link rel="icon" type="image/png" href="favicon.png"><link rel="apple-touch-icon" href="favicon.png">
+<html lang="en">
+<head>
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Haryana Resume & Application Generator</title>
+<link rel="icon" type="image/png" href="favicon.png">
+<title>CSC VLE Digital Tools & Utility Portal</title>
 <style>
-body{font-family:"Segoe UI","Noto Sans Devanagari",Arial,sans-serif;background:#f3f6f4;margin:0;color:#111}
-main{max-width:640px;margin:0 auto;padding:28px 16px}
-h1{color:#0b5c3b;font-size:1.5rem;margin:0 0 6px}
-p{color:#444;margin:0 0 18px}
-a.c{display:block;background:#fff;border:1px solid #cfd8d3;border-radius:10px;padding:18px;margin-bottom:12px;text-decoration:none;color:#111}
-a.c:hover{border-color:#0b5c3b}
-a.c b{display:block;color:#0b5c3b;font-size:1.1rem;margin-bottom:4px}
-</style></head><body><main>
-<h1>Haryana Tools / हरियाणा टूल्स</h1>
-<p>Free, works in your browser. Nothing is uploaded anywhere. / मुफ़्त, ब्राउज़र में चलता है।</p>
-<a class="c" href="resume-generator.html"><b>📄 Resume Generator / रिज्यूमे जनरेटर</b>Make a printable A4 resume.</a>
-<a class="c" href="application-generator.html"><b>✉ Application Generator / आवेदन जनरेटर</b>Make applications, letters and affidavits, ready to print.</a>
-<a class="c" href="pro-studio.html"><b>🖼 Pro Studio / प्रो स्टूडियो</b>Document crop, photo and ID card sheet maker, ready to print.</a>
-<a class="c" href="shop-ledger.html"><b>📒 Shop Ledger / शॉप लेजर</b>Daily income, expense and job ledger for your shop.</a>
-</main></body></html>
+:root {
+  --primary: #0b5c3b;
+  --primary-hover: #09472d;
+  --bg: #f3f6f4;
+  --card-bg: #ffffff;
+  --text: #111111;
+  --text-muted: #555555;
+  --border: #cfd8d3;
+}
+* { box-sizing: border-box; }
+body {
+  font-family: "Segoe UI", "Noto Sans Devanagari", Arial, sans-serif;
+  background: var(--bg);
+  margin: 0;
+  color: var(--text);
+  line-height: 1.5;
+}
+header {
+  background: var(--primary);
+  color: #fff;
+  padding: 24px 16px;
+  text-align: center;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+header h1 {
+  font-size: 1.75rem;
+  margin: 0 0 6px;
+}
+header p {
+  margin: 0;
+  font-size: 0.95rem;
+  opacity: 0.9;
+}
+main {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 24px 16px;
+}
+.search-bar {
+  width: 100%;
+  padding: 12px 16px;
+  font-size: 1rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  margin-bottom: 24px;
+  outline: none;
+  background: #fff;
+}
+.search-bar:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px rgba(11, 92, 59, 0.15);
+}
+.section-title {
+  font-size: 1.2rem;
+  color: var(--primary);
+  margin: 24px 0 12px;
+  border-bottom: 2px solid var(--border);
+  padding-bottom: 4px;
+}
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+}
+.card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 18px;
+  text-decoration: none;
+  color: var(--text);
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+}
+.card:hover {
+  border-color: var(--primary);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+.card b {
+  color: var(--primary);
+  font-size: 1.1rem;
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.card span {
+  font-size: 0.88rem;
+  color: var(--text-muted);
+}
+footer {
+  text-align: center;
+  padding: 24px;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  border-top: 1px solid var(--border);
+  margin-top: 40px;
+}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>CSC VLE Digital Tools / सीएससी डिजिटल टूल्स</h1>
+  <p>Fast, browser-based utilities for Aadhaar, Cards, Printing & Documents. No uploads required.</p>
+</header>
+
+<main>
+  <input type="text" id="search" class="search-bar" placeholder="🔍 Search tools (e.g., Aadhar, PDF, Resume, Crop)..." onkeyup="filterTools()">
+
+  <div id="tools-container">
+    <div class="section-title">🖨️ ID Card & Print Layouts (86×54 mm PVC Standard)</div>
+    <div class="grid">
+      <a class="card" href="pro-studio.html">
+        <b>🆔 PVC Card Sheet Maker</b>
+        <span>Layout Aadhaar, Voter, Ayushman, e-Shram & UAN cards to exact 86×54 mm standard credit card size for printing.</span>
+      </a>
+      <a class="card" href="pro-studio.html">
+        <b>📄 Document & ID Cropper</b>
+        <span>Quickly crop, straighten, and format documents and passport photos for portal uploads.</span>
+      </a>
+    </div>
+
+    <div class="section-title">📂 Document & File Utilities</div>
+    <div class="grid">
+      <a class="card" href="pro-studio.html">
+        <b>📉 PDF Compressor & Resizer</b>
+        <span>Reduce PDF and image file sizes instantly under portal limits (e.g., 100KB, 200KB) directly in your browser.</span>
+      </a>
+      <a class="card" href="pro-studio.html">
+        <b>🖼️ Photo BG Remover & Resizer</b>
+        <span>Remove photo backgrounds and resize dimensions to exact pixel requirements for government applications.</span>
+      </a>
+    </div>
+
+    <div class="section-title">📝 Applications & Office Work</div>
+    <div class="grid">
+      <a class="card" href="resume-generator.html">
+        <b>📄 Resume Generator</b>
+        <span>Create professional, clean A4 resumes for clients in minutes.</span>
+      </a>
+      <a class="card" href="application-generator.html">
+        <b>✉️ Application & Affidavit Maker</b>
+        <span>Generate official letters, applications, and affidavits ready for print[cite: 3].</span>
+      </a>
+      <a class="card" href="shop-ledger.html">
+        <b>📒 Daily Shop Ledger</b>
+        <span>Track daily income, customer khata, service charges, and cash drawer management[cite: 3].</span>
+      </a>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <p>CSC VLE Tools &bull; Runs 100% Securely in Your Browser</p>
+</footer>
+
+<script>
+function filterTools() {
+  let query = document.getElementById('search').value.toLowerCase();
+  let cards = document.querySelectorAll('.card');
+  cards.forEach(card => {
+    let text = card.textContent.toLowerCase();
+    card.style.display = text.includes(query) ? 'flex' : 'none';
+  });
+}
+</script>
+
+</body>
+</html>
