@@ -22,6 +22,7 @@ body {
   margin: 0;
   color: var(--text);
   line-height: 1.5;
+  transition: background 0.3s ease;
 }
 header {
   background: var(--primary);
@@ -29,21 +30,27 @@ header {
   padding: 24px 16px;
   text-align: center;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  position: relative;
 }
-header h1 {
-  font-size: 1.75rem;
-  margin: 0 0 6px;
+header h1 { font-size: 1.75rem; margin: 0 0 6px; }
+header p { margin: 0; font-size: 0.95rem; opacity: 0.9; }
+
+/* Background Switcher styling */
+.bg-switcher {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  color: #fff;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.85rem;
 }
-header p {
-  margin: 0;
-  font-size: 0.95rem;
-  opacity: 0.9;
-}
-main {
-  max-width: 1000px;
-  margin: 0 auto;
-  padding: 24px 16px;
-}
+.bg-switcher:hover { background: rgba(255, 255, 255, 0.3); }
+
+main { max-width: 1000px; margin: 0 auto; padding: 24px 16px; }
 .search-bar {
   width: 100%;
   padding: 12px 16px;
@@ -94,10 +101,7 @@ main {
   align-items: center;
   gap: 8px;
 }
-.card span {
-  font-size: 0.88rem;
-  color: var(--text-muted);
-}
+.card span { font-size: 0.88rem; color: var(--text-muted); }
 footer {
   text-align: center;
   padding: 24px;
@@ -108,9 +112,10 @@ footer {
 }
 </style>
 </head>
-<body>
+<body id="page-body">
 
 <header>
+  <button class="bg-switcher" onclick="changeBackground()">🎨 Change Theme BG</button>
   <h1>CSC VLE Digital Tools / सीएससी डिजिटल टूल्स</h1>
   <p>Fast, browser-based utilities for Aadhaar, Cards, Printing & Documents. No uploads required.</p>
 </header>
@@ -126,20 +131,20 @@ footer {
         <span>Layout Aadhaar, Voter, Ayushman, e-Shram & UAN cards to exact 86×54 mm standard credit card size for printing.</span>
       </a>
       <a class="card" href="pro-studio.html">
-        <b>📄 Document & ID Cropper</b>
-        <span>Quickly crop, straighten, and format documents and passport photos for portal uploads.</span>
+        <b>📐 Auto-Crop ID Card Tool</b>
+        <span>Automatically crop and fit government ID cards precisely onto standard 86×54 mm boundaries.</span>
       </a>
     </div>
 
     <div class="section-title">📂 Document & File Utilities</div>
     <div class="grid">
       <a class="card" href="pro-studio.html">
-        <b>📉 PDF Compressor & Resizer</b>
-        <span>Reduce PDF and image file sizes instantly under portal limits (e.g., 100KB, 200KB) directly in your browser.</span>
+        <b>📉 PDF Compressor</b>
+        <span>Compress heavy scanned PDF files down below portal limits (100KB–200KB) instantly in your browser.</span>
       </a>
       <a class="card" href="pro-studio.html">
         <b>🖼️ Photo BG Remover & Resizer</b>
-        <span>Remove photo backgrounds and resize dimensions to exact pixel requirements for government applications.</span>
+        <span>Remove backgrounds and resize photo dimensions for government portal specifications.</span>
       </a>
     </div>
 
@@ -166,6 +171,7 @@ footer {
 </footer>
 
 <script>
+// Filter tool cards based on search input
 function filterTools() {
   let query = document.getElementById('search').value.toLowerCase();
   let cards = document.querySelectorAll('.card');
@@ -173,6 +179,26 @@ function filterTools() {
     let text = card.textContent.toLowerCase();
     card.style.display = text.includes(query) ? 'flex' : 'none';
   });
+}
+
+// Background theme cycler script
+const themes = ['#f3f6f4', '#eef2f7', '#faf4e6', '#fdf2f4', '#161b24'];
+let currentTheme = 0;
+function changeBackground() {
+  currentTheme = (currentTheme + 1) % themes.length;
+  let bg = themes[currentTheme];
+  document.getElementById('page-body').style.background = bg;
+  if(bg === '#161b24') {
+    document.documentElement.style.setProperty('--text', '#f0f6fc');
+    document.documentElement.style.setProperty('--card-bg', '#21262d');
+    document.documentElement.style.setProperty('--border', '#30363d');
+    document.documentElement.style.setProperty('--text-muted', '#8b949e');
+  } else {
+    document.documentElement.style.setProperty('--text', '#111111');
+    document.documentElement.style.setProperty('--card-bg', '#ffffff');
+    document.documentElement.style.setProperty('--border', '#cfd8d3');
+    document.documentElement.style.setProperty('--text-muted', '#555555');
+  }
 }
 </script>
 
