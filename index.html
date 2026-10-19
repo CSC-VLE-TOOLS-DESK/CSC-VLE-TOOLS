@@ -1,206 +1,211 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="icon" type="image/png" href="favicon.png">
-<title>CSC VLE Digital Tools & Utility Portal</title>
-<style>
-:root {
-  --primary: #0b5c3b;
-  --primary-hover: #09472d;
-  --bg: #f3f6f4;
-  --card-bg: #ffffff;
-  --text: #111111;
-  --text-muted: #555555;
-  --border: #cfd8d3;
-}
-* { box-sizing: border-box; }
-body {
-  font-family: "Segoe UI", "Noto Sans Devanagari", Arial, sans-serif;
-  background: var(--bg);
-  margin: 0;
-  color: var(--text);
-  line-height: 1.5;
-  transition: background 0.3s ease;
-}
-header {
-  background: var(--primary);
-  color: #fff;
-  padding: 24px 16px;
-  text-align: center;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  position: relative;
-}
-header h1 { font-size: 1.75rem; margin: 0 0 6px; }
-header p { margin: 0; font-size: 0.95rem; opacity: 0.9; }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSC VLE Tools & Cyber Utility Suite - Master Portal</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* ==========================================================
+           GLOBAL PORTAL DESIGN SYSTEM & CENTRALIZED CSS
+           ========================================================== */
+        :root {
+            --bg-color: #f4f6f9;
+            --card-bg: #ffffff;
+            --text-main: #1b2430;
+            --text-muted: #5d6b7a;
+            --border-color: #d5dce4;
+            --primary: #1a73e8;
+            --primary-hover: #1557b0;
+            --accent-cyan: #00e5ff;
+            --success: #34a853;
+        }
 
-/* Background Switcher styling */
-.bg-switcher {
-  position: absolute;
-  top: 16px;
-  right: 16px;
-  background: rgba(255, 255, 255, 0.2);
-  border: 1px solid rgba(255, 255, 255, 0.4);
-  color: #fff;
-  padding: 6px 12px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 0.85rem;
-}
-.bg-switcher:hover { background: rgba(255, 255, 255, 0.3); }
+        @media (prefers-color-scheme: dark) {
+            :root:not([data-theme="light"]) {
+                --bg-color: #10151b;
+                --card-bg: #18202a;
+                --text-main: #e8edf2;
+                --text-muted: #98a6b4;
+                --border-color: #2c3846;
+                --primary: #4f9cf9;
+                --primary-hover: #1a73e8;
+            }
+        }
 
-main { max-width: 1000px; margin: 0 auto; padding: 24px 16px; }
-.search-bar {
-  width: 100%;
-  padding: 12px 16px;
-  font-size: 1rem;
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  margin-bottom: 24px;
-  outline: none;
-  background: #fff;
-}
-.search-bar:focus {
-  border-color: var(--primary);
-  box-shadow: 0 0 0 2px rgba(11, 92, 59, 0.15);
-}
-.section-title {
-  font-size: 1.2rem;
-  color: var(--primary);
-  margin: 24px 0 12px;
-  border-bottom: 2px solid var(--border);
-  padding-bottom: 4px;
-}
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 16px;
-}
-.card {
-  background: var(--card-bg);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 18px;
-  text-decoration: none;
-  color: var(--text);
-  display: flex;
-  flex-direction: column;
-  transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
-}
-.card:hover {
-  border-color: var(--primary);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-}
-.card b {
-  color: var(--primary);
-  font-size: 1.1rem;
-  margin-bottom: 6px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-.card span { font-size: 0.88rem; color: var(--text-muted); }
-footer {
-  text-align: center;
-  padding: 24px;
-  color: var(--text-muted);
-  font-size: 0.85rem;
-  border-top: 1px solid var(--border);
-  margin-top: 40px;
-}
-</style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background: var(--bg-color); color: var(--text-main); min-height: 100vh; display: flex; flex-direction: column; }
+
+        /* Top Navigation Header */
+        header { background: var(--card-bg); border-bottom: 1px solid var(--border-color); padding: 12px 24px; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+        .nav-container { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; }
+        .logo-area { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 1.2rem; color: var(--primary); text-decoration: none; }
+        .nav-links { display: flex; gap: 15px; align-items: center; flex-wrap: wrap; }
+        .nav-links a { color: var(--text-main); text-decoration: none; font-size: 0.9rem; font-weight: 600; padding: 6px 12px; border-radius: 6px; transition: background 0.2s; }
+        .nav-links a:hover, .nav-links a.active { background: var(--border-color); color: var(--primary); }
+
+        /* Main Container */
+        main { max-width: 1200px; margin: 20px auto; padding: 0 15px; flex: 1; width: 100%; }
+
+        /* Hero Banner with Background Style Options */
+        .hero-banner { background: linear-gradient(135deg, #1a73e8, #0d47a1); color: #fff; padding: 35px 25px; border-radius: 12px; margin-bottom: 25px; text-align: center; box-shadow: 0 4px 15px rgba(26,115,232,0.3); }
+        .hero-banner h1 { font-size: 2rem; margin-bottom: 8px; }
+        .hero-banner p { font-size: 1rem; opacity: 0.9; }
+
+        /* Section Titles */
+        .section-title { font-size: 1.3rem; font-weight: 700; margin: 25px 0 15px 0; display: flex; align-items: center; gap: 10px; color: var(--primary); border-bottom: 2px solid var(--border-color); padding-bottom: 8px; }
+
+        /* Quick Links Grid (Government & Essential Services) */
+        .quick-links-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 30px; }
+        .quick-link-card { background: var(--card-bg); border: 1px solid var(--border-color); padding: 15px; border-radius: 8px; text-align: center; text-decoration: none; color: var(--text-main); box-shadow: 0 2px 6px rgba(0,0,0,0.04); transition: transform 0.2s, border-color 0.2s; }
+        .quick-link-card:hover { transform: translateY(-3px); border-color: var(--primary); }
+        .quick-link-card i { font-size: 1.8rem; color: var(--primary); margin-bottom: 8px; }
+        .quick-link-card h4 { font-size: 0.95rem; margin-bottom: 4px; }
+        .quick-link-card p { font-size: 0.75rem; color: var(--text-muted); }
+
+        /* Portal Modules Grid */
+        .modules-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+        .module-card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 10px; padding: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.04); display: flex; flex-direction: column; justify-content: space-between; transition: transform 0.2s; }
+        .module-card:hover { transform: translateY(-3px); border-color: var(--primary); }
+        .module-card h3 { font-size: 1.1rem; color: var(--primary); margin-bottom: 8px; }
+        .module-card p { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 15px; }
+        .module-btn { background: var(--primary); color: #fff; padding: 8px 14px; border-radius: 6px; text-decoration: none; text-align: center; font-weight: 600; font-size: 0.85rem; transition: background 0.2s; display: inline-block; }
+        .module-btn:hover { background: var(--primary-hover); }
+
+        /* Footer */
+        footer { background: var(--card-bg); border-top: 1px solid var(--border-color); text-align: center; padding: 20px; margin-top: 40px; font-size: 0.85rem; color: var(--text-muted); }
+    </style>
 </head>
-<body id="page-body">
+<body>
 
-<header>
-  <button class="bg-switcher" onclick="changeBackground()">🎨 Change Theme BG</button>
-  <h1>CSC VLE Digital Tools / सीएससी डिजिटल टूल्स</h1>
-  <p>Fast, browser-based utilities for Aadhaar, Cards, Printing & Documents. No uploads required.</p>
-</header>
+    <!-- Top Navigation Header -->
+    <header>
+        <div class="nav-container">
+            <a href="index.html" class="logo-area">
+                <i class="fa fa-desktop"></i> CSC VLE Portal
+            </a>
+            <nav class="nav-links">
+                <a href="index.html" class="active"><i class="fa fa-home"></i> Home</a>
+                <a href="tools_bill_receipt_generator.html"><i class="fa fa-file-invoice"></i> CCS Bill Print</a>
+                <a href="#tools"><i class="fa fa-tools"></i> CSC Tools</a>
+                <a href="tools_passport_photo_sheet.html"><i class="fa fa-image"></i> Resizer Tools</a>
+                <a href="#videos"><i class="fa fa-video"></i> Videos</a>
+                <a href="#blog"><i class="fa fa-blog"></i> Blog</a>
+                <a href="#contact"><i class="fa fa-envelope"></i> Contact</a>
+                <a href="#about"><i class="fa fa-info-circle"></i> About Us</a>
+            </nav>
+        </div>
+    </header>
 
-<main>
-  <input type="text" id="search" class="search-bar" placeholder="🔍 Search tools (e.g., Aadhar, PDF, Resume, Crop)..." onkeyup="filterTools()">
+    <main>
+        <!-- Hero Banner -->
+        <div class="hero-banner">
+            <h1>CSC VLE Tools & Cyber Cafe Utility Suite</h1>
+            <p>Professional Bilingual Document Generators, Citizen E-Governance Services, & Print Utilities</p>
+        </div>
 
-  <div id="tools-container">
-    <div class="section-title">🖨️ ID Card & Print Layouts (86×54 mm PVC Standard)</div>
-    <div class="grid">
-      <a class="card" href="pro-studio.html">
-        <b>🆔 PVC Card Sheet Maker</b>
-        <span>Layout Aadhaar, Voter, Ayushman, e-Shram & UAN cards to exact 86×54 mm standard credit card size for printing.</span>
-      </a>
-      <a class="card" href="pro-studio.html">
-        <b>📐 Auto-Crop ID Card Tool</b>
-        <span>Automatically crop and fit government ID cards precisely onto standard 86×54 mm boundaries.</span>
-      </a>
-    </div>
+        <!-- Essential Government & Citizen Services Quick Links -->
+        <div class="section-title"><i class="fa fa-bolt"></i> Main Quick Links (Citizen & VLE Services)</div>
+        <div class="quick-links-grid">
+            <a href="https://uidai.gov.in" target="_blank" class="quick-link-card">
+                <i class="fa fa-id-card"></i>
+                <h4>Aadhaar Services</h4>
+                <p>UIDAI Download & Update</p>
+            </a>
+            <a href="https://www.onlineservices.nsdl.com" target="_blank" class="quick-link-card">
+                <i class="fa fa-address-card"></i>
+                <h4>PAN Card Services</h4>
+                <p>N是你 / UTIITSL Portal</p>
+            </a>
+            <a href="https://beneficiary.nha.gov.in" target="_blank" class="quick-link-card">
+                <i class="fa fa-shield-alt"></i>
+                <h4>Ayushman Card</h4>
+                <p>Eligibility & Balance Check</p>
+            </a>
+            <a href="https://sarathi.parivahan.gov.in" target="_blank" class="quick-link-card">
+                <i class="fa fa-car"></i>
+                <h4>Driving Licence</h4>
+                <p>Parivahan DL Download</p>
+            </a>
+            <a href="https://www.incometax.gov.in" target="_blank" class="quick-link-card">
+                <i class="fa fa-rupee-sign"></i>
+                <h4>Income Tax Filing</h4>
+                <p>e-Filing portal</p>
+            </a>
+            <a href="https://uhbvn.org.in" target="_blank" class="quick-link-card">
+                <i class="fa fa-bolt"></i>
+                <h4>Electricity Bill</h4>
+                <p>UHBVN / DHBVN Payment</p>
+            </a>
+        </div>
 
-    <div class="section-title">📂 Document & File Utilities</div>
-    <div class="grid">
-      <a class="card" href="pro-studio.html">
-        <b>📉 PDF Compressor</b>
-        <span>Compress heavy scanned PDF files down below portal limits (100KB–200KB) instantly in your browser.</span>
-      </a>
-      <a class="card" href="pro-studio.html">
-        <b>🖼️ Photo BG Remover & Resizer</b>
-        <span>Remove backgrounds and resize photo dimensions for government portal specifications.</span>
-      </a>
-    </div>
+        <!-- Portal Modules Section -->
+        <div class="section-title" id="tools"><i class="fa fa-layer-group"></i> Portal Utility Modules</div>
+        <div class="modules-grid">
+            <div class="module-card">
+                <div>
+                    <h3>Professional Resume Builder</h3>
+                    <p>Create bilingual A4 resumes with custom border styles and live preview.</p>
+                </div>
+                <a href="tools_resume_builder.html" class="module-btn">Launch Tool</a>
+            </div>
+            <div class="module-card">
+                <div>
+                    <h3>Marriage Biodata Generator</h3>
+                    <p>Elegant marriage biodatas with family details, horoscopes, and partner preferences.</p>
+                </div>
+                <a href="tools_biodata_maker.html" class="module-btn">Launch Tool</a>
+            </div>
+            <div class="module-card">
+                <div>
+                    <h3>Rent & Agreement Generator</h3>
+                    <p>Residential and commercial lease agreement formats with instant print controls.</p>
+                </div>
+                <a href="tools_agreement_format_generator.html" class="module-btn">Launch Tool</a>
+            </div>
+            <div class="module-card">
+                <div>
+                    <h3>Salary Slip Generator</h3>
+                    <p>Monthly corporate salary slips with earnings, deductions, and net pay calculations.</p>
+                </div>
+                <a href="tools_salary_slip_generator.html" class="module-btn">Launch Tool</a>
+            </div>
+            <div class="module-card">
+                <div>
+                    <h3>Utility Bill Payment Receipt</h3>
+                    <p>Dual half-A4 bill payment receipts for customer and office records.</p>
+                </div>
+                <a href="tools_bill_receipt_generator.html" class="module-btn">Launch Tool</a>
+            </div>
+            <div class="module-card">
+                <div>
+                    <h3>Passport Photo Sheet</h3>
+                    <p>Generate multi-photo stamp and passport sheets instantly on A4 paper.</p>
+                </div>
+                <a href="tools_passport_photo_sheet.html" class="module-btn">Launch Tool</a>
+            </div>
+            <div class="module-card">
+                <div>
+                    <h3>PAN & ID Card Print Utility</h3>
+                    <p>Align and scale dual-side PVC card scans with exact dimensions.</p>
+                </div>
+                <a href="tools_pan_aadhaar_print.html" class="module-btn">Launch Tool</a>
+            </div>
+            <div class="module-card">
+                <div>
+                    <h3>Age Calculator & Utilities</h3>
+                    <p>Precise age computation for exams with a quick cyber cafe utility dock.</p>
+                </div>
+                <a href="tools_age_calculator.html" class="module-btn">Launch Tool</a>
+            </div>
+        </div>
+    </main>
 
-    <div class="section-title">📝 Applications & Office Work</div>
-    <div class="grid">
-      <a class="card" href="resume-generator.html">
-        <b>📄 Resume Generator</b>
-        <span>Create professional, clean A4 resumes for clients in minutes.</span>
-      </a>
-      <a class="card" href="application-generator.html">
-        <b>✉️ Application & Affidavit Maker</b>
-        <span>Generate official letters, applications, and affidavits ready for print[cite: 3].</span>
-      </a>
-      <a class="card" href="shop-ledger.html">
-        <b>📒 Daily Shop Ledger</b>
-        <span>Track daily income, customer khata, service charges, and cash drawer management[cite: 3].</span>
-      </a>
-    </div>
-  </div>
-</main>
-
-<footer>
-  <p>CSC VLE Tools &bull; Runs 100% Securely in Your Browser</p>
-</footer>
-
-<script>
-// Filter tool cards based on search input
-function filterTools() {
-  let query = document.getElementById('search').value.toLowerCase();
-  let cards = document.querySelectorAll('.card');
-  cards.forEach(card => {
-    let text = card.textContent.toLowerCase();
-    card.style.display = text.includes(query) ? 'flex' : 'none';
-  });
-}
-
-// Background theme cycler script
-const themes = ['#f3f6f4', '#eef2f7', '#faf4e6', '#fdf2f4', '#161b24'];
-let currentTheme = 0;
-function changeBackground() {
-  currentTheme = (currentTheme + 1) % themes.length;
-  let bg = themes[currentTheme];
-  document.getElementById('page-body').style.background = bg;
-  if(bg === '#161b24') {
-    document.documentElement.style.setProperty('--text', '#f0f6fc');
-    document.documentElement.style.setProperty('--card-bg', '#21262d');
-    document.documentElement.style.setProperty('--border', '#30363d');
-    document.documentElement.style.setProperty('--text-muted', '#8b949e');
-  } else {
-    document.documentElement.style.setProperty('--text', '#111111');
-    document.documentElement.style.setProperty('--card-bg', '#ffffff');
-    document.documentElement.style.setProperty('--border', '#cfd8d3');
-    document.documentElement.style.setProperty('--text-muted', '#555555');
-  }
-}
-</script>
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2026 CSC VLE Tools & Cyber Utility Suite. Designed for High Performance & Speed.</p>
+    </footer>
 
 </body>
 </html>
