@@ -158,3 +158,23 @@ button,a,input,select,textarea{touch-action:manipulation}
 
 [hidden]{display:none!important}
 .ftr-grid .logo{gap:11px;align-items:center}
+
+/* ======================================================================
+   v9: colourful icon on every tool page header (added by site.js) + related chips
+   Colour comes from --c / --c2 set on .page-head, so each tool keeps the same colour as on the home page.
+   ====================================================================== */
+.pg-ic{display:grid;place-items:center;flex:0 0 auto;width:64px;height:64px;border-radius:18px;color:#fff;font-size:1.8rem;
+  background:linear-gradient(145deg,var(--c,#0891b2),var(--c2,#155e75));box-shadow:0 4px 0 rgba(0,0,0,.2),inset 0 1px 0 rgba(255,255,255,.4)}
+.page-head.has-ic{display:grid;grid-template-columns:auto minmax(0,1fr);column-gap:16px;align-items:center;position:relative;overflow:hidden;
+  padding:14px 18px 14px 22px;border:1px solid var(--line);border-radius:18px;
+  background:linear-gradient(120deg,#fff 40%,color-mix(in srgb,var(--c,#0891b2) 9%,#fff));box-shadow:0 8px 22px rgba(20,40,110,.07)}
+.page-head.has-ic:before{content:"";position:absolute;left:0;top:0;bottom:0;width:6px;background:linear-gradient(180deg,var(--c,#0891b2),var(--c2,#155e75))}
+.page-head.has-ic>.pg-ic{grid-column:1;grid-row:1/span 3}
+.page-head.has-ic>:not(.pg-ic){grid-column:2;min-width:0}
+.page-head.has-ic.pg-center{grid-template-columns:minmax(0,1fr);justify-items:center;text-align:center;row-gap:2px}
+.page-head.has-ic.pg-center>.pg-ic{grid-column:1;grid-row:auto;margin-bottom:4px}
+.page-head.has-ic.pg-center>:not(.pg-ic){grid-column:1}
+@media(max-width:520px){.pg-ic{width:50px;height:50px;font-size:1.4rem;border-radius:14px}.page-head.has-ic{column-gap:12px;padding:12px 12px 12px 16px}}
+.seo-about .rel a{display:inline-flex;align-items:center;gap:7px}
+.seo-about .rel a>i{display:grid;place-items:center;width:22px;height:22px;border-radius:7px;font-size:.7rem;color:#fff;background:linear-gradient(145deg,var(--c,#0891b2),var(--c2,#155e75))}
+.page-head.has-ic.pg-out{width:min(calc(100% - 32px),1168px);margin:14px auto 10px}

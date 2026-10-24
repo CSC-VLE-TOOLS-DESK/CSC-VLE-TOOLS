@@ -34,3 +34,8 @@ CSC VLE TOOLS is a lightweight, premium emerald-and-white digital workspace for 
 This demo rebrands the existing homepage and page titles, introduces shared design tokens/components, and provides a repeatable starter pattern. It does not yet redesign and manually audit every individual tool page. The current Font Awesome CDN remains because existing pages rely on its icon classes. A later performance pass can replace or subset those icons after compatibility testing.
 
 Google rankings cannot be guaranteed. Search performance also depends on helpful content, crawlability, competition, reputation, links, technical health and ongoing measurement.
+
+## v9 additions
+- Tool pages: `site.js` adds a colourful icon to the `.page-head` of any page whose file name is registered in the tool registry. Register the tool and its Font Awesome icon in `site.js` and the icon, colour and home-page card appear automatically.
+- Home page boxes (`.qtile`, `.tool-card`, `.quick-card`, `.cat-item`) share the cyan 3D style in `home.css`; colours come from `--c` / `--c2` set by `site.js`.
+- The scrolling tagline text lives in `index.html` (`#tagline-band`).

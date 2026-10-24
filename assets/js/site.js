@@ -161,6 +161,15 @@
   var esc = CSC.esc = function (s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); };
 
 
+  /* ---------- Colourful icon palette (same colour for a tool on the home page and on its own page) ---------- */
+  var PALETTE = [['#2563eb', '#1e40af'], ['#f97316', '#c2410c'], ['#10b981', '#047857'], ['#ef4444', '#b91c1c'], ['#8b5cf6', '#6d28d9'], ['#0891b2', '#155e75'],
+    ['#ec4899', '#be185d'], ['#d97706', '#92400e'], ['#14b8a6', '#0f766e'], ['#6366f1', '#4338ca'], ['#65a30d', '#3f6212'], ['#f43f5e', '#be123c']];
+  function pal(i) { return PALETTE[((i % PALETTE.length) + PALETTE.length) % PALETTE.length]; }
+  function colorVars(i) { var p = pal(i); return '--c:' + p[0] + ';--c2:' + p[1]; }
+  function iconClass(ic) { return ic === 'fa-whatsapp' ? 'fa-brands fa-whatsapp' : 'fa-solid ' + ic; }
+  function toolIndex(file) { for (var i = 0; i < TOOLS.length; i++) if (TOOLS[i].file === file) return i; return -1; }
+  CSC.palette = PALETTE; CSC.toolIndex = toolIndex;
+
   /* ---------- Site theme (whole page: header, buttons, cards, background) ---------- */
   var THEMES = [['Royal Blue', '#1a3fa6'], ['Saffron', '#c2570c'], ['Green', '#0b5c3b'], ['Teal', '#0f766e'], ['Purple', '#6b3fa0'], ['Maroon', '#8b1e3f'], ['Slate', '#374151']];
   var BGS = [['Auto', ''], ['White', '#ffffff'], ['Cream', '#fbf6e9'], ['Sky', '#e8f1fb'], ['Mint', '#e6f5ec'], ['Rose', '#fbeaee'], ['Lilac', '#efe9fa'], ['Grey', '#e6e9ed']];
@@ -286,8 +295,8 @@
   /* ---------- Home page ---------- */
   function quickLinks() {
     var g = $('#quick-links'); if (!g) return;
-    g.innerHTML = LINKS.map(function (l) {
-      return '<a href="' + esc(l[2]) + '" target="_blank" rel="noopener" class="quick-card"><i class="fa-solid ' + esc(l[3] || 'fa-link') + '" aria-hidden="true"></i><strong>' + esc(l[0]) + '</strong><span>' + esc(l[1]) + '</span></a>';
+    g.innerHTML = LINKS.map(function (l, i) {
+      return '<a href="' + esc(l[2]) + '" target="_blank" rel="noopener" class="quick-card" style="' + colorVars(i + 3) + '"><b class="ql-ext" aria-hidden="true">&#8599;</b><i class="fa-solid ' + esc(l[3] || 'fa-link') + '" aria-hidden="true"></i><strong>' + esc(l[0]) + '</strong><span>' + esc(l[1]) + '</span></a>';
     }).join('');
   }
 
@@ -314,12 +323,17 @@
     function sidebar() {
       if (!side) return;
       side.innerHTML = '';
-      CATS.filter(function (c) { return count(c.id) > 0; }).forEach(function (c) {
-        var li = document.createElement('li');
-        li.innerHTML = '<a href="#tools"><span>' + esc(c.name) + '</span><span class="count">' + count(c.id) + '</span></a>';
-        li.firstChild.onclick = function () { active = c.id; if (q) q.value = ''; render(); };
-        side.appendChild(li);
+      [{ id: 'all', name: 'All Tools', icon: 'fa-border-all' }].concat(CATS.filter(function (c) { return count(c.id) > 0; })).forEach(function (c, i) {
+        var li = document.createElement('li'), a = document.createElement('a');
+        a.className = 'cat-item'; a.href = '#tools'; a.setAttribute('data-cat', c.id); a.setAttribute('style', colorVars(i + 5));
+        a.innerHTML = '<span class="cat-ic"><i class="fa-solid ' + esc(c.icon) + '" aria-hidden="true"></i></span><span class="cat-n">' + esc(c.name) + '</span><span class="count">' + count(c.id) + '</span>';
+        a.onclick = function () { active = c.id; if (q) q.value = ''; render(); };
+        li.appendChild(a); side.appendChild(li);
       });
+    }
+    function markSide() {
+      if (!side) return;
+      $$('.cat-item', side).forEach(function (a) { if (a.getAttribute('data-cat') === active) a.setAttribute('aria-current', 'true'); else a.removeAttribute('aria-current'); });
     }
     function render() {
       var term = (q && q.value || '').trim().toLowerCase();
@@ -327,9 +341,9 @@
         return (active === 'all' || t.cat === active) && (!term || (t.name + ' ' + t.desc).toLowerCase().indexOf(term) > -1);
       });
       list.innerHTML = items.length ? items.map(function (t) {
-        return '<a class="tool-card" href="' + t.file + '.html"><div class="ic"><i class="fa-solid ' + (t.icon === 'fa-whatsapp' ? 'fa-comment-dots' : t.icon) + '" aria-hidden="true"></i></div><div><strong>' + esc(t.name) + '</strong><span class="d">' + esc(t.desc) + '</span></div></a>';
+        return '<a class="tool-card" style="' + colorVars(toolIndex(t.file)) + '" href="' + t.file + '.html"><div class="ic"><i class="' + iconClass(t.icon) + '" aria-hidden="true"></i></div><div><strong>' + esc(t.name) + '</strong><span class="d">' + esc(t.desc) + '</span></div></a>';
       }).join('') : '<p class="empty">No tool found. Try another word.</p>';
-      chips();
+      chips(); markSide();
     }
     if (q) q.addEventListener('input', render);
     sidebar(); render();
@@ -570,6 +584,65 @@
     root.parentNode.insertBefore(d, root);
   }
 
-  function init() { chrome(); home(); }
+  /* ---------- Scrolling tagline (home page, between header and hero) ---------- */
+  function tagline() {
+    var band = $('#tagline-band'); if (!band) return;
+    var view = $('.tg-view', band), track = $('.tg-track', band), first = track && $('.tg-seq', track); if (!view || !first) return;
+    var base = first.innerHTML, timer = 0;
+    function build() {
+      track.classList.remove('tg-on'); track.innerHTML = '';
+      var s = document.createElement('div'); s.className = 'tg-seq'; s.innerHTML = base; track.appendChild(s);
+      var guard = 0; while (s.getBoundingClientRect().width < view.clientWidth + 60 && guard++ < 10) s.insertAdjacentHTML('beforeend', base);
+      var c = s.cloneNode(true); c.setAttribute('aria-hidden', 'true');
+      [].forEach.call(c.querySelectorAll('a,button'), function (a) { a.tabIndex = -1; });
+      track.appendChild(c);
+      track.style.setProperty('--tg-dur', Math.max(24, Math.round(s.getBoundingClientRect().width / 55)) + 's');
+      track.classList.add('tg-on');
+    }
+    build();
+    window.addEventListener('resize', function () { clearTimeout(timer); timer = setTimeout(build, 250); });
+    var pb = $('.tg-pause', band);
+    if (pb) pb.onclick = function () {
+      var p = band.classList.toggle('tg-paused'); pb.setAttribute('aria-pressed', String(p));
+      pb.setAttribute('aria-label', p ? 'Play scrolling message' : 'Pause scrolling message');
+      pb.innerHTML = '<i class="fa-solid ' + (p ? 'fa-play' : 'fa-pause') + '" aria-hidden="true"></i>';
+    };
+  }
+
+  /* ---------- Colourful icon on every tool page + related-tool chips ---------- */
+  function pageIcon() {
+    var head = $('.page-head'); if (!head || head.querySelector('.pg-ic')) return;
+    var file = (location.pathname.split('/').pop() || '').replace(/\.html$/, ''), i = toolIndex(file);
+    if (i >= 0) {
+      var p = pal(i), s = document.createElement('span');
+      s.className = 'pg-ic'; s.setAttribute('aria-hidden', 'true'); s.innerHTML = '<i class="' + iconClass(TOOLS[i].icon) + '"></i>';
+      head.insertBefore(s, head.firstChild); head.classList.add('has-ic');
+      head.style.setProperty('--c', p[0]); head.style.setProperty('--c2', p[1]);
+      try { if (getComputedStyle(head).textAlign === 'center') head.classList.add('pg-center'); } catch (e) { }
+      if (!head.closest('main')) head.classList.add('pg-out');
+    }
+    $$('.seo-about .rel a').forEach(function (a) {
+      var j = toolIndex((a.getAttribute('href') || '').replace(/\.html$/, '')); if (j < 0 || a.querySelector('i')) return;
+      a.style.setProperty('--c', pal(j)[0]); a.style.setProperty('--c2', pal(j)[1]);
+      a.insertAdjacentHTML('afterbegin', '<i class="' + iconClass(TOOLS[j].icon) + '" aria-hidden="true"></i>');
+    });
+  }
+
+  /* ---------- 3D hover tilt for cards (mouse only; off when the visitor prefers reduced motion) ---------- */
+  function tilt() {
+    if (!window.matchMedia || !matchMedia('(hover:hover)').matches || matchMedia('(prefers-reduced-motion:reduce)').matches) return;
+    var SEL = '.qtile,.tool-card,.quick-card,.cat-item';
+    function reset(el) { el.style.removeProperty('--rx'); el.style.removeProperty('--ry'); }
+    document.addEventListener('mousemove', function (e) {
+      var el = e.target.closest && e.target.closest(SEL); if (!el) return;
+      var b = el.getBoundingClientRect(), x = (e.clientX - b.left) / b.width - 0.5, y = (e.clientY - b.top) / b.height - 0.5;
+      el.style.setProperty('--ry', (x * 9).toFixed(2) + 'deg'); el.style.setProperty('--rx', (-y * 7).toFixed(2) + 'deg');
+    }, { passive: true });
+    document.addEventListener('mouseout', function (e) {
+      var el = e.target.closest && e.target.closest(SEL); if (el && !el.contains(e.relatedTarget)) reset(el);
+    }, { passive: true });
+  }
+
+  function init() { chrome(); home(); tagline(); pageIcon(); tilt(); }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
 })();

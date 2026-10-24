@@ -1,0 +1,15 @@
+CSC VLE TOOLS v9
+1. Scrolling tagline (home page, between header and hero), moves right to left, English + Hindi.
+   - Edit the message in index.html, inside <div class="tg-seq"> (id="tagline-band"). Each <span class="tg-i"> is one message.
+   - Pauses on mouse hover, keyboard focus, or the pause button. Stops moving for visitors who set "reduce motion".
+   - Social icons in the tagline appear automatically once links are added in SITE.social (assets/js/site.js).
+2. Colourful icons on all templates (same style as Most Used Tools)
+   - Every tool page header now shows a colourful icon tile (added by site.js, 56 pages). A tool has the same colour on the home page and on its own page.
+   - All Tools cards, category boxes, portal links, "Why" cards and section titles use colourful icon tiles.
+   - Related-tool chips at the bottom of tool pages carry a small coloured icon.
+3. Cyan 3D look
+   - Categories sidebar: cyan 3D frame, every category in its own box with coloured icon + count, "All Tools" box added, selected category highlighted.
+   - Official Portal Quick Links, All Tools cards and Most Used tiles: cyan 3D boxes with lift + tilt on mouse hover (mouse devices only, off for reduce-motion).
+   - Stats, Why and How-it-works boxes get the same cyan frame.
+Files changed: index.html, assets/js/site.js, assets/css/home.css, assets/css/csc-system.css.
+Not changed: Pro Studio and Shop Ledger (separate dark apps with their own header).
