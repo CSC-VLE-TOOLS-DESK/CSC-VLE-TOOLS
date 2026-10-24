@@ -1,4 +1,4 @@
-/* SevaSphere: photo and image tools */
+/* CSC VLE TOOLS: photo and image tools */
 (function () {
   'use strict';
   var CSC = window.CSC, T = CSC.tools, h = CSC.h, esc = CSC.esc;

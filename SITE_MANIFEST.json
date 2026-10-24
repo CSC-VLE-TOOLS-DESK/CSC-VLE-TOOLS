@@ -1,12 +1,13 @@
 {
-  "project": "SevaSphere",
+  "project": "CSC VLE TOOLS",
   "brandVersion": "1.0",
   "foundationVersion": "1.2",
   "visualIdentity": {
-    "primary": "#0b5c49",
-    "accent": "#75e0b0",
+    "primary": "#1a3fa6",
+    "strong": "#0f2a73",
+    "accent": "#ff9800",
     "surface": "#ffffff",
-    "style": "premium emerald green and white"
+    "style": "royal blue and saffron"
   },
   "sharedStyles": [
     "assets/css/portal.css",
@@ -19,10 +20,26 @@
   "starterTemplate": "TEMPLATE_STARTER.html",
   "guide": "GLOBAL_SYSTEM_GUIDE.md",
   "targetScale": "100+ static tool pages using shared styles and reusable templates",
-  "deploymentStatus": "local review demo; not deployed",
+  "deploymentStatus": "ready for GitHub Pages",
   "compatibilityPolicy": "Preserve existing tool logic while migrating page templates in audited batches.",
   "integratedTools": [
     "shop-ledger.html",
     "pro-studio.html"
+  ],
+  "siteUrl": "https://hschouhan7594-crypto.github.io/CSC-VLE-TOOLS/",
+  "pages": [
+    "index.html",
+    "feedback.html",
+    "contact.html",
+    "about.html",
+    "disclaimer.html",
+    "privacy.html",
+    "404.html"
+  ],
+  "seo": [
+    "sitemap.xml",
+    "robots.txt",
+    "site.webmanifest",
+    "og-image.png"
   ]
 }

@@ -1,4 +1,4 @@
-/* SevaSphere: document, billing, card and print tools built on one small form + live A4 preview engine */
+/* CSC VLE TOOLS: document, billing, card and print tools built on one small form + live A4 preview engine */
 (function () {
   'use strict';
   var CSC = window.CSC, T = CSC.tools, h = CSC.h, esc = CSC.esc;
@@ -169,7 +169,7 @@
   /* =============== Service rate list =============== */
   T.service_rate_list = function (root) {
     docTool(root, {
-      key: 'rates', css: '.rl{font-family:Arial,sans-serif;font-size:12pt;color:#000}.rl h2{text-align:center;margin:0;font-size:22pt;color:#0b5c3b}.rl table{width:100%;border-collapse:collapse;margin-top:12px}.rl th,.rl td{border:1px solid #444;padding:6px 9px;text-align:left}.rl th{background:#0b5c3b;color:#fff}.rl .r{text-align:right}',
+      key: 'rates', css: '.rl{font-family:Arial,sans-serif;font-size:12pt;color:#000}.rl h2{text-align:center;margin:0;font-size:22pt;color:#1a3fa6}.rl table{width:100%;border-collapse:collapse;margin-top:12px}.rl th,.rl td{border:1px solid #444;padding:6px 9px;text-align:left}.rl th{background:#1a3fa6;color:#fff}.rl .r{text-align:right}',
       fields: [{ id: 'sn', label: 'Shop / centre name', def: 'CSC Centre' }, { id: 'sa', label: 'Address & phone', type: 'textarea', rows: 2 }, { id: 'tt', label: 'Heading', def: 'Service Rate List' },
         { id: 'it', label: 'Services and rates', type: 'items', cols: [{ id: 's', label: 'Service', w: '2fr' }, { id: 'r', label: 'Rate (₹)' }], def: [{ s: 'Aadhaar update', r: '' }, { s: 'PAN card application', r: '' }, { s: 'Photocopy (per page)', r: '2' }, { s: 'Colour print (per page)', r: '10' }] },
         { id: 'nt', label: 'Note at bottom', def: 'Rates may change without notice.' }],
@@ -200,7 +200,7 @@
   /* =============== Notebook sticker (8 labels per A4) =============== */
   T.notebook_sticker = function (root) {
     var one = function (v) { return '<div class="nb"><div class="sc">' + esc(v.sc) + '</div><table><tr><td>Name</td><td>' + esc(v.nm) + '</td></tr><tr><td>Class</td><td>' + esc(v.cl) + (v.sec ? ' / ' + esc(v.sec) : '') + '</td></tr><tr><td>Roll No.</td><td>' + esc(v.rn) + '</td></tr><tr><td>Subject</td><td>' + esc(v.sb) + '</td></tr></table></div>'; };
-    var css = '.nb{border:1.5px solid ' + '#0b5c3b' + ';border-radius:6px;padding:4mm;font-family:Arial,sans-serif;font-size:11pt;color:#000}.nb .sc{text-align:center;font-weight:bold;font-size:12pt;border-bottom:1.5px solid #0b5c3b;padding-bottom:2mm;margin-bottom:2mm}.nb table{width:100%;border-collapse:collapse}.nb td{padding:2mm 1mm;border-bottom:1px dotted #777}.nb td:first-child{width:28%;font-weight:bold}.sheet{display:grid;grid-template-columns:1fr 1fr;gap:6mm;padding:10mm}';
+    var css = '.nb{border:1.5px solid ' + '#1a3fa6' + ';border-radius:6px;padding:4mm;font-family:Arial,sans-serif;font-size:11pt;color:#000}.nb .sc{text-align:center;font-weight:bold;font-size:12pt;border-bottom:1.5px solid #1a3fa6;padding-bottom:2mm;margin-bottom:2mm}.nb table{width:100%;border-collapse:collapse}.nb td{padding:2mm 1mm;border-bottom:1px dotted #777}.nb td:first-child{width:28%;font-weight:bold}.sheet{display:grid;grid-template-columns:1fr 1fr;gap:6mm;padding:10mm}';
     docTool(root, {
       key: 'sticker', css: css, paper: false,
       fields: [{ id: 'sc', label: 'School name' }, { id: 'nm', label: 'Student name' }, { id: 'cl', label: 'Class' }, { id: 'sec', label: 'Section' }, { id: 'rn', label: 'Roll no.' }, { id: 'sb', label: 'Subject (blank = leave empty to write by hand)' }],
@@ -214,7 +214,7 @@
     function card(v) { return '<div class="vc"><div class="bar" style="background:' + esc(v.col) + '"></div>' + (v.ph ? '<img alt="" src="' + v.ph + '">' : '') + '<h4 style="color:' + esc(v.col) + '">' + esc(v.nm || 'Your Name') + '</h4><div class="d">' + esc(v.ds) + '</div><div class="co">' + esc(v.co) + '</div><div class="l">' + (v.ph1 ? '☎ ' + esc(v.ph1) + '<br>' : '') + (v.em ? '✉ ' + esc(v.em) + '<br>' : '') + (v.web ? esc(v.web) + '<br>' : '') + nl2br(v.ad) + '</div></div>'; }
     docTool(root, {
       key: 'vcard', css: css, paper: false, btn: 'Print 10 cards on A4',
-      fields: [{ id: 'nm', label: 'Name' }, { id: 'ds', label: 'Designation' }, { id: 'co', label: 'Business name' }, { id: 'ph1', label: 'Phone' }, { id: 'em', label: 'Email', type: 'email' }, { id: 'web', label: 'Website' }, { id: 'ad', label: 'Address', type: 'textarea', rows: 2 }, { id: 'col', label: 'Colour', type: 'color', def: '#0b5c3b' }, { id: 'ph', label: 'Photo / logo (optional)', type: 'photo' }],
+      fields: [{ id: 'nm', label: 'Name' }, { id: 'ds', label: 'Designation' }, { id: 'co', label: 'Business name' }, { id: 'ph1', label: 'Phone' }, { id: 'em', label: 'Email', type: 'email' }, { id: 'web', label: 'Website' }, { id: 'ad', label: 'Address', type: 'textarea', rows: 2 }, { id: 'col', label: 'Colour', type: 'color', def: '#1a3fa6' }, { id: 'ph', label: 'Photo / logo (optional)', type: 'photo' }],
       render: function (v) { return '<div style="background:#fff;border:1px solid var(--line);padding:10px;overflow:auto">' + card(v) + '<p class="hint">Preview of one card. Printing gives 10 cards (2 × 5) on A4.</p></div>'; },
       print: function (v) { var s = ''; for (var i = 0; i < 10; i++) s += card(v); return '<div class="vsheet">' + s + '</div>'; }
     });
@@ -242,7 +242,7 @@
     root.innerHTML = '<div class="t-grid"><div class="card no-print">' +
       '<div class="field"><label for="shape">Shape</label><select id="shape"><option value="rect">Rectangle</option><option value="round">Round</option></select></div>' +
       '<div class="field"><label for="l1">Line 1 (large)</label><input id="l1" value="CSC CENTRE"></div><div class="field"><label for="l2">Line 2</label><input id="l2" placeholder="VLE name"></div><div class="field"><label for="l3">Line 3</label><input id="l3" placeholder="Village / Block / District"></div><div class="field"><label for="l4">Line 4</label><input id="l4" placeholder="Mobile / VLE ID"></div>' +
-      '<div class="row2"><div class="field"><label for="col">Ink colour</label><select id="col"><option value="#1a3fb5">Blue</option><option value="#b3261e">Red</option><option value="#111111">Black</option><option value="#0b5c3b">Green</option></select></div><div class="field"><label for="sz">Size (mm wide)</label><input id="sz" type="number" value="60" min="25" max="120"></div></div>' +
+      '<div class="row2"><div class="field"><label for="col">Ink colour</label><select id="col"><option value="#1a3fb5">Blue</option><option value="#b3261e">Red</option><option value="#111111">Black</option><option value="#1a3fa6">Green</option></select></div><div class="field"><label for="sz">Size (mm wide)</label><input id="sz" type="number" value="60" min="25" max="120"></div></div>' +
       '<div class="t-actions"><button class="btn" id="dl"><i class="fa-solid fa-download"></i> Download PNG</button><button class="btn alt" id="pr">Print</button></div><p class="hint">PNG has a clear background so you can place it on documents.</p></div><div class="card"><div class="t-preview" id="pv"></div></div></div>';
     var $ = function (s) { return root.querySelector(s); };
     function build() {
@@ -274,7 +274,7 @@
     return [front, back];
   }
   function cardFields(cfg) {
-    return [{ id: 'org', label: cfg.orgLabel || 'Organisation name', def: cfg.orgDef }, { id: 'sub', label: 'Sub line (affiliation / address)' }, { id: 'col', label: 'Header colour', type: 'color', def: cfg.col || '#0b5c3b' },
+    return [{ id: 'org', label: cfg.orgLabel || 'Organisation name', def: cfg.orgDef }, { id: 'sub', label: 'Sub line (affiliation / address)' }, { id: 'col', label: 'Header colour', type: 'color', def: cfg.col || '#1a3fa6' },
       { id: 'ph', label: 'Photo', type: 'photo', max: 400 }, { id: 'sg', label: 'Signature (optional)', type: 'photo', max: 300 }]
       .concat(cfg.rows.map(function (r) { return { id: r[0], label: r[1], type: r[2] }; }))
       .concat([{ id: 'ad', label: 'Address (back of card)', type: 'textarea', rows: 2 }, { id: 'ph1', label: 'Contact phone (back)' }, { id: 'val', label: 'Valid up to (optional)', type: 'date' }, { id: 'tc', label: 'Back note', def: 'If found, please return to the address above.' },
@@ -298,7 +298,7 @@
 
   /* Multiple ID cards: paste a list, add photos in the same order */
   T.multiple_id_card_print = function (root) {
-    root.innerHTML = '<div class="t-grid"><div class="card no-print"><div class="field"><label for="org">Organisation name</label><input id="org" value="School / Organisation Name"></div><div class="field"><label for="col">Header colour</label><input type="color" id="col" value="#0b5c3b"></div>' +
+    root.innerHTML = '<div class="t-grid"><div class="card no-print"><div class="field"><label for="org">Organisation name</label><input id="org" value="School / Organisation Name"></div><div class="field"><label for="col">Header colour</label><input type="color" id="col" value="#1a3fa6"></div>' +
       '<div class="field"><label for="ti">Footer text</label><input id="ti" value="IDENTITY CARD"></div><div class="field"><label for="ls">One person per line: Name | Father name | Class or ID | Mobile</label><textarea id="ls" rows="7" placeholder="Rahul Kumar | Ramesh Kumar | 10-A | 9876543210"></textarea></div>' +
       '<div class="field"><label for="ph">Photos (select all, same order as the list; sorted by file name)</label><input type="file" id="ph" accept="image/*" multiple></div><div class="t-actions"><button class="btn" id="pr"><i class="fa-solid fa-print"></i> Print cards</button></div><p class="hint">10 cards per A4 page (front side). Missing photos leave an empty box.</p></div><div><div id="pv" style="background:#fff;border:1px solid var(--line);overflow:auto"></div></div></div>';
     var $ = function (s) { return root.querySelector(s); }, photos = [];

@@ -1,30 +1,9 @@
-# SevaSphere
+# CSC VLE TOOLS
 
-### Less searching. More work done.
+### Free online tools for CSC & VLE centres
 
-SevaSphere brings practical digital tools together in one place, including document and photo utilities, calculators, templates, Shop Ledger, and Pro Studio.
+Photo and signature resizer, ID card and passport photo print, PDF tools, resumes, application formats, calculators, Shop Ledger and Pro Studio. Runs in the browser, built for static hosting on GitHub Pages.
 
-## Demo / Practice Mode
+Live site: https://hschouhan7594-crypto.github.io/CSC-VLE-TOOLS/
 
-Most tool pages include a **▶ Try Demo** button in the bottom-right corner. Open it and choose **Load Sample Data** to populate available fields with example values. Use the tool’s existing Calculate, Preview, or Generate action to practise. Choose **Reset Demo** to restore the values that were present before the sample was loaded.
-
-- Demo values are inserted in your browser only; this feature does not upload or send them.
-- File inputs cannot be prefilled by a webpage. Select a practice file manually where required.
-- Some catalogue pages are still starter/placeholder pages; if a page has no editable fields, its tool needs to be implemented before a working sample is possible.
-- Review all sample values before saving, printing, or exporting.
-
-## Tools included
-
-- Shop Ledger
-- Pro Studio
-- Document and application templates
-- Image and PDF utilities
-- Calculators and other practical tools
-
-## Technology
-
-HTML, CSS, and JavaScript. Designed for static hosting such as GitHub Pages.
-
-## Project status
-
-SevaSphere is under active development.
+See `SETUP_GUIDE.md` for how to publish and where to add your email, phone and social links.

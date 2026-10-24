@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /TEMPLATE_STARTER.html
+
+Sitemap: https://hschouhan7594-crypto.github.io/CSC-VLE-TOOLS/sitemap.xml

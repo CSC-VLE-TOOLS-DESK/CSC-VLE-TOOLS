@@ -1,4 +1,4 @@
-/* SevaSphere: shared site script (header, footer, tool registry, home page, helpers) */
+/* CSC VLE TOOLS: shared site script (header, footer, tool registry, home page, helpers) */
 (function () {
   'use strict';
 
@@ -112,7 +112,41 @@
   /* Put the Shop Ledger app address here; the Open button on the home banner appears automatically. */
   var SHOP_LEDGER_URL = 'shop-ledger.html';
 
-  var CSC = window.CSC = { LINKS: LINKS, TOOLS: TOOLS, CATS: CATS, tools: {} };
+
+  /* =====================================================================
+     SITE SETTINGS  -  EDIT THIS BLOCK ONLY. Every page reads from here.
+     Leave a value as '' to hide it. Social links appear in the footer,
+     the Contact page and the Feedback page as soon as you fill them in.
+     ===================================================================== */
+  var SITE = {
+    name: 'CSC VLE TOOLS',
+    url: 'https://hschouhan7594-crypto.github.io/CSC-VLE-TOOLS/',
+    tagline: 'Free online tools for CSC & VLE centres',
+    location: 'Rohtak, Haryana, India',
+    hours: 'Mon - Sat, 9:00 AM - 7:00 PM',
+    email: '',            // e.g. 'yourname@gmail.com'
+    phone: '',            // e.g. '+91 98765 43210'
+    whatsappNumber: '',   // digits only with country code, e.g. '919876543210'
+    formEndpoint: '',     // optional: a Formspree/Getform URL to receive feedback by email
+    social: {
+      whatsapp: '',       // WhatsApp group / channel invite link
+      telegram: '',       // https://t.me/yourchannel
+      facebook: '',       // https://facebook.com/yourpage
+      instagram: '',      // https://instagram.com/yourid
+      youtube: '',        // https://youtube.com/@yourchannel
+      x: '',              // https://x.com/yourid
+      linkedin: '',       // https://linkedin.com/in/yourid
+      github: 'https://github.com/hschouhan7594-crypto'
+    }
+  };
+  var SOCIAL_META = [
+    ['whatsapp', 'WhatsApp', 'fa-brands fa-whatsapp'], ['telegram', 'Telegram', 'fa-brands fa-telegram'],
+    ['facebook', 'Facebook', 'fa-brands fa-facebook-f'], ['instagram', 'Instagram', 'fa-brands fa-instagram'],
+    ['youtube', 'YouTube', 'fa-brands fa-youtube'], ['x', 'X (Twitter)', 'fa-brands fa-x-twitter'],
+    ['linkedin', 'LinkedIn', 'fa-brands fa-linkedin-in'], ['github', 'GitHub', 'fa-brands fa-github']
+  ];
+
+  var CSC = window.CSC = { LINKS: LINKS, TOOLS: TOOLS, CATS: CATS, SITE: SITE, SOCIAL_META: SOCIAL_META, tools: {} };
   CSC.libs = {
     pdflib: 'https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js',
     jszip: 'https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js',
@@ -128,7 +162,7 @@
 
 
   /* ---------- Site theme (whole page: header, buttons, cards, background) ---------- */
-  var THEMES = [['Green', '#0b5c3b'], ['Blue', '#1a56a0'], ['Teal', '#0f766e'], ['Purple', '#6b3fa0'], ['Maroon', '#8b1e3f'], ['Orange', '#b45309'], ['Slate', '#374151']];
+  var THEMES = [['Royal Blue', '#1a3fa6'], ['Saffron', '#c2570c'], ['Green', '#0b5c3b'], ['Teal', '#0f766e'], ['Purple', '#6b3fa0'], ['Maroon', '#8b1e3f'], ['Slate', '#374151']];
   var BGS = [['Auto', ''], ['White', '#ffffff'], ['Cream', '#fbf6e9'], ['Sky', '#e8f1fb'], ['Mint', '#e6f5ec'], ['Rose', '#fbeaee'], ['Lilac', '#efe9fa'], ['Grey', '#e6e9ed']];
   function hex2rgb(h) { return [1, 3, 5].map(function (i) { return parseInt(h.substr(i, 2), 16); }); }
   function mix(h, to, t) { var a = hex2rgb(h), b = hex2rgb(to); return '#' + a.map(function (v, i) { return ('0' + Math.round(v + (b[i] - v) * t).toString(16)).slice(-2); }).join(''); }
@@ -144,7 +178,7 @@
     m.content = br;
   }
   function themePicker(hdr) {
-    var t = CSC.safe.get('csc_theme', null) || { brand: THEMES[0][1], bg: CSC.safe.get('csc_bg', '') || '' };
+    var t = CSC.safe.get('cscvle_theme', null) || { brand: THEMES[0][1], bg: CSC.safe.get('cscvle_bg', '') || '' };
     if (t.bg === '#f4f7f6') t.bg = '';
     applyTheme(t);
     var nav = hdr.querySelector('nav'); if (!nav) return;
@@ -160,12 +194,12 @@
       '<button type="button" class="bgreset">Reset to default</button></div>';
     nav.appendChild(wrap);
     var btn = wrap.querySelector('.bgbtn'), menu = wrap.querySelector('.bgmenu');
-    function set(k, c) { t[k] = c; CSC.safe.set('csc_theme', t); applyTheme(t); }
+    function set(k, c) { t[k] = c; CSC.safe.set('cscvle_theme', t); applyTheme(t); }
     btn.onclick = function (e) { e.stopPropagation(); var o = menu.hidden; menu.hidden = !o; btn.setAttribute('aria-expanded', String(o)); };
     document.addEventListener('click', function (e) { if (!wrap.contains(e.target)) { menu.hidden = true; btn.setAttribute('aria-expanded', 'false'); } });
     [].forEach.call(menu.querySelectorAll('.sw'), function (b) { b.onclick = function () { set(b.getAttribute('data-k'), b.getAttribute('data-c')); }; });
     [].forEach.call(menu.querySelectorAll('input[type=color]'), function (i) { i.addEventListener('input', function () { set(i.getAttribute('data-k'), i.value); }); });
-    wrap.querySelector('.bgreset').onclick = function () { t = { brand: THEMES[0][1], bg: '' }; CSC.safe.set('csc_theme', t); applyTheme(t); };
+    wrap.querySelector('.bgreset').onclick = function () { t = { brand: THEMES[0][1], bg: '' }; CSC.safe.set('cscvle_theme', t); applyTheme(t); };
   }
   // keep the sticky sidebar exactly below the sticky header
   function hdrHeight() {
@@ -175,21 +209,78 @@
   }
 
   /* ---------- Header and footer ---------- */
+  function socialHTML(cls) {
+    return SOCIAL_META.filter(function (m) { return SITE.social[m[0]]; }).map(function (m) {
+      return '<a class="' + (cls || 'soc-a') + ' s-' + m[0] + '" href="' + esc(SITE.social[m[0]]) + '" target="_blank" rel="noopener me" aria-label="' + m[1] + '" title="' + m[1] + '"><i class="' + m[2] + '" aria-hidden="true"></i><span class="sr">' + m[1] + '</span></a>';
+    }).join('');
+  }
+  CSC.socialHTML = socialHTML;
+  CSC.shareLinks = function (url, text) {
+    var u = encodeURIComponent(url || SITE.url), t = encodeURIComponent(text || (SITE.name + ' - ' + SITE.tagline));
+    return [
+      ['WhatsApp', 'fa-brands fa-whatsapp', 'https://wa.me/?text=' + t + '%20' + u, 's-whatsapp'],
+      ['Telegram', 'fa-brands fa-telegram', 'https://t.me/share/url?url=' + u + '&text=' + t, 's-telegram'],
+      ['Facebook', 'fa-brands fa-facebook-f', 'https://www.facebook.com/sharer/sharer.php?u=' + u, 's-facebook'],
+      ['X', 'fa-brands fa-x-twitter', 'https://twitter.com/intent/tweet?url=' + u + '&text=' + t, 's-x']
+    ];
+  };
+  /* Fill [data-site-text], [data-site-link], [data-social-list], [data-share-list] on static pages */
+  function fillSite() {
+    $$('[data-site-text]').forEach(function (e) {
+      var v = SITE[e.getAttribute('data-site-text')];
+      if (v) e.textContent = v; else if (e.hasAttribute('data-hide-empty')) { var h = e.closest('[data-row]') || e; h.hidden = true; }
+    });
+    $$('[data-site-link]').forEach(function (e) {
+      var k = e.getAttribute('data-site-link'), v = '';
+      if (k === 'email' && SITE.email) v = 'mailto:' + SITE.email;
+      else if (k === 'phone' && SITE.phone) v = 'tel:' + SITE.phone.replace(/[^+\d]/g, '');
+      else if (k === 'whatsapp-chat' && SITE.whatsappNumber) v = 'https://wa.me/' + SITE.whatsappNumber.replace(/\D/g, '');
+      else if (SITE.social[k]) v = SITE.social[k];
+      if (v) { e.href = v; if (/^https?:/.test(v)) { e.target = '_blank'; e.rel = 'noopener'; } } else { var r = e.closest('[data-row]') || e; r.hidden = true; }
+    });
+    $$('[data-social-list]').forEach(function (e) { var h = socialHTML(e.getAttribute('data-social-list') || 'soc-a'); e.innerHTML = h || '<span class="muted-note">Social links will appear here soon.</span>'; });
+    $$('[data-share-list]').forEach(function (e) {
+      var cls = e.getAttribute('data-share-list') || 'soc-a'; e.innerHTML = CSC.shareLinks().map(function (l) { return '<a class="' + cls + ' ' + l[3] + '" href="' + esc(l[2]) + '" target="_blank" rel="noopener" aria-label="Share on ' + l[0] + '" title="Share on ' + l[0] + '"><i class="' + l[1] + '" aria-hidden="true"></i><span class="sr">Share on ' + l[0] + '</span></a>'; }).join('');
+    });
+  }
+  CSC.fillSite = fillSite;
+
   function chrome() {
+    if (!document.querySelector('link[href*="font-awesome"]')) {
+      var fa = document.createElement('link'); fa.rel = 'stylesheet'; fa.href = 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css'; document.head.appendChild(fa);
+    }
     var h = $('#site-header');
     if (h && !h.firstChild) {
       var here = location.pathname.split('/').pop() || 'index.html';
-      h.innerHTML = '<div class="hdr"><a class="logo" href="index.html"><img src="favicon.svg" alt="" width="32" height="32"> SevaSphere</a>' +
-        '<nav aria-label="Main"><a href="index.html"' + (here === 'index.html' ? ' aria-current="page"' : '') + '>Home</a>' +
-        '<a href="index.html#tools">Tools</a><a href="index.html#links">Portal Links</a></nav></div>';
+      var cur = function (f) { return here === f ? ' aria-current="page"' : ''; };
+      h.innerHTML = '<div class="hdr"><a class="logo" href="index.html"><img src="favicon.svg" alt="" width="36" height="36"><span class="logo-t">CSC VLE <b>TOOLS</b></span></a>' +
+        '<button class="nav-toggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="main-nav">&#9776;</button>' +
+        '<nav id="main-nav" aria-label="Main"><a href="index.html"' + cur('index.html') + '>Home</a>' +
+        '<a href="index.html#tools">Tools</a><a href="index.html#links">Portal Links</a>' +
+        '<a href="feedback.html"' + cur('feedback.html') + '>Feedback</a><a href="contact.html"' + cur('contact.html') + '>Contact</a></nav></div>';
       themePicker(h);
+      var tg = h.querySelector('.nav-toggle'), nv = h.querySelector('nav');
+      tg.onclick = function () { var o = nv.classList.toggle('open'); tg.setAttribute('aria-expanded', o); };
     }
     hdrHeight();
     var f = $('#site-footer');
     if (f && !f.firstChild) {
-      f.innerHTML = '<div class="ftr"><span>&copy; ' + new Date().getFullYear() + ' SevaSphere. Practical online tools for everyday digital work.</span>' +
-        '<span>All tools run in your browser. Your photos and documents are not uploaded.</span></div>';
+      var yr = new Date().getFullYear();
+      f.innerHTML = '<div class="ftr2"><div class="ftr-grid">' +
+        '<div class="ftr-brand"><a class="logo" href="index.html"><img src="favicon.svg" alt="" width="36" height="36"><span class="logo-t">CSC VLE <b>TOOLS</b></span></a>' +
+        '<p>Free, fast online tools for CSC and VLE centres, cyber cafes and students: photo and signature resizer, ID card and passport photo print, PDF tools, resumes, applications and calculators.</p>' +
+        '<div class="soc" aria-label="Social links">' + socialHTML() + '</div></div>' +
+        '<div><h4>Explore</h4><a href="index.html">Home</a><a href="index.html#tools">All Tools</a><a href="index.html#links">Portal Links</a><a href="pro-studio.html">Pro Studio</a><a href="shop-ledger.html">Shop Ledger</a></div>' +
+        '<div><h4>Popular Tools</h4><a href="tools_photo_resizer.html">Photo Resizer</a><a href="tools_pdf_merger.html">PDF Merger</a><a href="tools_ai_passport_studio.html">Passport Photo Studio</a><a href="haryana-resume-generator.html">Resume Builder</a><a href="tools_loan_emi_calculator.html">Loan EMI Calculator</a></div>' +
+        '<div><h4>Support</h4><a href="feedback.html">Send Feedback</a><a href="contact.html">Contact Us</a><a href="about.html">About Us</a><a href="disclaimer.html">Disclaimer</a><a href="privacy.html">Privacy Policy</a></div>' +
+        '</div><div class="ftr-bar"><span>&copy; ' + yr + ' CSC VLE TOOLS. All rights reserved.</span><span>Made with <span class="heart" aria-label="love">&#10084;</span> in Rohtak, Haryana</span></div>' +
+        '<p class="ftr-note">CSC VLE TOOLS is an independent project. It is not affiliated with, endorsed by or connected to CSC e-Governance Services India Ltd, UIDAI, or any government department. <a href="disclaimer.html">Read the full disclaimer</a>.</p></div>';
+      var tt = document.createElement('button'); tt.type = 'button'; tt.id = 'to-top'; tt.className = 'to-top no-print'; tt.setAttribute('aria-label', 'Back to top'); tt.innerHTML = '&uarr;'; tt.hidden = true;
+      tt.onclick = function () { window.scrollTo({ top: 0, behavior: 'smooth' }); };
+      document.body.appendChild(tt);
+      window.addEventListener('scroll', function () { tt.hidden = window.scrollY < 600; }, { passive: true });
     }
+    fillSite();
   }
 
   /* ---------- Home page ---------- */
@@ -368,7 +459,7 @@
       ctx.strokeStyle = '#fff'; ctx.lineWidth = 2; ctx.strokeRect(r.x, r.y, r.w, r.h);
       handles().forEach(function (hd) {
         var corner = hd.k.length === 2, s = corner ? 8 : 6;
-        ctx.fillStyle = '#fff'; ctx.strokeStyle = '#0b5c3b'; ctx.lineWidth = 2;
+        ctx.fillStyle = '#fff'; ctx.strokeStyle = '#1a3fa6'; ctx.lineWidth = 2;
         if (corner) { ctx.fillRect(hd.x - s, hd.y - s, s * 2, s * 2); ctx.strokeRect(hd.x - s, hd.y - s, s * 2, s * 2); }
         else { var hw = hd.k === 'n' || hd.k === 's', bw = hw ? 14 : 6, bh = hw ? 6 : 14; ctx.fillRect(hd.x - bw, hd.y - bh, bw * 2, bh * 2); ctx.strokeRect(hd.x - bw, hd.y - bh, bw * 2, bh * 2); }
       });
@@ -451,7 +542,7 @@
     f.style.cssText = 'position:fixed;right:0;bottom:0;width:0;height:0;border:0';
     document.body.appendChild(f);
     var d = f.contentWindow.document; d.open();
-    d.write('<!doctype html><html><head><meta charset="utf-8"><title>SevaSphere</title><style>@page{size:A4;margin:0}body{margin:0;font-family:Arial,sans-serif}' + (css || '') + '</style></head><body>' + body + '</body></html>');
+    d.write('<!doctype html><html><head><meta charset="utf-8"><title>CSC VLE TOOLS</title><style>@page{size:A4;margin:0}body{margin:0;font-family:Arial,sans-serif}' + (css || '') + '</style></head><body>' + body + '</body></html>');
     d.close();
     var go = function () { f.contentWindow.focus(); f.contentWindow.print(); setTimeout(function () { f.remove(); }, 2000); };
     var imgs = [].slice.call(d.images), left = imgs.length;

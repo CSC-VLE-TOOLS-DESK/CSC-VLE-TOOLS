@@ -1,7 +1,7 @@
-# SevaSphere Global Design System — v1.1
+# CSC VLE TOOLS Global Design System — v1.1
 
 ## Product direction
-SevaSphere is a lightweight, premium emerald-and-white digital workspace for photo preparation, print layouts, document formats, PDF utilities, billing and calculators. This package is a test build; it is not deployed to GitHub.
+CSC VLE TOOLS is a lightweight, premium emerald-and-white digital workspace for photo preparation, print layouts, document formats, PDF utilities, billing and calculators. This package is a test build; it is not deployed to GitHub.
 
 ## Architecture
 - `assets/css/portal.css`: legacy compatibility stylesheet used by existing tools. Preserve while templates are audited.
@@ -18,7 +18,7 @@ SevaSphere is a lightweight, premium emerald-and-white digital workspace for pho
 4. Register each discoverable tool in `assets/js/site.js`; keep its name, description, category and file path accurate.
 5. Load only the JavaScript a tool needs. Avoid introducing a large framework for simple static tools.
 6. Preserve accessible labels, keyboard focus, clear errors and reduced-motion support.
-7. Keep shared brand colors, spacing and component rules centralized. New templates must follow the SevaSphere design system.
+7. Keep shared brand colors, spacing and component rules centralized. New templates must follow the CSC VLE TOOLS design system.
 8. Before adding a page, check for duplicate purpose/slug, broken links, unique metadata and whether the page adds genuine user value.
 
 ## SEO release checklist

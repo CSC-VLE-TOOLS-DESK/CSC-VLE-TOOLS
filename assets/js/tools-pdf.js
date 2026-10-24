@@ -1,4 +1,4 @@
-/* SevaSphere: PDF tools (merge, split, JPG to PDF, watermark, Word to PDF) */
+/* CSC VLE TOOLS: PDF tools (merge, split, JPG to PDF, watermark, Word to PDF) */
 (function () {
   'use strict';
   var CSC = window.CSC, T = CSC.tools, h = CSC.h, esc = CSC.esc;

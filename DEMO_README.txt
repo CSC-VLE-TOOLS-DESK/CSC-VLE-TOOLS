@@ -1,8 +1,8 @@
-# SevaSphere
+# CSC VLE TOOLS
 
 ### Less searching. More work done.
 
-SevaSphere brings practical digital tools together in one place, including document and photo utilities, calculators, templates, Shop Ledger, and Pro Studio.
+CSC VLE TOOLS brings practical digital tools together in one place, including document and photo utilities, calculators, templates, Shop Ledger, and Pro Studio.
 
 ## Demo / Practice Mode
 
@@ -27,4 +27,4 @@ HTML, CSS, and JavaScript. Designed for static hosting such as GitHub Pages.
 
 ## Project status
 
-SevaSphere is under active development.
+CSC VLE TOOLS is under active development.

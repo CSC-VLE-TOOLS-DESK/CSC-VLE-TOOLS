@@ -1,7 +1,7 @@
-/* SevaSphere legacy-compatible shared stylesheet */
+/* CSC VLE TOOLS legacy-compatible shared stylesheet */
 :root{
-  --brand:#0b5c49; --brand-strong:#073d32; --on-brand:#fff;
-  --soft:#e5f5ee; --line:#d5dce4; --muted:#5d6b7a; --text:#1b2430;
+  --brand:#1a3fa6; --brand-strong:#0f2a73; --on-brand:#fff;
+  --soft:#e8eefc; --line:#d5dce4; --muted:#5d6b7a; --text:#1b2430;
   --surface:#fff; --bg:#f4f7f6; --danger:#b3261e; --warn:#8a5a00;
   --shadow:0 2px 8px rgba(0,0,0,.06); --radius:12px; --hdr-h:64px;
 }

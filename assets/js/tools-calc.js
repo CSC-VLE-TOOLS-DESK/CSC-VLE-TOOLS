@@ -1,4 +1,4 @@
-/* SevaSphere: calculators and quick utilities */
+/* CSC VLE TOOLS: calculators and quick utilities */
 (function () {
   'use strict';
   var CSC = window.CSC, T = CSC.tools, h = CSC.h, esc = CSC.esc;
@@ -174,7 +174,7 @@
     function paint(v) {
       var html = '';
       for (var i = 0; i < txt.length; i++) {
-        var c = esc(txt[i]), cls = i < v.length ? (v[i] === txt[i] ? 'color:#0b5c3b' : 'color:#fff;background:#b3261e') : (i === v.length ? 'background:#fde68a' : '');
+        var c = esc(txt[i]), cls = i < v.length ? (v[i] === txt[i] ? 'color:#1a3fa6' : 'color:#fff;background:#b3261e') : (i === v.length ? 'background:#fde68a' : '');
         html += '<span style="' + cls + '">' + c + '</span>';
       }
       $('#tx').innerHTML = html;

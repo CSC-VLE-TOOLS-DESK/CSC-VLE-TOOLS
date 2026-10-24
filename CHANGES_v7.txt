@@ -1,0 +1,6 @@
+CSC VLE TOOLS v7
+- Restored CSC VLE TOOLS name everywhere; new royal blue and saffron identity.
+- New favicon set (SVG, ICO, PNG, Apple touch, 192/512) and social share image.
+- New homepage, header, footer, Feedback, Contact, About, Disclaimer, Privacy and 404 pages.
+- SEO: titles, descriptions, keywords, canonical, Open Graph, Twitter cards, JSON-LD, sitemap.xml, robots.txt, web manifest.
+- FIXED: demo-mode script tag had been inserted inside JavaScript strings in haryana-resume-generator.html, haryana-application-generator.html and pro-studio.html. This broke their scripts (templates and Pro Studio failed to load).

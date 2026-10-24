@@ -1,7 +1,7 @@
-# SevaSphere additions: Shop Ledger + Pro Studio
+# CSC VLE TOOLS additions: Shop Ledger + Pro Studio
 
 - Added `shop-ledger.html`, renamed from the supplied Arun CSC Center HTML file. Existing app logic is retained. Visible branding changed to Shop Ledger.
-- Added `pro-studio.html`, based on the supplied Pro Studio v5.2 file. Visible header/title branded as SevaSphere Pro Studio.
+- Added `pro-studio.html`, based on the supplied Pro Studio v5.2 file. Visible header/title branded as CSC VLE TOOLS Pro Studio.
 - Added both tools to the home page search/library in `assets/js/site.js`.
 - Shop Ledger homepage banner now opens `shop-ledger.html`.
 
