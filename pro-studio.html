@@ -618,26 +618,39 @@ input[type=range] {
 .background-tools .swatch { display:inline-flex; align-items:center; justify-content:center; width:23px; height:23px; border:1px solid #94a3b8; border-radius:5px; cursor:pointer; box-shadow:0 1px 3px #0005; }
 .background-tools .bg-save { background:#854d0e !important; border-color:#eab308 !important; color:#fef9c3 !important; }
 .background-tools .bg-image { background:#075985 !important; border-color:#38bdf8 !important; color:#e0f2fe !important; }
+/* v8: bigger panes, Home button, scrollable page */
+html{height:auto}
+body{height:auto;min-height:100vh;overflow-y:auto;overflow-x:hidden}
+.main{flex:0 0 auto;overflow:visible;align-items:start}
+.pane{height:clamp(820px,135vh,1400px)}
+.main.stacked{grid-template-columns:minmax(0,1fr)}
+.main.stacked .pane{height:clamp(820px,150vh,1500px)}
+.home-link{color:inherit;text-decoration:none}
+.home-btn{display:inline-flex;align-items:center;gap:4px;background:#2563eb;color:#fff;font-weight:700;font-size:13px;text-decoration:none;border-radius:8px;padding:7px 12px;border:1px solid #3b82f6;white-space:nowrap}
+.home-btn:hover{background:#1d4ed8}
+@media(max-width:900px){.pane{height:clamp(640px,110vh,1100px)}}
 </style>
 <meta name="application-name" content="CSC VLE TOOLS Pro Studio">  <meta name="description" content="Prepare documents, crop images, refine photos and print ID cards with CSC VLE TOOLS Pro Studio.">
   <meta name="keywords" content="Pro Studio, photo resizer, passport photo, signature resize, image compress, KB size, job form photo, CSC VLE tools, CSC center tools, VLE tools, free online tool, Rohtak Haryana">
   <meta name="author" content="CSC VLE TOOLS">
   <meta name="robots" content="index,follow,max-image-preview:large">
-  <link rel="canonical" href="https://hschouhan7594-crypto.github.io/CSC-VLE-TOOLS/pro-studio.html">
+  <link rel="canonical" href="https://csc-vle-tools-desk.github.io/CSC-VLE-TOOLS/pro-studio.html">
   <meta property="og:type" content="website"><meta property="og:site_name" content="CSC VLE TOOLS"><meta property="og:locale" content="en_IN">
-  <meta property="og:title" content="CSC VLE TOOLS Pro Studio — Document &amp; Photo Tools"><meta property="og:description" content="Prepare documents, crop images, refine photos and print ID cards with CSC VLE TOOLS Pro Studio."><meta property="og:url" content="https://hschouhan7594-crypto.github.io/CSC-VLE-TOOLS/pro-studio.html"><meta property="og:image" content="https://hschouhan7594-crypto.github.io/CSC-VLE-TOOLS/og-image.png">
-  <meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="CSC VLE TOOLS Pro Studio — Document &amp; Photo Tools"><meta name="twitter:description" content="Prepare documents, crop images, refine photos and print ID cards with CSC VLE TOOLS Pro Studio."><meta name="twitter:image" content="https://hschouhan7594-crypto.github.io/CSC-VLE-TOOLS/og-image.png">
+  <meta property="og:title" content="CSC VLE TOOLS Pro Studio — Document &amp; Photo Tools"><meta property="og:description" content="Prepare documents, crop images, refine photos and print ID cards with CSC VLE TOOLS Pro Studio."><meta property="og:url" content="https://csc-vle-tools-desk.github.io/CSC-VLE-TOOLS/pro-studio.html"><meta property="og:image" content="https://csc-vle-tools-desk.github.io/CSC-VLE-TOOLS/og-image.png">
+  <meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="CSC VLE TOOLS Pro Studio — Document &amp; Photo Tools"><meta name="twitter:description" content="Prepare documents, crop images, refine photos and print ID cards with CSC VLE TOOLS Pro Studio."><meta name="twitter:image" content="https://csc-vle-tools-desk.github.io/CSC-VLE-TOOLS/og-image.png">
   <meta name="geo.region" content="IN-HR"><meta name="geo.placename" content="Rohtak, Haryana">
   <meta name="theme-color" content="#1a3fa6">
   <link rel="manifest" href="site.webmanifest">
   <link rel="icon" href="favicon.ico" sizes="any">
-  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebApplication", "name": "Pro Studio", "url": "https://hschouhan7594-crypto.github.io/CSC-VLE-TOOLS/pro-studio.html", "description": "Prepare documents, crop images, refine photos and print ID cards with CSC VLE TOOLS Pro Studio.", "applicationCategory": "UtilitiesApplication", "operatingSystem": "Any (web browser)", "browserRequirements": "Requires JavaScript", "inLanguage": "en-IN", "isAccessibleForFree": true, "offers": {"@type": "Offer", "price": "0", "priceCurrency": "INR"}, "publisher": {"@type": "Organization", "name": "CSC VLE TOOLS", "url": "https://hschouhan7594-crypto.github.io/CSC-VLE-TOOLS/"}}</script>
-  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://hschouhan7594-crypto.github.io/CSC-VLE-TOOLS/"}, {"@type": "ListItem", "position": 2, "name": "Pro Studio", "item": "https://hschouhan7594-crypto.github.io/CSC-VLE-TOOLS/pro-studio.html"}]}</script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebApplication", "name": "Pro Studio", "url": "https://csc-vle-tools-desk.github.io/CSC-VLE-TOOLS/pro-studio.html", "description": "Prepare documents, crop images, refine photos and print ID cards with CSC VLE TOOLS Pro Studio.", "applicationCategory": "UtilitiesApplication", "operatingSystem": "Any (web browser)", "browserRequirements": "Requires JavaScript", "inLanguage": "en-IN", "isAccessibleForFree": true, "offers": {"@type": "Offer", "price": "0", "priceCurrency": "INR"}, "publisher": {"@type": "Organization", "name": "CSC VLE TOOLS", "url": "https://csc-vle-tools-desk.github.io/CSC-VLE-TOOLS/"}}</script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://csc-vle-tools-desk.github.io/CSC-VLE-TOOLS/"}, {"@type": "ListItem", "position": 2, "name": "Pro Studio", "item": "https://csc-vle-tools-desk.github.io/CSC-VLE-TOOLS/pro-studio.html"}]}</script>
 </head>
 <body>
 <header>
-  <h1>CSC VLE TOOLS <span>PRO STUDIO</span></h1>
+  <a href="index.html" class="home-link" title="Back to CSC VLE TOOLS home" aria-label="CSC VLE TOOLS home"><h1>CSC VLE TOOLS <span>PRO STUDIO</span></h1></a>
   <div class="action-bar">
+    <a class="home-btn" href="index.html" title="Back to CSC VLE TOOLS home">🏠 Home</a>
+    <button class="small" id="layout-toggle" type="button" onclick="toggleStudioLayout()" title="Switch between side-by-side and stacked panes">⬍ Layout</button>
     <button class="small" onclick="undoAction(activePane)">↶ Undo</button>
     <button class="small" onclick="redoAction(activePane)">↷ Redo</button>
     <button class="small" onclick="showHistoryInfo(activePane)">🕘 History</button>
@@ -2336,10 +2349,19 @@ function printSinglePaneA4(id){
 }
 
 function exitStudio(){
-  if(confirm("Exit DocFix Pro Studio? Unsaved changes will be cleared.")){
-    deleteImage(1);deleteImage(2);window.close();
+  if(confirm("Exit Pro Studio and go to CSC VLE TOOLS home? Unsaved changes will be cleared.")){
+    try{deleteImage(1);deleteImage(2);}catch(e){}
+    window.location.href="index.html";
   }
 }
+
+function toggleStudioLayout(){
+  const m=document.querySelector('.main');
+  const on=m.classList.toggle('stacked');
+  try{sessionStorage.setItem('studioStacked',on?'1':'0');}catch(e){}
+  window.dispatchEvent(new Event('resize'));
+}
+try{if(sessionStorage.getItem('studioStacked')==='1'){document.addEventListener('DOMContentLoaded',()=>document.querySelector('.main').classList.add('stacked'));}}catch(e){}
 
 function getSourcePoints(id){
   const s=state[id];

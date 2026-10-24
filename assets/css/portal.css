@@ -149,3 +149,23 @@ textarea{min-height:80px;resize:vertical}
 .t-grid3 .t-preview img,.t-grid3 .t-preview canvas{max-width:100%;height:auto}
 @media(max-width:1020px){.t-grid3{grid-template-columns:1fr 1fr}.t-grid3>.opt{grid-column:1/-1}}
 @media(max-width:640px){.t-grid3{grid-template-columns:1fr}}
+
+/* v8: 4-pin adjust panes (PAN & Aadhaar Print) */
+.adj-wrap{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin-bottom:14px}
+.adj-wrap:empty{display:none}
+.adj{border:1px solid var(--line);border-radius:12px;padding:10px;background:#fff}
+.adj-h{font-weight:800;font-size:.9rem;color:var(--brand);margin-bottom:8px}
+.adj-cv{background:repeating-conic-gradient(#e9eef2 0 25%,#fff 0 50%) 0 0/16px 16px;border-radius:8px;text-align:center;padding:6px}
+.adj-cv canvas{max-width:100%;height:auto;touch-action:none;cursor:crosshair;outline:none;display:inline-block}
+.adj-st.ok{color:#0e9f6e;font-weight:700}
+
+/* v8: flashing Pro Studio message on photo / image tools */
+.ps-flash{display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin:0 0 14px;padding:12px 16px;border-radius:14px;color:#fff;background:linear-gradient(120deg,#0a1a4a,#1a3fa6 60%,#e67e00);border:2px solid #ffb300;box-shadow:0 0 0 0 rgba(255,179,0,.6);animation:psFlash 1.8s ease-in-out infinite}
+.ps-flash .ps-t{flex:1 1 280px;min-width:0;line-height:1.5;font-size:.95rem}
+.ps-flash .ps-t b{color:#ffc247}
+.ps-flash .ps-t small{display:block;color:#dbe6ff;margin-top:2px}
+.ps-flash a.ps-go{background:#ffa726;color:#2b1700;font-weight:800;text-decoration:none;border-radius:10px;padding:10px 16px;white-space:nowrap}
+.ps-flash a.ps-go:hover{background:#ffb74d}
+@keyframes psFlash{0%,100%{box-shadow:0 0 0 0 rgba(255,179,0,.55);border-color:#ffb300}50%{box-shadow:0 0 0 8px rgba(255,179,0,0);border-color:#fff}}
+@media(prefers-reduced-motion:reduce){.ps-flash{animation:none}}
+@media print{.ps-flash{display:none!important}}

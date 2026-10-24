@@ -1,0 +1,7 @@
+CSC VLE TOOLS v8
+- Home: hero made compact so hero, search and "Most Used Tools" show on a laptop screen without scrolling.
+- Pro Studio: Home button and clickable logo added; Exit now returns to the CSC VLE TOOLS home page; panes are about double height with page scroll; new Layout button stacks the two panes full width.
+- Resume / Biodata Generator: page headings and language buttons centred.
+- PAN & Aadhaar Print: after upload, each pane (front / back) gets 4 draggable corner pins and a Set (Enter) button that straightens the card to the chosen size; Reset pins button; changing card size re-applies the Set.
+- Flashing Pro Studio message on photo, image, BG remove, crop and photo / ID print tools.
+- Site address updated to csc-vle-tools-desk.github.io/CSC-VLE-TOOLS/ (canonical, og, sitemap, JSON-LD).

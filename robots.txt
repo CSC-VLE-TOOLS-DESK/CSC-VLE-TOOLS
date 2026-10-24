@@ -2,4 +2,4 @@ User-agent: *
 Allow: /
 Disallow: /TEMPLATE_STARTER.html
 
-Sitemap: https://hschouhan7594-crypto.github.io/CSC-VLE-TOOLS/sitemap.xml
+Sitemap: https://csc-vle-tools-desk.github.io/CSC-VLE-TOOLS/sitemap.xml

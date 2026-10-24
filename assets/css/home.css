@@ -131,3 +131,28 @@
 .home-page .faq{max-width:900px}
 @media(prefers-reduced-motion:reduce){.home-page a,.soc-a,.btn-accent{transition:none!important}}
 @media print{.home-page{background:#fff!important}.hs,.cta{box-shadow:none!important}}
+
+/* v8: compact hero so the hero, search and "Most Used Tools" fit on a laptop screen */
+.home-page main{padding-top:14px}
+.hs{border-radius:22px;gap:14px;padding:20px clamp(20px,4vw,44px) 46px;box-shadow:0 16px 36px rgba(14,40,120,.22)}
+.hs-badge{padding:4px 11px;font-size:.72rem}
+.hs h1{font-size:clamp(1.55rem,2.7vw,2.25rem);line-height:1.12;margin:10px 0 8px}
+.hs p.sub{font-size:.98rem;line-height:1.5;max-width:640px;margin:0 0 14px}
+.btn-ghost{padding:9px 16px}
+.hs-cta .btn,.hs-cta a.btn{padding:9px 16px}
+.hs-trust{margin-top:12px;font-size:.82rem;gap:6px 16px}
+.hs-trust span:before{width:17px;height:17px;font-size:.62rem}
+.hs-stack{height:170px;width:min(300px,100%)}
+.hs-card{padding:8px 12px;font-size:.85rem;border-radius:14px}
+.hs-card .ic{width:34px;height:34px;border-radius:10px;font-size:.95rem}
+.hs-card.c1{top:0}.hs-card.c2{top:62px}.hs-card.c3{bottom:0}
+.hs:before{width:380px;height:380px;top:-200px}
+.sband{margin:-26px auto 0}
+.sbox{padding:5px 6px 5px 16px;border-radius:14px}
+.sbox input{padding:9px 4px!important;font-size:1rem}
+.sbox .go{padding:9px 16px}
+.stats-strip{margin:14px 0 0;gap:10px}
+.stat{padding:8px 12px;border-radius:14px}
+.stat b{font-size:1.3rem}.stat span{font-size:.8rem}
+.stats-strip+.sec-t,.sec-t:first-of-type{margin-top:18px}
+@media(max-width:900px){.hs{padding:18px 18px 42px}}

@@ -323,9 +323,62 @@
     root.innerHTML = '<div class="t-grid"><div class="card no-print"><div class="field"><label>Front side image</label><div id="d1"></div></div><div class="field"><label>Back side image (optional)</label><div id="d2"></div></div>' +
       '<div class="field"><label for="sz">Card size</label><select id="sz"><option value="85.6x54">Standard card 85.6 × 54 mm (PAN, ATM, PVC)</option><option value="90x58">Aadhaar print 90 × 58 mm</option><option value="100x65">Large 100 × 65 mm</option></select></div>' +
       '<div class="field"><label for="lay">Layout</label><select id="lay"><option value="side">Front and back side by side</option><option value="stack">Front above back</option></select></div><div class="field"><label for="bd">Border</label><select id="bd"><option value="1">Thin cut line</option><option value="0">No border</option></select></div>' +
-      '<div class="t-actions"><button class="btn" id="pr"><i class="fa-solid fa-print"></i> Print on A4</button><button class="btn alt" id="pdf">Download PDF</button></div><p class="hint">Cards print at exact size. Set the printer scale to 100% (Actual size).</p></div><div class="card"><div class="t-preview" id="pv"></div></div></div>';
-    var $ = function (s) { return root.querySelector(s); }, imgs = [null, null];
-    [1, 2].forEach(function (n) { $('#d' + n).appendChild(CSC.dropzone({ accept: 'image/*', icon: 'fa-id-card', label: n === 1 ? 'Choose front image' : 'Choose back image', onFiles: async function (f) { try { imgs[n - 1] = await CSC.fileToImage(f[0]); build(); } catch (e) { CSC.toast(e.message, true); } } })); });
+      '<div class="t-actions"><button class="btn" id="pr"><i class="fa-solid fa-print"></i> Print on A4</button><button class="btn alt" id="pdf">Download PDF</button></div><p class="hint">Upload an image, drag the 4 pins to the card corners and press Set. Cards print at exact size. Set the printer scale to 100% (Actual size).</p></div><div class="card"><div class="adj-wrap no-print" id="adj"></div><div class="t-preview" id="pv"></div></div></div>';
+    var $ = function (s) { return root.querySelector(s); };
+    var raws = [null, null], adj = [null, null];
+    function cardPx() { var s = $('#sz').value.split('x'); return [Math.round(+s[0] / 25.4 * 300), Math.round(+s[1] / 25.4 * 300)]; }
+    /* Perspective warp: the 4 pins (TL, TR, BR, BL) are stretched to a straight card rectangle */
+    function warp(src, q, cw, ch) {
+      var sw = src.width, sh = src.height, sd = src.getContext('2d').getImageData(0, 0, sw, sh).data;
+      var out = document.createElement('canvas'); out.width = cw; out.height = ch; var ox = out.getContext('2d'), od = ox.createImageData(cw, ch), o = od.data;
+      var x0 = q[0][0], y0 = q[0][1], x1 = q[1][0], y1 = q[1][1], x2 = q[2][0], y2 = q[2][1], x3 = q[3][0], y3 = q[3][1];
+      var dx1 = x1 - x2, dx2 = x3 - x2, dx3 = x0 - x1 + x2 - x3, dy1 = y1 - y2, dy2 = y3 - y2, dy3 = y0 - y1 + y2 - y3, g = 0, h = 0;
+      if (Math.abs(dx3) > 1e-9 || Math.abs(dy3) > 1e-9) { var dn = dx1 * dy2 - dx2 * dy1; g = (dx3 * dy2 - dx2 * dy3) / dn; h = (dx1 * dy3 - dx3 * dy1) / dn; }
+      var a = x1 - x0 + g * x1, b = x3 - x0 + h * x3, c = x0, d = y1 - y0 + g * y1, e = y3 - y0 + h * y3, f = y0;
+      for (var y = 0; y < ch; y++) {
+        var v = (y + 0.5) / ch;
+        for (var x = 0; x < cw; x++) {
+          var u = (x + 0.5) / cw, den = g * u + h * v + 1, X = (a * u + b * v + c) / den - 0.5, Y = (d * u + e * v + f) / den - 0.5;
+          var ix = Math.floor(X), iy = Math.floor(Y), fx = X - ix, fy = Y - iy, xa = Math.min(sw - 1, Math.max(0, ix)), xb = Math.min(sw - 1, Math.max(0, ix + 1)), ya = Math.min(sh - 1, Math.max(0, iy)), yb = Math.min(sh - 1, Math.max(0, iy + 1));
+          var p00 = (ya * sw + xa) * 4, p10 = (ya * sw + xb) * 4, p01 = (yb * sw + xa) * 4, p11 = (yb * sw + xb) * 4, k = (y * cw + x) * 4;
+          for (var t = 0; t < 3; t++) o[k + t] = (sd[p00 + t] * (1 - fx) + sd[p10 + t] * fx) * (1 - fy) + (sd[p01 + t] * (1 - fx) + sd[p11 + t] * fx) * fy;
+          o[k + 3] = 255;
+        }
+      }
+      ox.putImageData(od, 0, 0); return out;
+    }
+    function makeAdjuster(n, im) {
+      var iw = im.naturalWidth || im.width, ih = im.naturalHeight || im.height, sc = Math.min(1, 2400 / Math.max(iw, ih));
+      var src = document.createElement('canvas'); src.width = Math.round(iw * sc); src.height = Math.round(ih * sc); src.getContext('2d').drawImage(im, 0, 0, src.width, src.height);
+      var DW = 420, DH = Math.round(DW * src.height / src.width), k = DW / src.width, mx = src.width * 0.04, my = src.height * 0.04;
+      var q = [[mx, my], [src.width - mx, my], [src.width - mx, src.height - my], [mx, src.height - my]], isSet = false;
+      var box = document.createElement('div'); box.className = 'adj';
+      box.innerHTML = '<div class="adj-h">Pane ' + n + ' &bull; ' + (n === 1 ? 'Front' : 'Back') + ': drag the 4 pins to the corners of the card</div><div class="adj-cv"><canvas width="' + DW + '" height="' + DH + '" tabindex="0" aria-label="Pane ' + n + ' corner pins"></canvas></div>' +
+        '<div class="t-actions"><button type="button" class="btn" data-a="set"><i class="fa-solid fa-check"></i> Set (Enter)</button><button type="button" class="btn alt" data-a="reset">Reset pins</button></div><p class="hint adj-st">Pins not set yet. The full image is used until you press Set.</p>';
+      var cv = box.querySelector('canvas'), cx = cv.getContext('2d'), st = box.querySelector('.adj-st'), drag = -1;
+      function draw() {
+        cx.clearRect(0, 0, DW, DH); cx.drawImage(src, 0, 0, DW, DH); cx.beginPath(); q.forEach(function (p, i) { cx[i ? 'lineTo' : 'moveTo'](p[0] * k, p[1] * k); }); cx.closePath();
+        cx.fillStyle = 'rgba(255,152,0,.14)'; cx.fill(); cx.strokeStyle = '#ff9800'; cx.lineWidth = 2; cx.stroke();
+        q.forEach(function (p, i) { cx.beginPath(); cx.arc(p[0] * k, p[1] * k, 10, 0, 7); cx.fillStyle = '#1a3fa6'; cx.fill(); cx.lineWidth = 2.5; cx.strokeStyle = '#fff'; cx.stroke(); cx.fillStyle = '#fff'; cx.font = 'bold 11px Arial'; cx.textAlign = 'center'; cx.textBaseline = 'middle'; cx.fillText(['TL', 'TR', 'BR', 'BL'][i], p[0] * k, p[1] * k + 0.5); });
+      }
+      function pos(ev) { var r = cv.getBoundingClientRect(); return [(ev.clientX - r.left) * DW / r.width, (ev.clientY - r.top) * DH / r.height]; }
+      cv.addEventListener('pointerdown', function (ev) { var m = pos(ev), best = -1, bd = 1e9; q.forEach(function (p, i) { var dd = Math.hypot(p[0] * k - m[0], p[1] * k - m[1]); if (dd < bd) { bd = dd; best = i; } }); if (bd < 34) { drag = best; cv.setPointerCapture(ev.pointerId); ev.preventDefault(); } });
+      cv.addEventListener('pointermove', function (ev) { if (drag < 0) return; var m = pos(ev); q[drag] = [Math.max(0, Math.min(src.width, m[0] / k)), Math.max(0, Math.min(src.height, m[1] / k))]; draw(); });
+      ['pointerup', 'pointercancel'].forEach(function (t) { cv.addEventListener(t, function () { drag = -1; }); });
+      function apply() { var s = cardPx(); imgs[n - 1] = warp(src, q, s[0], s[1]); isSet = true; st.textContent = 'Set. Pane ' + n + ' is fixed to the card size. Move a pin and press Set again to change it.'; st.className = 'hint adj-st ok'; build(); }
+      box.querySelector('[data-a=set]').onclick = apply;
+      box.querySelector('[data-a=reset]').onclick = function () { q = [[mx, my], [src.width - mx, my], [src.width - mx, src.height - my], [mx, src.height - my]]; isSet = false; imgs[n - 1] = raws[n - 1]; st.textContent = 'Pins reset. The full image is used until you press Set.'; st.className = 'hint adj-st'; draw(); build(); };
+      box.addEventListener('keydown', function (ev) { if (ev.key === 'Enter' && ev.target.tagName !== 'BUTTON') { ev.preventDefault(); apply(); } });
+      draw();
+      return { el: box, isSet: function () { return isSet; }, reapply: function () { if (isSet) apply(); } };
+    }
+    var imgs = [null, null];
+    [1, 2].forEach(function (n) { $('#d' + n).appendChild(CSC.dropzone({ accept: 'image/*', icon: 'fa-id-card', label: n === 1 ? 'Choose front image' : 'Choose back image', onFiles: async function (f) {
+      try {
+        var im = await CSC.fileToImage(f[0]); raws[n - 1] = im; imgs[n - 1] = im; adj[n - 1] = makeAdjuster(n, im);
+        var wrap = $('#adj'); wrap.innerHTML = ''; adj.forEach(function (a) { if (a) wrap.appendChild(a.el); }); build();
+      } catch (e) { CSC.toast(e.message, true); }
+    } })); });
     var page = null;
     function build() {
       if (!imgs[0] && !imgs[1]) return; var d = 300, W = Math.round(210 / 25.4 * d), H = Math.round(297 / 25.4 * d), s = $('#sz').value.split('x'), cw = Math.round(+s[0] / 25.4 * d), ch = Math.round(+s[1] / 25.4 * d);
@@ -334,7 +387,7 @@
       list.forEach(function (im, i) { var px = side ? ox + i * (cw + g) : ox, py = side ? oy : oy + i * (ch + g); x.drawImage(im, px, py, cw, ch); if ($('#bd').value === '1') { x.strokeStyle = '#999'; x.lineWidth = 2; x.setLineDash([10, 8]); x.strokeRect(px, py, cw, ch); x.setLineDash([]); } });
       page = c; c.style.maxWidth = '100%'; $('#pv').innerHTML = ''; $('#pv').appendChild(c);
     }
-    ['sz', 'lay', 'bd'].forEach(function (i) { $('#' + i).onchange = build; });
+    ['sz', 'lay', 'bd'].forEach(function (i) { $('#' + i).onchange = function () { if (i === 'sz') adj.forEach(function (a) { if (a) a.reapply(); }); build(); }; });
     $('#pr').onclick = function () { if (!page) return CSC.toast('Choose an image first', true); CSC.printHTML('<img src="' + page.toDataURL('image/jpeg', 0.95) + '" style="width:210mm;height:297mm;display:block">'); };
     $('#pdf').onclick = async function () {
       if (!page) return CSC.toast('Choose an image first', true); await CSC.loadScript(CSC.libs.pdflib); var doc = await PDFLib.PDFDocument.create(), im = await doc.embedJpg(await (await CSC.canvasBlob(page, 'image/jpeg', 0.95)).arrayBuffer()), pg = doc.addPage([595.28, 841.89]);

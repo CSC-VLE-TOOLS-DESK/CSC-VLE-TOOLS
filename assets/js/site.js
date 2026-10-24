@@ -120,7 +120,7 @@
      ===================================================================== */
   var SITE = {
     name: 'CSC VLE TOOLS',
-    url: 'https://hschouhan7594-crypto.github.io/CSC-VLE-TOOLS/',
+    url: 'https://csc-vle-tools-desk.github.io/CSC-VLE-TOOLS/',
     tagline: 'Free online tools for CSC & VLE centres',
     location: 'Rohtak, Haryana, India',
     hours: 'Mon - Sat, 9:00 AM - 7:00 PM',
@@ -136,7 +136,7 @@
       youtube: '',        // https://youtube.com/@yourchannel
       x: '',              // https://x.com/yourid
       linkedin: '',       // https://linkedin.com/in/yourid
-      github: 'https://github.com/hschouhan7594-crypto'
+      github: 'https://github.com/CSC-VLE-TOOLS-DESK'
     }
   };
   var SOCIAL_META = [
@@ -556,7 +556,19 @@
     var fn = CSC.tools[name];
     if (!root || !fn) { if (root) root.innerHTML = '<p class="err">This tool failed to load. Refresh the page.</p>'; return; }
     try { fn(root); } catch (e) { console.error(e); root.innerHTML = '<p class="err">Something went wrong: ' + esc(e.message) + '</p>'; }
+    proStudioFlash(name, root);
   };
+
+  /* Flashing Pro Studio message on photo, image, BG remove, crop and photo-print tools */
+  var PS_TOOLS = ['photo_resizer', 'sign_resizer', 'thumb_resizer', 'image_compressor', 'image_converter_pro', 'image_crop', 'bg_remover', 'ai_passport_studio', 'passport_photo_sheet', 'name_date_photo', 'photo_name_joiner', 'photo_sign_joiner', 'photo_signature_joiner', 'whatsapp_image_print', 'pan_aadhaar_print', 'pvc_id_print', 'id_card_print', 'multiple_id_card_print', 'jpg_to_pdf'];
+  function proStudioFlash(name, root) {
+    if (PS_TOOLS.indexOf(name) < 0 || !root || !root.parentNode || document.getElementById('ps-flash')) return;
+    var d = document.createElement('div'); d.id = 'ps-flash'; d.className = 'ps-flash no-print'; d.setAttribute('role', 'note');
+    d.innerHTML = '<div class="ps-t"><b>Need BG Remove, Crop, Edit or Print? Use our most popular PRO STUDIO.</b>' +
+      '<small>Photo, Image, BG Remove, Crop, Print 5 / 10 / 15 / 20 / 25 photos and Full A4 sheet (30 photos), all in one workspace. Photo, फोटो, BG Remove, Crop और A4 प्रिंट के लिए Pro Studio इस्तेमाल करें।</small></div>' +
+      '<a class="ps-go" href="pro-studio.html"><i class="fa-solid fa-wand-magic-sparkles" aria-hidden="true"></i> Open Pro Studio</a>';
+    root.parentNode.insertBefore(d, root);
+  }
 
   function init() { chrome(); home(); }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
