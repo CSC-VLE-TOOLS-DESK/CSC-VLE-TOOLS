@@ -1,211 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CSC VLE Tools & Cyber Utility Suite - Master Portal</title>
-    <link rel="icon" type="image/svg+xml" href="favicon.svg">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        /* ==========================================================
-           GLOBAL PORTAL DESIGN SYSTEM & CENTRALIZED CSS
-           ========================================================== */
-        :root {
-            --bg-color: #f4f6f9;
-            --card-bg: #ffffff;
-            --text-main: #1b2430;
-            --text-muted: #5d6b7a;
-            --border-color: #d5dce4;
-            --primary: #1a73e8;
-            --primary-hover: #1557b0;
-            --accent-cyan: #00e5ff;
-            --success: #34a853;
-        }
-
-        @media (prefers-color-scheme: dark) {
-            :root:not([data-theme="light"]) {
-                --bg-color: #10151b;
-                --card-bg: #18202a;
-                --text-main: #e8edf2;
-                --text-muted: #98a6b4;
-                --border-color: #2c3846;
-                --primary: #4f9cf9;
-                --primary-hover: #1a73e8;
-            }
-        }
-
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { background: var(--bg-color); color: var(--text-main); min-height: 100vh; display: flex; flex-direction: column; }
-
-        /* Top Navigation Header */
-        header { background: var(--card-bg); border-bottom: 1px solid var(--border-color); padding: 12px 24px; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
-        .nav-container { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; }
-        .logo-area { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 1.2rem; color: var(--primary); text-decoration: none; }
-        .nav-links { display: flex; gap: 15px; align-items: center; flex-wrap: wrap; }
-        .nav-links a { color: var(--text-main); text-decoration: none; font-size: 0.9rem; font-weight: 600; padding: 6px 12px; border-radius: 6px; transition: background 0.2s; }
-        .nav-links a:hover, .nav-links a.active { background: var(--border-color); color: var(--primary); }
-
-        /* Main Container */
-        main { max-width: 1200px; margin: 20px auto; padding: 0 15px; flex: 1; width: 100%; }
-
-        /* Hero Banner with Background Style Options */
-        .hero-banner { background: linear-gradient(135deg, #1a73e8, #0d47a1); color: #fff; padding: 35px 25px; border-radius: 12px; margin-bottom: 25px; text-align: center; box-shadow: 0 4px 15px rgba(26,115,232,0.3); }
-        .hero-banner h1 { font-size: 2rem; margin-bottom: 8px; }
-        .hero-banner p { font-size: 1rem; opacity: 0.9; }
-
-        /* Section Titles */
-        .section-title { font-size: 1.3rem; font-weight: 700; margin: 25px 0 15px 0; display: flex; align-items: center; gap: 10px; color: var(--primary); border-bottom: 2px solid var(--border-color); padding-bottom: 8px; }
-
-        /* Quick Links Grid (Government & Essential Services) */
-        .quick-links-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 30px; }
-        .quick-link-card { background: var(--card-bg); border: 1px solid var(--border-color); padding: 15px; border-radius: 8px; text-align: center; text-decoration: none; color: var(--text-main); box-shadow: 0 2px 6px rgba(0,0,0,0.04); transition: transform 0.2s, border-color 0.2s; }
-        .quick-link-card:hover { transform: translateY(-3px); border-color: var(--primary); }
-        .quick-link-card i { font-size: 1.8rem; color: var(--primary); margin-bottom: 8px; }
-        .quick-link-card h4 { font-size: 0.95rem; margin-bottom: 4px; }
-        .quick-link-card p { font-size: 0.75rem; color: var(--text-muted); }
-
-        /* Portal Modules Grid */
-        .modules-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
-        .module-card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 10px; padding: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.04); display: flex; flex-direction: column; justify-content: space-between; transition: transform 0.2s; }
-        .module-card:hover { transform: translateY(-3px); border-color: var(--primary); }
-        .module-card h3 { font-size: 1.1rem; color: var(--primary); margin-bottom: 8px; }
-        .module-card p { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 15px; }
-        .module-btn { background: var(--primary); color: #fff; padding: 8px 14px; border-radius: 6px; text-decoration: none; text-align: center; font-weight: 600; font-size: 0.85rem; transition: background 0.2s; display: inline-block; }
-        .module-btn:hover { background: var(--primary-hover); }
-
-        /* Footer */
-        footer { background: var(--card-bg); border-top: 1px solid var(--border-color); text-align: center; padding: 20px; margin-top: 40px; font-size: 0.85rem; color: var(--text-muted); }
-    </style>
-</head>
-<body>
-
-    <!-- Top Navigation Header -->
-    <header>
-        <div class="nav-container">
-            <a href="index.html" class="logo-area">
-                <i class="fa fa-desktop"></i> CSC VLE Portal
-            </a>
-            <nav class="nav-links">
-                <a href="index.html" class="active"><i class="fa fa-home"></i> Home</a>
-                <a href="tools_bill_receipt_generator.html"><i class="fa fa-file-invoice"></i> CCS Bill Print</a>
-                <a href="#tools"><i class="fa fa-tools"></i> CSC Tools</a>
-                <a href="tools_passport_photo_sheet.html"><i class="fa fa-image"></i> Resizer Tools</a>
-                <a href="#videos"><i class="fa fa-video"></i> Videos</a>
-                <a href="#blog"><i class="fa fa-blog"></i> Blog</a>
-                <a href="#contact"><i class="fa fa-envelope"></i> Contact</a>
-                <a href="#about"><i class="fa fa-info-circle"></i> About Us</a>
-            </nav>
-        </div>
-    </header>
-
-    <main>
-        <!-- Hero Banner -->
-        <div class="hero-banner">
-            <h1>CSC VLE Tools & Cyber Cafe Utility Suite</h1>
-            <p>Professional Bilingual Document Generators, Citizen E-Governance Services, & Print Utilities</p>
-        </div>
-
-        <!-- Essential Government & Citizen Services Quick Links -->
-        <div class="section-title"><i class="fa fa-bolt"></i> Main Quick Links (Citizen & VLE Services)</div>
-        <div class="quick-links-grid">
-            <a href="https://uidai.gov.in" target="_blank" class="quick-link-card">
-                <i class="fa fa-id-card"></i>
-                <h4>Aadhaar Services</h4>
-                <p>UIDAI Download & Update</p>
-            </a>
-            <a href="https://www.onlineservices.nsdl.com" target="_blank" class="quick-link-card">
-                <i class="fa fa-address-card"></i>
-                <h4>PAN Card Services</h4>
-                <p>N是你 / UTIITSL Portal</p>
-            </a>
-            <a href="https://beneficiary.nha.gov.in" target="_blank" class="quick-link-card">
-                <i class="fa fa-shield-alt"></i>
-                <h4>Ayushman Card</h4>
-                <p>Eligibility & Balance Check</p>
-            </a>
-            <a href="https://sarathi.parivahan.gov.in" target="_blank" class="quick-link-card">
-                <i class="fa fa-car"></i>
-                <h4>Driving Licence</h4>
-                <p>Parivahan DL Download</p>
-            </a>
-            <a href="https://www.incometax.gov.in" target="_blank" class="quick-link-card">
-                <i class="fa fa-rupee-sign"></i>
-                <h4>Income Tax Filing</h4>
-                <p>e-Filing portal</p>
-            </a>
-            <a href="https://uhbvn.org.in" target="_blank" class="quick-link-card">
-                <i class="fa fa-bolt"></i>
-                <h4>Electricity Bill</h4>
-                <p>UHBVN / DHBVN Payment</p>
-            </a>
-        </div>
-
-        <!-- Portal Modules Section -->
-        <div class="section-title" id="tools"><i class="fa fa-layer-group"></i> Portal Utility Modules</div>
-        <div class="modules-grid">
-            <div class="module-card">
-                <div>
-                    <h3>Professional Resume Builder</h3>
-                    <p>Create bilingual A4 resumes with custom border styles and live preview.</p>
-                </div>
-                <a href="tools_resume_builder.html" class="module-btn">Launch Tool</a>
-            </div>
-            <div class="module-card">
-                <div>
-                    <h3>Marriage Biodata Generator</h3>
-                    <p>Elegant marriage biodatas with family details, horoscopes, and partner preferences.</p>
-                </div>
-                <a href="tools_biodata_maker.html" class="module-btn">Launch Tool</a>
-            </div>
-            <div class="module-card">
-                <div>
-                    <h3>Rent & Agreement Generator</h3>
-                    <p>Residential and commercial lease agreement formats with instant print controls.</p>
-                </div>
-                <a href="tools_agreement_format_generator.html" class="module-btn">Launch Tool</a>
-            </div>
-            <div class="module-card">
-                <div>
-                    <h3>Salary Slip Generator</h3>
-                    <p>Monthly corporate salary slips with earnings, deductions, and net pay calculations.</p>
-                </div>
-                <a href="tools_salary_slip_generator.html" class="module-btn">Launch Tool</a>
-            </div>
-            <div class="module-card">
-                <div>
-                    <h3>Utility Bill Payment Receipt</h3>
-                    <p>Dual half-A4 bill payment receipts for customer and office records.</p>
-                </div>
-                <a href="tools_bill_receipt_generator.html" class="module-btn">Launch Tool</a>
-            </div>
-            <div class="module-card">
-                <div>
-                    <h3>Passport Photo Sheet</h3>
-                    <p>Generate multi-photo stamp and passport sheets instantly on A4 paper.</p>
-                </div>
-                <a href="tools_passport_photo_sheet.html" class="module-btn">Launch Tool</a>
-            </div>
-            <div class="module-card">
-                <div>
-                    <h3>PAN & ID Card Print Utility</h3>
-                    <p>Align and scale dual-side PVC card scans with exact dimensions.</p>
-                </div>
-                <a href="tools_pan_aadhaar_print.html" class="module-btn">Launch Tool</a>
-            </div>
-            <div class="module-card">
-                <div>
-                    <h3>Age Calculator & Utilities</h3>
-                    <p>Precise age computation for exams with a quick cyber cafe utility dock.</p>
-                </div>
-                <a href="tools_age_calculator.html" class="module-btn">Launch Tool</a>
-            </div>
-        </div>
-    </main>
-
-    <!-- Footer -->
-    <footer>
-        <p>&copy; 2026 CSC VLE Tools & Cyber Utility Suite. Designed for High Performance & Speed.</p>
-    </footer>
-
-</body>
-</html>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SevaSphere — Free Online Tools for Documents, Photos &amp; PDFs</title>
+<meta name="description" content="SevaSphere brings practical online tools together: photo and signature preparation, ID card printing, PDF utilities, document formats, billing and calculators.">
+<meta name="robots" content="index,follow,max-image-preview:large">
+<meta name="theme-color" content="#0b5c49">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="SevaSphere">
+<meta property="og:title" content="SevaSphere — Your Digital Work, in One Place">
+<meta property="og:description" content="Prepare photos, print layouts, documents, PDFs, bills and calculations with SevaSphere's practical online tools.">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="SevaSphere — Your Digital Work, in One Place">
+<meta name="twitter:description" content="Practical online tools for photos, documents, PDFs, printing and everyday calculations.">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"><link rel="stylesheet" href="assets/css/portal.css"><link rel="stylesheet" href="assets/css/csc-system.css"><link rel="stylesheet" href="assets/css/home.css">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"SevaSphere","description":"Practical online tools for photos, documents, PDFs, printing, billing and calculations."}</script>
+</head><body class="home-page"><a class="skip-link" href="#main">Skip to content</a><header id="site-header"></header>
+<main id="main">
+<section class="hero hero-card"><div class="hero-inner"><span class="eyebrow"><i class="fa-solid fa-sparkles"></i> THE SEVASPHERE DIGITAL WORKSPACE</span><h1>Less searching.<br>More work done.</h1><p>SevaSphere brings everyday digital work together — photo preparation, print layouts, documents, billing and useful calculators in one organised workspace.</p><label class="search" for="tool-search"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><input type="search" id="tool-search" aria-label="Search tools by name or task" placeholder="Try “PVC card”, “photo 20 KB” or “rent agreement”…" autocomplete="off"></label><div class="stats"><span><b><span id="tool-count">0</span> tools & shortcuts</b></span><span>Designed for desktop and mobile</span><span>Practical browser-based tools</span></div></div></section>
+<section class="quick-start" aria-label="Popular work areas"><a class="quick-tile" href="#tools" data-pick="photo"><span class="quick-icon"><i class="fa-solid fa-camera"></i></span><span><strong>Photo & Signature</strong><small>Resize · crop · join</small></span></a><a class="quick-tile" href="#tools" data-pick="id"><span class="quick-icon"><i class="fa-solid fa-id-card"></i></span><span><strong>Cards & Printing</strong><small>PVC · ID · A4 sheets</small></span></a><a class="quick-tile" href="#tools" data-pick="govt"><span class="quick-icon"><i class="fa-solid fa-file-signature"></i></span><span><strong>Applications</strong><small>Formats · agreements</small></span></a><a class="quick-tile" href="#tools" data-pick="bill"><span class="quick-icon"><i class="fa-solid fa-receipt"></i></span><span><strong>Shop & Billing</strong><small>Receipts · invoices</small></span></a></section>
+<section class="ledger-banner" aria-label="Shop Ledger app"><div><span class="tag"><i class="fa-solid fa-star"></i> BUILT FOR DAILY COUNTER WORK</span><h2>Shop Ledger, without the paperwork pile.</h2><p>Keep daily sales, udhaar and customer accounts in one simple place. A dedicated shortcut for the work that happens every day.</p><a class="btn" id="ledger-btn" href="#" hidden target="_blank" rel="noopener"><i class="fa-solid fa-book"></i> Open Shop Ledger</a></div><img src="assets/img/shop-ledger.svg" alt="Illustration of a digital shop ledger dashboard" width="360" height="260" loading="lazy"></section>
+<div class="portal-workspace"><div class="main-column"><h2 class="section-title" id="tools"><i class="fa-solid fa-grid-2"></i> Your tool library</h2><div class="cats" id="cats" role="group" aria-label="Filter by category"></div><div class="tool-list" id="tool-list" aria-live="polite"></div><h2 class="section-title" id="links" style="margin-top:38px"><i class="fa-solid fa-bolt"></i> Official portal shortcuts</h2><p style="color:var(--muted);margin-top:-7px">Quick access to frequently used external services. Check each portal before submitting official information.</p><div class="quick-grid" id="quick-links"></div></div><aside class="categories-sidebar" aria-label="Tool categories"><h3><i class="fa-solid fa-layer-group"></i> Browse by work</h3><ul class="category-list" id="category-list"></ul><div style="margin-top:18px;padding:14px;background:#eff8f3;border-radius:12px"><strong style="display:block;color:#155640;margin-bottom:5px">Made for real counter work</strong><span style="font-size:.82rem;color:#5c756b;line-height:1.5">Find a tool quickly, prepare the file, then print or download.</span></div></aside></div>
+</main><footer id="site-footer"></footer><script src="assets/js/site.js" defer></script><script defer>
+document.addEventListener('click',function(e){var a=e.target.closest('[data-pick]');if(!a)return;var id=a.getAttribute('data-pick');var side=document.querySelectorAll('#category-list a');side.forEach(function(x){if((x.textContent||'').toLowerCase().indexOf(({photo:'photo',id:'id card',govt:'govt',bill:'receipt'})[id]||id)>-1)x.click()});});
+</script></body></html>
