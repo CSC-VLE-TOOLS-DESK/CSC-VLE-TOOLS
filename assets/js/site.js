@@ -633,7 +633,7 @@
   /* ---------- 3D hover tilt for cards (mouse only; off when the visitor prefers reduced motion) ---------- */
   function tilt() {
     if (!window.matchMedia || !matchMedia('(hover:hover)').matches || matchMedia('(prefers-reduced-motion:reduce)').matches) return;
-    var SEL = '.qtile,.tool-card,.quick-card,.cat-item';
+    var SEL = '.qtile,.tool-card,.quick-card,.cat-item,.du-card,.topics a';
     function reset(el) { el.style.removeProperty('--rx'); el.style.removeProperty('--ry'); }
     document.addEventListener('mousemove', function (e) {
       var el = e.target.closest && e.target.closest(SEL); if (!el) return;
