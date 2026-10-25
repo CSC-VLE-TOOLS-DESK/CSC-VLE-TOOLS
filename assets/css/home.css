@@ -271,3 +271,21 @@
 .workspace{grid-template-columns:minmax(0,1fr) 296px}
 @media(max-width:1100px){.workspace{grid-template-columns:minmax(0,1fr) 262px}}
 @media(max-width:780px){.workspace{grid-template-columns:1fr}}
+
+/* Daily Use Apps row */
+.du{margin:22px 0 62px;padding:22px clamp(14px,3vw,28px);border-radius:24px;background:linear-gradient(135deg,#0f172a,#1e1b4b 60%,#312e81);box-shadow:0 18px 40px rgba(20,20,80,.28);text-align:center;scroll-margin-top:80px}
+.du-t{color:#fff;font-size:clamp(1.25rem,2.6vw,1.7rem);margin:0 0 4px;display:flex;gap:10px;align-items:center;justify-content:center}
+.du-t i{color:#fbbf24}.du-s{color:#cbd5e1;margin:0 0 18px;font-size:.95rem}
+.du-row{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+.du-card{display:flex;flex-direction:column;align-items:center;gap:5px;padding:20px 10px 16px;border-radius:18px;color:#fff;text-decoration:none;box-shadow:0 10px 24px rgba(0,0,0,.35);transition:transform .2s,box-shadow .2s;position:relative;overflow:hidden}
+.du-card::after{content:"";position:absolute;inset:auto -30% -55% auto;width:70%;aspect-ratio:1;border-radius:50%;background:rgba(255,255,255,.14)}
+.du-card:hover{transform:translateY(-6px) scale(1.03);box-shadow:0 16px 32px rgba(0,0,0,.5)}
+.du-card:focus-visible{outline:3px solid #fff;outline-offset:3px}
+.du-i{display:grid;place-items:center;width:58px;height:58px;border-radius:16px;background:rgba(255,255,255,.22);font-size:1.6rem;margin-bottom:4px}
+.du-card strong{font-size:1.1rem}.du-card small{font-size:.8rem;opacity:.93}
+.du-card em{font-style:normal;margin-top:8px;background:rgba(255,255,255,.24);padding:5px 14px;border-radius:999px;font-size:.78rem;font-weight:800}
+.du1{background:linear-gradient(135deg,#06b6d4,#2563eb)}.du2{background:linear-gradient(135deg,#10b981,#047857)}
+.du3{background:linear-gradient(135deg,#f59e0b,#ea580c)}.du4{background:linear-gradient(135deg,#a855f7,#db2777)}
+@media(max-width:760px){.du-row{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(prefers-reduced-motion:reduce){.du-card{transition:none}.du-card:hover{transform:none}}
+html{scroll-behavior:smooth}

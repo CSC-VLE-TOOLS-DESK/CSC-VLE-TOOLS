@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Stock Market Ledger — CSC VLE TOOLS</title>
+<style>
+:root{--bg:#0b0f19;--p:#131c2e;--b:#1e293b;--t:#f1f5f9;--m:#8294ad;--g:#10b981;--r:#ef4444;--bl:#2563eb}
+*{box-sizing:border-box;margin:0;padding:0;font-family:'Segoe UI',system-ui,sans-serif}
+body{background:var(--bg);color:var(--t);font-size:13px;padding-bottom:40px}
+header{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;padding:10px 14px;background:#0f172a;border-bottom:1px solid var(--b);position:sticky;top:0;z-index:50}
+h1{font-size:17px}h1 span{color:var(--g);font-size:12px;border:1px solid #10b98155;padding:2px 7px;border-radius:6px;margin-left:6px}
+button,select,input{background:#1e293b;color:var(--t);border:1px solid #334155;border-radius:6px;padding:6px 9px;font-size:12px}
+button{cursor:pointer;font-weight:600}button:hover{background:#334155}
+.pri{background:var(--g);color:#022c22;border-color:var(--g)}.blue{background:var(--bl);border-color:#3b82f6}.dng{background:#ef444426;color:#fca5a5}
+a.home{background:var(--bl);color:#fff;text-decoration:none;padding:6px 11px;border-radius:7px;font-weight:700}
+.wrap{padding:12px 14px;max-width:1500px;margin:auto}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;margin-bottom:12px}
+.card{background:var(--p);border:1px solid var(--b);border-radius:10px;padding:10px}
+.card small{color:var(--m);display:block;font-size:10px;text-transform:uppercase;letter-spacing:.5px}.card b{font-size:18px}
+.card input{width:100%;font-size:16px;font-weight:700;margin-top:2px}
+.pos{color:#34d399}.neg{color:#f87171}
+.box{background:var(--p);border:1px solid var(--b);border-radius:10px;padding:10px;margin-bottom:12px}
+.box h2{font-size:13px;margin-bottom:8px;color:#cbd5e1}
+.form{display:grid;grid-template-columns:repeat(auto-fit,minmax(125px,1fr));gap:8px}
+.form label{display:flex;flex-direction:column;gap:3px;color:var(--m);font-size:10px;font-weight:600}
+.form input,.form select{width:100%;color:#fff}
+.sw{position:relative}.dd{position:absolute;left:0;right:0;top:100%;background:#0f172a;border:1px solid #334155;border-radius:6px;max-height:230px;overflow:auto;z-index:40;display:none}
+.dd div{padding:6px 9px;cursor:pointer;border-bottom:1px solid #1e293b}.dd div:hover{background:#1e293b}.dd small{color:var(--m)}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;align-items:center}.tabs button.on{background:var(--g);color:#022c22}
+.tw{overflow:auto;max-height:420px;border:1px solid var(--b);border-radius:8px}
+table{border-collapse:collapse;width:100%;min-width:900px}th,td{padding:6px 8px;border-bottom:1px solid var(--b);text-align:right;white-space:nowrap}
+th{position:sticky;top:0;background:#16213a;color:#a5b4cf;font-size:11px}td:first-child,th:first-child,td.l,th.l{text-align:left}
+tr:hover td{background:#0f1a2e}.tag{padding:1px 6px;border-radius:5px;font-size:10px;font-weight:700}.B{background:#10b98126;color:#34d399}.S{background:#ef444426;color:#f87171}
+.note{color:var(--m);font-size:11px;margin-top:6px}
+.modal{position:fixed;inset:0;background:#000a;display:none;align-items:center;justify-content:center;z-index:100;padding:10px}.modal.on{display:flex}
+.mc{background:var(--p);border:1px solid #334155;border-radius:12px;padding:14px;max-width:760px;width:100%;max-height:90vh;overflow:auto}
+.mc table{min-width:0}.mc td input{width:84px}
+.printhead{display:none}
+@media print{header,.noprint,.form,.modal{display:none!important}body{background:#fff;color:#000}.card,.box{background:#fff;border-color:#999;color:#000}th{background:#eee;color:#000;position:static}td,th{border-color:#bbb;color:#000}.tw{max-height:none;overflow:visible}.printhead{display:block;margin-bottom:8px}.pos{color:#060}.neg{color:#b00}.card input{border:0;background:#fff;color:#000}}
+</style></head><body>
+<header><div style="display:flex;gap:8px;align-items:center"><a class="home" href="index.html">🏠 Home</a><h1>📈 Stock Market Ledger<span>F&amp;O • Stocks</span></h1></div>
+<div style="display:flex;gap:6px;flex-wrap:wrap"><button onclick="openCols()">🧩 Columns</button><button onclick="openSet()">⚙️ Charges &amp; Lots</button><button onclick="exportCSV()">⬇ CSV</button><button onclick="backup()">💾 Backup</button><button onclick="document.getElementById('rf').click()">📂 Restore</button><input id="rf" type="file" accept=".json" hidden onchange="restore(event)"><button class="pri" onclick="window.print()">🖨 Print</button></div></header>
+<div class="wrap">
+<div class="printhead"><h2>Stock Market Ledger</h2><div id="phead"></div></div>
+<div class="cards" id="cards"></div>
+
+<div class="box noprint"><h2 id="ftitle">➕ New Trade</h2><div class="form" id="form"></div>
+<div style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap"><button class="pri" onclick="saveTrade()">💾 Save Trade</button><button onclick="resetForm()">Clear</button><span class="note" id="fnote"></span></div></div>
+
+<div class="box"><div class="tabs noprint"><b>Records:</b>
+<button data-p="day" class="on" onclick="setP('day')">Daily</button><button data-p="week" onclick="setP('week')">Weekly</button><button data-p="month" onclick="setP('month')">Monthly</button><button data-p="year" onclick="setP('year')">Yearly</button>
+<span style="margin-left:10px">From <input type="date" id="ff" onchange="render()"> To <input type="date" id="ft" onchange="render()"></span>
+<select id="fs" onchange="render()"><option value="">All segments</option><option>Stock</option><option>Option</option><option>Future</option></select>
+<button onclick="clr()">Reset filter</button></div>
+<div class="tw"><table id="sum"></table></div></div>
+
+<div class="box"><h2>📒 Trade Book</h2><div class="tw"><table id="tb"></table></div>
+<div class="note">P&amp;L is matched First-In-First-Out per instrument (buy→sell or sell→buy) and booked on the closing trade's date. Charges are counted on each trade's own date.</div></div>
+<div class="box"><h2>📂 Open Positions</h2><div class="tw" style="max-height:200px"><table id="op"></table></div></div>
+<div class="note noprint">Data is saved only in this browser (localStorage). Use 💾 Backup regularly. Tax/charge rates are editable in ⚙️ — verify with your broker contract note.</div>
+</div>
+
+<div class="modal" id="mcols"><div class="mc"><h2>🧩 Columns</h2><div id="colbody"></div>
+<div style="margin-top:10px;display:flex;gap:6px;flex-wrap:wrap"><input id="ncn" placeholder="New column name (e.g. Strategy)"><select id="nct"><option value="text">Text</option><option value="number">Number</option><option value="date">Date</option></select><button class="pri" onclick="addCol()">＋ Add column</button><button onclick="closeM()">Close</button></div></div></div>
+<div class="modal" id="mset"><div class="mc"><h2>⚙️ Brokerage, Govt charges &amp; Lot sizes</h2><div id="setbody"></div>
+<div style="margin-top:10px;display:flex;gap:6px"><button class="pri" onclick="saveSet()">Save</button><button onclick="defSet()">Load defaults</button><button onclick="closeM()">Close</button></div></div></div>
+
+<script>
+"use strict";
+const KEY='csc_stock_ledger_v1',$=id=>document.getElementById(id);
+const INR=n=>(n<0?'-':'')+'₹'+Math.abs(n).toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2});
+const DEF={
+ // pct values are in % of turnover. brok: flat ₹ per order. stt/stamp side: B,S or BS
+ chg:{
+  'Stock-Delivery':{brok:0,stt:0.1,sttSide:'BS',txn:0.00297,sebi:0.0001,stamp:0.015,dp:15.34},
+  'Stock-Intraday':{brok:20,stt:0.025,sttSide:'S',txn:0.00297,sebi:0.0001,stamp:0.003,dp:0},
+  'Future':{brok:20,stt:0.05,sttSide:'S',txn:0.00183,sebi:0.0001,stamp:0.002,dp:0},
+  'Option':{brok:20,stt:0.15,sttSide:'S',txn:0.03553,sebi:0.0001,stamp:0.003,dp:0}},
+ gst:18,lots:{'Nifty 50':65,'Bank Nifty':30,'Sensex':20,'Stock':1}};
+let D=load();
+function load(){try{const d=JSON.parse(localStorage.getItem(KEY));if(d&&d.trades)return d}catch(e){}
+ return{principal:100000,trades:[],cfg:JSON.parse(JSON.stringify(DEF)),cols:[],hidden:[],seq:1}}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(D))}catch(e){alert('Could not save: '+e.message)}}
+const IDX=['Nifty 50','Bank Nifty','Sensex','Stock'];
+const BUILTIN=[['date','Date'],['seg','Segment'],['inst','Instrument'],['side','Buy/Sell'],['qty','Qty'],['price','Price'],['turn','Turnover'],['brok','Broker chg'],['govt','Govt chg'],['gross','Gross P&L'],['net','Net P&L'],['note','Notes']];
+const SEED=['RELIANCE','TCS','HDFCBANK','ICICIBANK','INFY','SBIN','BHARTIARTL','ITC','LT','KOTAKBANK','AXISBANK','HINDUNILVR','BAJFINANCE','MARUTI','SUNPHARMA','TATAMOTORS','TATASTEEL','TITAN','TECHM','TATAPOWER','TATACONSUM','TATAELXSI','TATACOMM','TRENT','TVSMOTOR','TORNTPHARM','TCI','ADANIENT','ADANIPORTS','ADANIPOWER','WIPRO','HCLTECH','NTPC','POWERGRID','ONGC','COALINDIA','JSWSTEEL','HINDALCO','VEDL','M&M','ULTRACEMCO','ASIANPAINT','NESTLEIND','BRITANNIA','DRREDDY','CIPLA','DIVISLAB','APOLLOHOSP','EICHERMOT','HEROMOTOCO','BAJAJ-AUTO','BAJAJFINSV','INDUSINDBK','BANKBARODA','PNB','CANBK','IDFCFIRSTB','YESBANK','ZOMATO','PAYTM','IRCTC','IRFC','RVNL','HAL','BEL','BHEL','SAIL','NMDC','GAIL','IOC','BPCL','HPCL','DLF','LODHA','GODREJCP','DABUR','PIDILITIND','HAVELLS','SIEMENS','ABB','MPHASIS','LTIM','PERSISTENT','COFORGE','DMART','NYKAA','JIOFIN','SBILIFE','HDFCLIFE','ICICIPRULI','LICI','MUTHOOTFIN','CHOLAFIN','SHRIRAMFIN','PFC','RECLTD','SUZLON','IDEA','NHPC','OIL','VBL','UPL','SRF','TIINDIA','POLYCAB','DIXON','INDIGO','JUBLFOOD','LUPIN','AUROPHARMA','BIOCON'].map(s=>[s,s,'NSE']);
+let ed=null,manual={b:false,g:false};
+
+/* ---------- form ---------- */
+function today(){const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
+function buildForm(){
+ const cc=D.cols.map(c=>`<label>${esc(c.name)}<input id="x_${c.id}" type="${c.type}"></label>`).join('');
+ $('form').innerHTML=`
+ <label>Date<input type="date" id="f_date" value="${today()}"></label>
+ <label>Segment<select id="f_seg" onchange="segCh()"><option>Stock</option><option>Option</option><option>Future</option></select></label>
+ <label>Index / Stock<select id="f_und" onchange="segCh()">${IDX.map(i=>`<option>${i}</option>`).join('')}</select></label>
+ <label class="sw" id="w_sym">Stock name (type to search)<input id="f_sym" autocomplete="off" placeholder="Type T, TA, TATA…" oninput="srch()" onfocus="srch()"><div class="dd" id="dd"></div></label>
+ <label>Buy / Sell<select id="f_side" onchange="calc()"><option value="B">Buy</option><option value="S">Sell</option></select></label>
+ <label id="w_prod">Product<select id="f_prod" onchange="calc()"><option>Intraday</option><option>Delivery</option></select></label>
+ <label class="o">Strike<input type="number" id="f_strike" step="any"></label>
+ <label class="o">CE / PE<select id="f_ot"><option>CE</option><option>PE</option></select></label>
+ <label class="o f">Expiry<input type="date" id="f_exp"></label>
+ <label id="w_lots" style="display:none">Lots<input type="number" id="f_lots" min="0" step="1" oninput="lotsCh()"></label>
+ <label>Qty (shares / units)<input type="number" id="f_qty" min="0" step="1" oninput="calc()"></label>
+ <label>Price ₹<input type="number" id="f_price" min="0" step="any" oninput="calc()"></label>
+ <label>Broker charge ₹<input type="number" id="f_brok" step="any" oninput="manual.b=true;"></label>
+ <label>Govt charge ₹<input type="number" id="f_govt" step="any" oninput="manual.g=true;"></label>
+ <label>Notes<input id="f_note"></label>${cc}`;
+ segCh();
+}
+function segCh(){
+ const seg=$('f_seg').value,und=$('f_und');
+ if(seg==='Stock'){und.value='Stock';und.disabled=true}else und.disabled=false;
+ $('w_sym').style.display=und.value==='Stock'?'':'none';
+ $('w_prod').style.display=seg==='Stock'?'':'none';
+ document.querySelectorAll('.o').forEach(e=>e.style.display=seg==='Option'?'':'none');
+ document.querySelectorAll('.f').forEach(e=>e.style.display=seg!=='Stock'?'':'none');
+ const lot=lotOf();$('w_lots').style.display=(seg!=='Stock'&&lot>1)?'':'none';
+ $('fnote').textContent=(seg!=='Stock'&&lot>1)?`Lot size ${lot} (change in ⚙️). Enter Lots or Qty.`:'';
+ calc();
+}
+function lotOf(){const seg=$('f_seg').value,u=$('f_und').value;if(seg==='Stock')return 1;return D.cfg.lots[u==='Stock'?'Stock':u]||1}
+function lotsCh(){const l=+$('f_lots').value||0;$('f_qty').value=l?l*lotOf():'';calc()}
+function chgKey(seg,prod){return seg==='Stock'?'Stock-'+prod:seg}
+function charges(seg,prod,side,qty,price){
+ const c=D.cfg.chg[chgKey(seg,prod)];if(!c)return{b:0,g:0};
+ const t=qty*price,gst=D.cfg.gst/100;
+ const stt=c.sttSide.includes(side)?t*c.stt/100:0,txn=t*c.txn/100,sebi=t*c.sebi/100;
+ const stamp=side==='B'?t*c.stamp/100:0,dp=(seg==='Stock'&&prod==='Delivery'&&side==='S')?c.dp:0;
+ const b=c.brok;const g=stt+txn+sebi+stamp+dp+(b+txn+sebi)*gst;
+ return{b:+b.toFixed(2),g:+g.toFixed(2)};
+}
+function calc(){
+ const q=+$('f_qty').value||0,p=+$('f_price').value||0;if(!q||!p)return;
+ const c=charges($('f_seg').value,$('f_prod').value,$('f_side').value,q,p);
+ if(!manual.b)$('f_brok').value=c.b;if(!manual.g)$('f_govt').value=c.g;
+}
+['f_qty','f_price'].forEach(()=>{});
+function srch(){
+ const q=$('f_sym').value.trim().toUpperCase(),dd=$('dd');
+ if(!q){dd.style.display='none';return}
+ const loc=SEED.filter(s=>s[0].startsWith(q)).slice(0,8);show(loc,'offline list');
+ clearTimeout(srch.t);srch.t=setTimeout(async()=>{
+  try{const r=await fetch('https://query1.finance.yahoo.com/v1/finance/search?q='+encodeURIComponent(q)+'&quotesCount=12&newsCount=0',{cache:'no-store'});
+   const j=await r.json();const on=(j.quotes||[]).filter(x=>/\.(NS|BO)$/.test(x.symbol||'')).map(x=>[x.symbol.replace(/\.(NS|BO)$/,''),x.shortname||x.longname||'',x.symbol.endsWith('.NS')?'NSE':'BSE']);
+   const seen=new Set(),all=[...on,...loc].filter(x=>{const k=x[0]+x[2];if(seen.has(k))return false;seen.add(k);return true}).slice(0,12);
+   if($('f_sym').value.trim().toUpperCase()===q)show(all,'online')}catch(e){}},250);
+}
+function show(list,src){const dd=$('dd');
+ dd.innerHTML=list.length?list.map(s=>`<div onclick="pick('${s[0].replace(/'/g,"\\'")}')"><b>${esc(s[0])}</b> <small>${esc(s[1])} • ${s[2]}</small></div>`).join('')+`<div style="cursor:default"><small>source: ${src}</small></div>`:'<div><small>No match — you can type any symbol manually</small></div>';
+ dd.style.display='block'}
+function pick(s){$('f_sym').value=s;$('dd').style.display='none'}
+document.addEventListener('click',e=>{if(!e.target.closest('.sw'))$('dd').style.display='none'});
+
+function saveTrade(){
+ const seg=$('f_seg').value,und=$('f_und').value,sym=$('f_sym').value.trim().toUpperCase();
+ const qty=+$('f_qty').value,price=+$('f_price').value;
+ if(!$('f_date').value||!(qty>0)||!(price>=0)||$('f_price').value===''){alert('Please enter Date, Qty and Price.');return}
+ if(und==='Stock'&&!sym){alert('Please type / pick the stock name.');return}
+ const name=und==='Stock'?sym:und;
+ if(seg==='Option'&&!$('f_strike').value){alert('Enter option strike.');return}
+ const t={id:ed||D.seq++,date:$('f_date').value,seg,und:name,side:$('f_side').value,prod:seg==='Stock'?$('f_prod').value:'',
+  strike:seg==='Option'?+$('f_strike').value:null,ot:seg==='Option'?$('f_ot').value:'',exp:seg!=='Stock'?$('f_exp').value:'',
+  qty,price,brok:+$('f_brok').value||0,govt:+$('f_govt').value||0,note:$('f_note').value,x:{}};
+ D.cols.forEach(c=>t.x[c.id]=$('x_'+c.id).value);
+ if(ed){const i=D.trades.findIndex(z=>z.id===ed);D.trades[i]=t}else D.trades.push(t);
+ save();const keep={seg,und:$('f_und').value,d:t.date};resetForm();$('f_seg').value=keep.seg;$('f_und').value=keep.und;$('f_date').value=keep.d;segCh();render();
+}
+function resetForm(){ed=null;manual={b:false,g:false};$('ftitle').textContent='➕ New Trade';buildForm()}
+function editT(id){const t=D.trades.find(z=>z.id===id);if(!t)return;ed=id;manual={b:true,g:true};$('ftitle').textContent='✏️ Edit Trade #'+id;
+ $('f_date').value=t.date;$('f_seg').value=t.seg;$('f_und').value=t.seg==='Stock'?'Stock':t.und;segCh();$('f_sym').value=t.seg==='Stock'||!IDX.includes(t.und)?t.und:'';
+ $('f_side').value=t.side;if(t.prod)$('f_prod').value=t.prod;if(t.strike!=null)$('f_strike').value=t.strike;if(t.ot)$('f_ot').value=t.ot;if(t.exp)$('f_exp').value=t.exp;
+ $('f_qty').value=t.qty;$('f_price').value=t.price;$('f_brok').value=t.brok;$('f_govt').value=t.govt;$('f_note').value=t.note||'';
+ D.cols.forEach(c=>{const e=$('x_'+c.id);if(e)e.value=t.x?.[c.id]||''});window.scrollTo({top:0,behavior:'smooth'})}
+function delT(id){if(confirm('Delete this trade?')){D.trades=D.trades.filter(z=>z.id!==id);save();render()}}
+
+/* ---------- engine ---------- */
+const keyOf=t=>[t.seg,t.und,t.strike??'',t.ot,t.exp,t.prod&&t.seg==='Stock'?'':''].join('|');
+function compute(){
+ const ts=D.trades.slice().sort((a,b)=>a.date<b.date?-1:a.date>b.date?1:a.id-b.id),open={};
+ ts.forEach(t=>{t.gross=0;const k=keyOf(t);let L=open[k]=open[k]||[];let rem=t.qty;
+  while(rem>0&&L.length&&L[0].side!==t.side){const l=L[0],m=Math.min(rem,l.qty);
+   t.gross+=(l.side==='B'?(t.price-l.price):(l.price-t.price))*m;l.qty-=m;rem-=m;if(l.qty<=0)L.shift()}
+  if(rem>0)L.push({side:t.side,qty:rem,price:t.price,t});
+  t.turn=t.qty*t.price;t.ch=t.brok+t.govt;t.net=t.gross-t.ch});
+ return{ts,open};
+}
+function inRange(t){const f=$('ff').value,e=$('ft').value,s=$('fs').value;return(!f||t.date>=f)&&(!e||t.date<=e)&&(!s||t.seg===s)}
+function grp(date,p){if(p==='day')return date;if(p==='month')return date.slice(0,7);if(p==='year')return date.slice(0,4);
+ const d=new Date(date+'T00:00:00');const w=(d.getDay()+6)%7;d.setDate(d.getDate()-w);
+ return 'Wk '+d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+let P='day';function setP(p){P=p;document.querySelectorAll('[data-p]').forEach(b=>b.classList.toggle('on',b.dataset.p===p));render()}
+function clr(){$('ff').value='';$('ft').value='';$('fs').value='';render()}
+const cl=n=>n>0?'pos':n<0?'neg':'';
+
+function render(){
+ const{ts,open}=compute(),vis=ts.filter(inRange);
+ // cards
+ const gross=vis.reduce((a,t)=>a+t.gross,0),ch=vis.reduce((a,t)=>a+t.ch,0),net=gross-ch;
+ const allNet=ts.reduce((a,t)=>a+t.net,0);
+ const closing=ts.filter(t=>t.gross!==0||false);const wins=ts.filter(t=>t.gross>0).length,loss=ts.filter(t=>t.gross<0).length;
+ const bal=(+D.principal||0)+allNet;
+ $('cards').innerHTML=`<div class="card"><small>Initial principal ₹</small><input type="number" value="${D.principal}" onchange="D.principal=+this.value||0;save();render()"></div>
+ <div class="card"><small>Current balance</small><b class="${cl(bal-D.principal)}">${INR(bal)}</b></div>
+ <div class="card"><small>Gross P&amp;L (filter)</small><b class="${cl(gross)}">${INR(gross)}</b></div>
+ <div class="card"><small>Broker + Govt charges</small><b class="neg">${INR(ch)}</b></div>
+ <div class="card"><small>Net P&amp;L (filter)</small><b class="${cl(net)}">${INR(net)}</b></div>
+ <div class="card"><small>Win / Loss trades</small><b>${wins} / ${loss}</b><div class="note">${wins+loss?Math.round(wins*100/(wins+loss)):0}% win rate</div></div>
+ <div class="card"><small>Return on principal</small><b class="${cl(allNet)}">${D.principal?(allNet*100/D.principal).toFixed(2):0}%</b></div>`;
+ $('phead').textContent='Printed: '+new Date().toLocaleString('en-IN')+' • Period view: '+P.toUpperCase()+($('ff').value||$('ft').value?` • ${$('ff').value||'start'} to ${$('ft').value||'today'}`:'');
+ // summary by period
+ const g={};vis.forEach(t=>{const k=grp(t.date,P),o=g[k]=g[k]||{n:0,w:0,l:0,gr:0,ch:0};o.n++;if(t.gross>0)o.w++;if(t.gross<0)o.l++;o.gr+=t.gross;o.ch+=t.ch});
+ const keys=Object.keys(g).sort();let cum=+D.principal||0;
+ // opening balance = principal + all net before first visible
+ const first=vis[0];if(first){cum+=ts.filter(t=>t.date<first.date).reduce((a,t)=>a+t.net,0)}
+ const rows=keys.map(k=>{const o=g[k],n=o.gr-o.ch;cum+=n;return`<tr><td>${k}</td><td>${o.n}</td><td>${o.w}</td><td>${o.l}</td><td class="${cl(o.gr)}">${INR(o.gr)}</td><td>${INR(o.ch)}</td><td class="${cl(n)}"><b>${INR(n)}</b></td><td>${INR(cum)}</td></tr>`}).reverse();
+ $('sum').innerHTML=`<tr><th class="l">${{day:'Date',week:'Week (Mon)',month:'Month',year:'Year'}[P]}</th><th>Trades</th><th>Win</th><th>Loss</th><th>Gross P&amp;L</th><th>Charges</th><th>Net P&amp;L</th><th>Balance</th></tr>`+(rows.join('')||'<tr><td colspan="8" class="l">No records yet</td></tr>')+(rows.length?`<tr><td><b>TOTAL</b></td><td>${vis.length}</td><td></td><td></td><td class="${cl(gross)}"><b>${INR(gross)}</b></td><td><b>${INR(ch)}</b></td><td class="${cl(net)}"><b>${INR(net)}</b></td><td></td></tr>`:'');
+ // trade book
+ const cols=BUILTIN.filter(c=>!D.hidden.includes(c[0])),cx=D.cols.filter(c=>!D.hidden.includes(c.id));
+ const cell=(t,k)=>({date:t.date,seg:t.seg+(t.prod?' • '+t.prod:''),inst:t.und+(t.seg==='Option'?` ${t.strike} ${t.ot}`:'')+(t.exp?` <small>${t.exp}</small>`:''),
+  side:`<span class="tag ${t.side}">${t.side==='B'?'BUY':'SELL'}</span>`,qty:t.qty,price:INR(t.price),turn:INR(t.turn),brok:INR(t.brok),govt:INR(t.govt),
+  gross:`<span class="${cl(t.gross)}">${t.gross?INR(t.gross):'—'}</span>`,net:`<span class="${cl(t.net)}">${INR(t.net)}</span>`,note:esc(t.note||'')})[k];
+ $('tb').innerHTML=`<tr>${cols.map(c=>`<th class="${['date','seg','inst','side','note'].includes(c[0])?'l':''}">${c[1]}</th>`).join('')}${cx.map(c=>`<th>${esc(c.name)}</th>`).join('')}<th class="noprint">⚙</th></tr>`+
+  vis.slice().reverse().map(t=>`<tr>${cols.map(c=>`<td class="${['date','seg','inst','side','note'].includes(c[0])?'l':''}">${cell(t,c[0])}</td>`).join('')}${cx.map(c=>`<td>${esc(t.x?.[c.id]||'')}</td>`).join('')}<td class="noprint"><button onclick="editT(${t.id})">✏️</button> <button class="dng" onclick="delT(${t.id})">🗑</button></td></tr>`).join('')||`<tr><td colspan="20" class="l">No trades yet — add your first trade above.</td></tr>`;
+ // open
+ const ops=[];Object.values(open).forEach(L=>L.forEach(l=>ops.push(l)));const m={};
+ ops.forEach(l=>{const t=l.t,k=keyOf(t)+l.side,o=m[k]=m[k]||{t,side:l.side,q:0,v:0};o.q+=l.qty;o.v+=l.qty*l.price});
+ $('op').innerHTML=`<tr><th class="l">Instrument</th><th>Position</th><th>Qty</th><th>Avg price</th></tr>`+(Object.values(m).map(o=>`<tr><td>${o.t.und}${o.t.seg==='Option'?` ${o.t.strike} ${o.t.ot}`:''} <small>${o.t.seg} ${o.t.exp||''}</small></td><td><span class="tag ${o.side}">${o.side==='B'?'LONG':'SHORT'}</span></td><td>${o.q}</td><td>${INR(o.v/o.q)}</td></tr>`).join('')||'<tr><td colspan="4" class="l">No open positions</td></tr>');
+}
+function esc(s){return String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
+
+/* ---------- columns ---------- */
+function openCols(){
+ $('colbody').innerHTML='<p class="note">Tick = show in table &amp; print. Custom columns also appear in the trade form.</p><table>'+BUILTIN.map(c=>`<tr><td class="l"><label><input type="checkbox" ${D.hidden.includes(c[0])?'':'checked'} onchange="tog('${c[0]}')"> ${c[1]}</label></td><td></td></tr>`).join('')+D.cols.map(c=>`<tr><td class="l"><label><input type="checkbox" ${D.hidden.includes(c.id)?'':'checked'} onchange="tog('${c.id}')"> ${esc(c.name)} <small>(${c.type})</small></label></td><td><button class="dng" onclick="delCol('${c.id}')">Remove</button></td></tr>`).join('')+'</table>';
+ $('mcols').classList.add('on')}
+function tog(k){D.hidden=D.hidden.includes(k)?D.hidden.filter(x=>x!==k):[...D.hidden,k];save();render()}
+function addCol(){const n=$('ncn').value.trim();if(!n)return;D.cols.push({id:'c'+Date.now(),name:n,type:$('nct').value});$('ncn').value='';save();buildForm();render();openCols()}
+function delCol(id){if(!confirm('Remove this column and its data?'))return;D.cols=D.cols.filter(c=>c.id!==id);D.trades.forEach(t=>{if(t.x)delete t.x[id]});save();buildForm();render();openCols()}
+function closeM(){document.querySelectorAll('.modal').forEach(m=>m.classList.remove('on'))}
+
+/* ---------- settings ---------- */
+function openSet(){const c=D.cfg;
+ $('setbody').innerHTML=`<table><tr><th class="l">Type</th><th>Brokerage ₹/order</th><th>STT %</th><th>STT on</th><th>Exchange txn %</th><th>SEBI %</th><th>Stamp % (buy)</th><th>DP ₹ (sell)</th></tr>`+
+ Object.keys(c.chg).map(k=>{const r=c.chg[k];return`<tr><td class="l">${k}</td>${['brok','stt'].map(f=>`<td><input data-k="${k}" data-f="${f}" value="${r[f]}"></td>`).join('')}<td><select data-k="${k}" data-f="sttSide">${['B','S','BS'].map(v=>`<option ${r.sttSide===v?'selected':''}>${v}</option>`).join('')}</select></td>${['txn','sebi','stamp','dp'].map(f=>`<td><input data-k="${k}" data-f="${f}" value="${r[f]}"></td>`).join('')}</tr>`}).join('')+
+ `</table><p style="margin:8px 0">GST % on (brokerage+txn+SEBI): <input id="s_gst" value="${c.gst}" style="width:60px"></p><b>Lot sizes</b> <span class="note">(verify latest from NSE/BSE)</span><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px">`+
+ Object.keys(c.lots).map(k=>`<label>${k} <input data-l="${k}" value="${c.lots[k]}" style="width:70px"></label>`).join('')+`</div>`;$('mset').classList.add('on')}
+function saveSet(){document.querySelectorAll('#setbody [data-k]').forEach(e=>{const f=e.dataset.f;D.cfg.chg[e.dataset.k][f]=f==='sttSide'?e.value:(+e.value||0)});
+ D.cfg.gst=+$('s_gst').value||0;document.querySelectorAll('#setbody [data-l]').forEach(e=>D.cfg.lots[e.dataset.l]=Math.max(1,+e.value||1));save();closeM();segCh()}
+function defSet(){if(confirm('Reset charges & lot sizes to defaults?')){D.cfg=JSON.parse(JSON.stringify(DEF));save();openSet()}}
+
+/* ---------- export / backup ---------- */
+function exportCSV(){const{ts}=compute(),vis=ts.filter(inRange);
+ const h=['Date','Segment','Product','Instrument','Strike','CE/PE','Expiry','Side','Qty','Price','Turnover','Broker','Govt','Gross P&L','Net P&L','Notes',...D.cols.map(c=>c.name)];
+ const q=v=>'"'+String(v??'').replace(/"/g,'""')+'"';
+ const rows=vis.map(t=>[t.date,t.seg,t.prod,t.und,t.strike??'',t.ot,t.exp,t.side==='B'?'Buy':'Sell',t.qty,t.price,t.turn.toFixed(2),t.brok,t.govt,t.gross.toFixed(2),t.net.toFixed(2),t.note,...D.cols.map(c=>t.x?.[c.id]||'')].map(q).join(','));
+ dl('stock-ledger.csv','\ufeff'+[h.map(q).join(','),...rows].join('\n'),'text/csv')}
+function backup(){dl('stock-ledger-backup-'+today()+'.json',JSON.stringify(D),'application/json')}
+function restore(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const d=JSON.parse(r.result);if(!d.trades)throw 0;D=d;D.cols=D.cols||[];D.hidden=D.hidden||[];save();buildForm();render()}catch(x){alert('Invalid backup file')}};r.readAsText(f)}
+function dl(n,c,t){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([c],{type:t}));a.download=n;a.click()}
+D.cols=D.cols||[];D.hidden=D.hidden||[];buildForm();render();
+</script></body></html>

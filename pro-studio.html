@@ -622,13 +622,22 @@ input[type=range] {
 html{height:auto}
 body{height:auto;min-height:100vh;overflow-y:auto;overflow-x:hidden}
 .main{flex:0 0 auto;overflow:visible;align-items:start}
-.pane{height:clamp(820px,135vh,1400px)}
+.pane{height:clamp(560px,calc(100vh - 96px),720px)}
 .main.stacked{grid-template-columns:minmax(0,1fr)}
-.main.stacked .pane{height:clamp(820px,150vh,1500px)}
+.main.stacked .pane{height:clamp(560px,calc(100vh - 96px),760px)}
 .home-link{color:inherit;text-decoration:none}
 .home-btn{display:inline-flex;align-items:center;gap:4px;background:#2563eb;color:#fff;font-weight:700;font-size:13px;text-decoration:none;border-radius:8px;padding:7px 12px;border:1px solid #3b82f6;white-space:nowrap}
 .home-btn:hover{background:#1d4ed8}
-@media(max-width:900px){.pane{height:clamp(640px,110vh,1100px)}}
+@media(max-width:900px){.pane{height:clamp(520px,80vh,700px)}}
+
+/* v9: numeric steppers replace sliders */
+.numctl{display:inline-flex;align-items:center;border:1px solid #334155;border-radius:6px;overflow:hidden;background:#0f172a}
+.numctl button{padding:0 7px!important;min-height:24px!important;border:0!important;border-radius:0!important;background:#1e293b!important;color:#e2e8f0!important;font-size:13px;line-height:1}
+.numctl button:hover{background:#334155!important}
+.numctl input[type=number]{width:46px;text-align:center;background:transparent;color:#fff;border:0;font-size:12px;font-weight:700;padding:3px 0;-moz-appearance:textfield}
+.numctl input[type=number]::-webkit-outer-spin-button,.numctl input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.bg-mode-sel{max-width:118px}
+.eraser-restore{background:#166534!important;border-color:#22c55e!important;color:#fff!important}
 </style>
 <meta name="application-name" content="CSC VLE TOOLS Pro Studio">  <meta name="description" content="Prepare documents, crop images, refine photos and print ID cards with CSC VLE TOOLS Pro Studio.">
   <meta name="keywords" content="Pro Studio, photo resizer, passport photo, signature resize, image compress, KB size, job form photo, CSC VLE tools, CSC center tools, VLE tools, free online tool, Rohtak Haryana">
@@ -731,7 +740,7 @@ body{height:auto;min-height:100vh;overflow-y:auto;overflow-x:hidden}
         <div class="group bg-refine"><label>Edge:</label><input type="range" id="bg-edge-1" min="0" max="100" value="55" step="1" oninput="if(state[1].foregroundImg) refineForeground(1)"></div>
         <div class="group bg-refine"><label>Clean:</label><input type="range" id="bg-clean-1" min="0" max="100" value="25" step="1" oninput="if(state[1].foregroundImg) refineForeground(1)"></div>
         <div class="group bg-refine"><label>Feather:</label><input type="range" id="bg-feather-1" min="0" max="100" value="35" step="1" oninput="if(state[1].foregroundImg) refineForeground(1)"></div>
-        <button class="small" onclick="enhanceImage(1)">🪄 Enh.Pic.</button>
+        <div class="group bg-refine"><label>Tol:</label><input type="range" id="bg-tol-1" min="5" max="100" value="38" step="1" title="Colour tolerance for background (higher = removes more)" oninput="if(state[1].foregroundImg&&state[1].bgSrc)rerunBG(1)"></div><select id="bg-mode-1" class="small bg-mode-sel" title="Background removal method"><option value="auto">Auto (Smart)</option><option value="color">Solid colour BG</option><option value="multi">Multi-colour BG</option><option value="person">Person AI only</option></select><button class="small" id="restore-btn-1" onclick="toggleRestore(1)" title="Paint back parts that were wrongly cut">🖌 Restore</button><button class="small" onclick="enhanceImage(1)">🪄 Enh.Pic.</button>
       </div>
     </div>
     <div class="canvas-area" id="box-1">
@@ -812,7 +821,7 @@ body{height:auto;min-height:100vh;overflow-y:auto;overflow-x:hidden}
         <div class="group bg-refine"><label>Edge:</label><input type="range" id="bg-edge-2" min="0" max="100" value="55" step="1" oninput="if(state[2].foregroundImg) refineForeground(2)"></div>
         <div class="group bg-refine"><label>Clean:</label><input type="range" id="bg-clean-2" min="0" max="100" value="25" step="1" oninput="if(state[2].foregroundImg) refineForeground(2)"></div>
         <div class="group bg-refine"><label>Feather:</label><input type="range" id="bg-feather-2" min="0" max="100" value="35" step="1" oninput="if(state[2].foregroundImg) refineForeground(2)"></div>
-        <button class="small" onclick="enhanceImage(2)">🪄 Enh.Pic.</button>
+        <div class="group bg-refine"><label>Tol:</label><input type="range" id="bg-tol-2" min="5" max="100" value="38" step="1" title="Colour tolerance for background (higher = removes more)" oninput="if(state[2].foregroundImg&&state[2].bgSrc)rerunBG(2)"></div><select id="bg-mode-2" class="small bg-mode-sel" title="Background removal method"><option value="auto">Auto (Smart)</option><option value="color">Solid colour BG</option><option value="multi">Multi-colour BG</option><option value="person">Person AI only</option></select><button class="small" id="restore-btn-2" onclick="toggleRestore(2)" title="Paint back parts that were wrongly cut">🖌 Restore</button><button class="small" onclick="enhanceImage(2)">🪄 Enh.Pic.</button>
       </div>    </div>
     <div class="canvas-area" id="box-2">
       <div class="upload" id="drop-2"><strong>Drag & Drop Image Here</strong><br><span class="note">or click to select file</span></div>
@@ -849,6 +858,34 @@ body{height:auto;min-height:100vh;overflow-y:auto;overflow-x:hidden}
 </div>
 <iframe id="printFrame" style="display:none"></iframe>
 
+<script>
+/* Convert every range slider into a numeric stepper (type, or use − / +; hold to repeat). Same id/oninput so old code works. Saved values are remembered. */
+(function(){
+  const REMEMBER=/^(bg-edge|bg-clean|bg-feather|bg-tol|eraser-size)-/;
+  document.querySelectorAll('input[type=range]').forEach(r=>{
+    const wrap=document.createElement('span');wrap.className='numctl';
+    const n=document.createElement('input');n.type='number';
+    ['id','min','max','step','value','title'].forEach(a=>{if(r.hasAttribute(a))n.setAttribute(a,r.getAttribute(a));});
+    if(r.getAttribute('oninput'))n.setAttribute('oninput',r.getAttribute('oninput'));
+    n.dataset.def=r.value;
+    const mn=Number(r.min||0),mx=Number(r.max||100),st=Number(r.step||1);
+    const fire=()=>n.dispatchEvent(new Event('input',{bubbles:true}));
+    const clampv=()=>{let v=parseFloat(n.value);if(isNaN(v))v=Number(n.dataset.def);v=Math.min(mx,Math.max(mn,v));n.value=String(Math.round(v/st*1e6)/1e6*st);};
+    const bump=d=>{clampv();n.value=String(+(Number(n.value)+d*st).toFixed(4));clampv();save();fire();};
+    const save=()=>{if(REMEMBER.test(n.id||'')){try{localStorage.setItem('ps_'+n.id,n.value)}catch(e){}}};
+    const mk=(t,d)=>{const b=document.createElement('button');b.type='button';b.textContent=t;b.setAttribute('aria-label',d>0?'increase':'decrease');
+      let timer,rep;const stop=()=>{clearTimeout(timer);clearInterval(rep);};
+      b.addEventListener('pointerdown',e=>{e.preventDefault();bump(d);timer=setTimeout(()=>{rep=setInterval(()=>bump(d),70)},350);});
+      ['pointerup','pointerleave','pointercancel'].forEach(ev=>b.addEventListener(ev,stop));return b;};
+    n.addEventListener('change',()=>{clampv();save();fire();});
+    n.addEventListener('dblclick',()=>{n.value=n.dataset.def;save();fire();});
+    n.addEventListener('wheel',e=>{if(document.activeElement===n){e.preventDefault();bump(e.deltaY<0?1:-1);}},{passive:false});
+    if(REMEMBER.test(n.id||'')){try{const v=localStorage.getItem('ps_'+n.id);if(v!==null)n.value=v;}catch(e){}}
+    wrap.append(mk('−',-1),n,mk('+',1));
+    r.replaceWith(wrap);
+  });
+})();
+</script>
 <script>
 "use strict";
 
@@ -891,6 +928,7 @@ const PRESETS = {
 });
 
 window.addEventListener('resize',()=>{fitPreviewToPane(1);fitPreviewToPane(2);});
+[1,2].forEach(id=>document.getElementById(`bg-mode-${id}`)?.addEventListener('change',()=>{if(state[id].foregroundImg&&state[id].mode!=='sig')removeBackgroundAI(id);}));
 
 function setStatus(id,msg){document.getElementById(`status-${id}`).textContent=msg;}
 function loadFile(e,id){if(e.target.files?.[0])handleFile(e.target.files[0],id)}
@@ -913,7 +951,7 @@ function handleFile(file,id){
     };
     img.onload=()=>{
       const s=state[id];
-      s.origImg=img;s.currentImg=img;s.foregroundImg=null;s.shadowImg=null;s.bgImage=null;s.fillColor="transparent";lastSegmentationMask[id]=null;s.mode="normal";document.getElementById(`container-${id}`)?.classList.remove('signature-transparent');s.history=[];s.redo=[];s.offsetX=0;s.offsetY=0;s.shadowRemoved=false;
+      s.origImg=img;s.currentImg=img;s.foregroundImg=null;s.bgSrc=null;s.shadowImg=null;s.bgImage=null;s.fillColor="transparent";lastSegmentationMask[id]=null;s.mode="normal";document.getElementById(`container-${id}`)?.classList.remove('signature-transparent');s.history=[];s.redo=[];s.offsetX=0;s.offsetY=0;s.shadowRemoved=false;
       document.getElementById(`drop-${id}`).style.display="none";
       document.getElementById(`container-${id}`).style.display="inline-block";
       document.getElementById(`btn-upload-${id}`).style.display="none";
@@ -947,7 +985,8 @@ function deleteImage(id){
   s.offsetY=0;
   s.shadowRemoved=false;
   s.dragImage=false;
-  s.eraserOn=false;
+  s.eraserOn=false;s.restoreMode=false;s.bgSrc=null;
+  document.getElementById(`restore-btn-${id}`)?.classList.remove('eraser-restore');
   s.eraserCanvas=null;
   s.eraserDrawing=false;
   lastSegmentationMask[id]=null;
@@ -1309,7 +1348,7 @@ function toggleEraser(id){
     setStatus(id,'Run Remove BG first, then use Eraser on unwanted remaining pixels');
     return;
   }
-  s.eraserOn=!s.eraserOn;
+  if(s.restoreMode){s.restoreMode=false;s.eraserOn=true;document.getElementById(`restore-btn-${id}`)?.classList.remove('eraser-restore');}else s.eraserOn=!s.eraserOn;
   const btn=document.getElementById(`eraser-btn-${id}`);
   btn?.classList.toggle('eraser-on',s.eraserOn);
   document.getElementById(`container-${id}`)?.classList.toggle('eraser-mode',s.eraserOn);
@@ -1345,8 +1384,14 @@ function eraseAt(id,x,y){
   const p=sourcePointFromCanvasPoint(id,x,y),r=getEraserBrushSize(id);
   const ctx=c.getContext('2d');
   ctx.save();
-  ctx.globalCompositeOperation='destination-out';
-  ctx.beginPath();ctx.arc(p.x,p.y,r/2,0,Math.PI*2);ctx.fill();
+  if(s.restoreMode){
+    const srcImg=(s.bgSrc&&s.bgSrc.source)||s.currentImg;
+    ctx.beginPath();ctx.arc(p.x,p.y,r/2,0,Math.PI*2);ctx.clip();
+    ctx.drawImage(srcImg,0,0,c.width,c.height);
+  }else{
+    ctx.globalCompositeOperation='destination-out';
+    ctx.beginPath();ctx.arc(p.x,p.y,r/2,0,Math.PI*2);ctx.fill();
+  }
   ctx.restore();
   s.foregroundImg=c;
   processImage(id);
@@ -1581,6 +1626,7 @@ function applyAlphaToSource(source,mask,edge){
 }
 
 function refineForeground(id){
+  const s0=state[id];if(s0.bgSrc&&s0.bgSrc.source===s0.currentImg){rerunBG(id);return;}
   const s=state[id],cached=lastSegmentationMask[id];if(!s.currentImg||!cached)return;
   const edge=Number(document.getElementById(`bg-edge-${id}`)?.value||55),clean=Number(document.getElementById(`bg-clean-${id}`)?.value||25),feather=Number(document.getElementById(`bg-feather-${id}`)?.value||35);
   const refined=buildRefinedMask(cached,edge,clean,feather),url=applyAlphaToSource(cached.source,refined,edge),out=new Image();out.onload=()=>{s.foregroundImg=out;processImage(id);setStatus(id,`BG refined`)};out.src=url;
@@ -1699,67 +1745,152 @@ function removeSignatureBackground(id){
   }
 }
 
-async function removeBackgroundAI(id){
-  const s=state[id];
-  if(!s.currentImg)return;
-
-  // The MediaPipe selfie model is designed for people, not handwritten
-  // signatures. Using it on a signature can classify the entire image as
-  // background and produce a blank transparent result.
-  if(s.mode==="sig"){
-    removeSignatureBackground(id);
-    return;
+/* ===== v9 Smart Background Removal: border-seeded flood fill + AI person mask, with live Tol/Edge/Clean/Feather ===== */
+function _bgWork(w,h,max){const k=Math.min(1,max/Math.max(w,h));return{ww:Math.max(8,Math.round(w*k)),wh:Math.max(8,Math.round(h*k))};}
+function _boxBlur(a,w,h,r){
+  if(r<1)return a;const t=new Float32Array(a.length),o=new Float32Array(a.length),k=2*r+1;
+  for(let y=0;y<h;y++){let sum=0;const b=y*w;for(let x=-r;x<=r;x++)sum+=a[b+Math.min(w-1,Math.max(0,x))];
+    for(let x=0;x<w;x++){t[b+x]=sum/k;sum+=a[b+Math.min(w-1,x+r+1)]-a[b+Math.max(0,x-r)];}}
+  for(let x=0;x<w;x++){let sum=0;for(let y=-r;y<=r;y++)sum+=t[Math.min(h-1,Math.max(0,y))*w+x];
+    for(let y=0;y<h;y++){o[y*w+x]=sum/k;sum+=t[Math.min(h-1,y+r+1)*w+x]-t[Math.max(0,y-r)*w+x];}}
+  return o;
+}
+function _morph(bin,w,h,r,dil){ // separable max/min filter on Uint8
+  const t=new Uint8Array(bin.length),o=new Uint8Array(bin.length);
+  for(let y=0;y<h;y++)for(let x=0;x<w;x++){let v=dil?0:1;for(let k=-r;k<=r;k++){const xx=x+k;if(xx<0||xx>=w)continue;const q=bin[y*w+xx];if(dil){if(q){v=1;break}}else if(!q){v=0;break}}t[y*w+x]=v;}
+  for(let y=0;y<h;y++)for(let x=0;x<w;x++){let v=dil?0:1;for(let k=-r;k<=r;k++){const yy=y+k;if(yy<0||yy>=h)continue;const q=t[yy*w+x];if(dil){if(q){v=1;break}}else if(!q){v=0;break}}o[y*w+x]=v;}
+  return o;
+}
+function _components(mask,w,h,val){ // label connected comps (4-conn) of mask==val; returns {label,sizes}
+  const N=w*h,label=new Int32Array(N),sizes=[0],q=new Int32Array(N);let n=0;
+  for(let i=0;i<N;i++){if(mask[i]!==val||label[i])continue;n++;let hd=0,tl=0;q[tl++]=i;label[i]=n;let sz=0;
+    while(hd<tl){const p=q[hd++];sz++;const x=p%w,y=(p-x)/w;
+      if(x>0&&mask[p-1]===val&&!label[p-1]){label[p-1]=n;q[tl++]=p-1}
+      if(x<w-1&&mask[p+1]===val&&!label[p+1]){label[p+1]=n;q[tl++]=p+1}
+      if(y>0&&mask[p-w]===val&&!label[p-w]){label[p-w]=n;q[tl++]=p-w}
+      if(y<h-1&&mask[p+w]===val&&!label[p+w]){label[p+w]=n;q[tl++]=p+w}}
+    sizes.push(sz);}
+  return{label,sizes};
+}
+function bgAnalyze(source,P,ai){
+  const w=source.naturalWidth||source.width,h=source.naturalHeight||source.height;
+  const {ww,wh}=_bgWork(w,h,800),N=ww*wh;
+  const c=document.createElement('canvas');c.width=ww;c.height=wh;
+  const ctx=c.getContext('2d',{willReadFrequently:true});ctx.drawImage(source,0,0,ww,wh);
+  const px=ctx.getImageData(0,0,ww,wh).data;
+  const T=P.tol*1.6,e=P.edge/100;
+  // --- border ring samples
+  const bw=Math.max(2,Math.round(Math.min(ww,wh)*0.03)),S=[];
+  for(let y=0;y<wh;y++)for(let x=0;x<ww;x++){if(x<bw||x>=ww-bw||y<bw||y>=wh-bw){if((x+y)%2===0){const i=(y*ww+x)*4;S.push([px[i],px[i+1],px[i+2]]);}}}
+  // --- k-means on border colours
+  const K=P.mode==='color'?1:(P.mode==='multi'?5:3);
+  const d3=(a,b)=>Math.hypot(a[0]-b[0],a[1]-b[1],a[2]-b[2]);
+  let cen=[S.reduce((m,p)=>[m[0]+p[0]/S.length,m[1]+p[1]/S.length,m[2]+p[2]/S.length],[0,0,0])];
+  while(cen.length<K){let best=null,bd=-1;for(const p of S){let m=1e9;for(const q of cen)m=Math.min(m,d3(p,q));if(m>bd){bd=m;best=p}}if(bd<T*0.6)break;cen.push(best.slice());}
+  let cnt=new Array(cen.length).fill(0);
+  for(let it=0;it<6;it++){const sum=cen.map(()=>[0,0,0,0]);for(const p of S){let bi=0,bd=1e9;cen.forEach((q,i)=>{const d=d3(p,q);if(d<bd){bd=d;bi=i}});sum[bi][0]+=p[0];sum[bi][1]+=p[1];sum[bi][2]+=p[2];sum[bi][3]++;}
+    cen=cen.map((q,i)=>sum[i][3]?[sum[i][0]/sum[i][3],sum[i][1]/sum[i][3],sum[i][2]/sum[i][3]]:q);cnt=sum.map(z=>z[3]);}
+  const keep=cen.filter((q,i)=>cnt[i]>=S.length*0.04||i===cnt.indexOf(Math.max(...cnt)));
+  const dom=cen[cnt.indexOf(Math.max(...cnt))];
+  const dcArr=new Float32Array(N);
+  for(let i=0,p=0;i<N;i++,p+=4){let m=1e9;for(const q of keep){const d=Math.hypot(px[p]-q[0],px[p+1]-q[1],px[p+2]-q[2]);if(d<m)m=d}dcArr[i]=m;}
+  const ringFrac=S.filter(p=>keep.some(q=>d3(p,q)<=T)).length/Math.max(1,S.length);
+  const domFrac=S.filter(p=>d3(p,dom)<=T).length/Math.max(1,S.length);
+  // --- flood fill from image edges through background-like pixels
+  const bg=new Uint8Array(N),qu=new Int32Array(N);let hd=0,tl=0;
+  const seed=i=>{if(!bg[i]&&dcArr[i]<=T){bg[i]=1;qu[tl++]=i}};
+  for(let x=0;x<ww;x++){seed(x);seed((wh-1)*ww+x);}for(let y=0;y<wh;y++){seed(y*ww);seed(y*ww+ww-1);}
+  const pd=(a,b)=>Math.hypot(px[a*4]-px[b*4],px[a*4+1]-px[b*4+1],px[a*4+2]-px[b*4+2]);
+  const tryQ=(p,qn)=>{if(bg[qn])return;if(dcArr[qn]<=T||(pd(p,qn)<=T*0.22&&dcArr[qn]<=T*1.8)){bg[qn]=1;qu[tl++]=qn}};
+  while(hd<tl){const p=qu[hd++],x=p%ww,y=(p-x)/ww;if(x>0)tryQ(p,p-1);if(x<ww-1)tryQ(p,p+1);if(y>0)tryQ(p,p-ww);if(y<wh-1)tryQ(p,p+ww);}
+  // multi-colour mode: also drop enclosed background-coloured pockets (gaps between arm/body etc.)
+  if(P.mode==='multi'){const un=new Uint8Array(N);for(let i=0;i<N;i++)un[i]=(!bg[i]&&dcArr[i]<=T*0.7)?1:0;
+    const cc=_components(un,ww,wh,1);for(let i=0;i<N;i++){if(un[i]&&cc.sizes[cc.label[i]]>=N*0.004)bg[i]=1;}}
+  let bgCount=0;for(let i=0;i<N;i++)bgCount+=bg[i];const bgFrac=bgCount/N;
+  // --- colour alpha with soft boundary
+  const colA=new Float32Array(N);const lo=T*(0.9-0.5*e),hi=T*(1.5-0.5*e);
+  for(let i=0;i<N;i++){if(bg[i]){colA[i]=0;continue;}const x=i%ww,y=(i-x)/ww;
+    const nb=(x>0&&bg[i-1])||(x<ww-1&&bg[i+1])||(y>0&&bg[i-ww])||(y<wh-1&&bg[i+ww]);
+    colA[i]=nb?clamp01((dcArr[i]-lo)/Math.max(1,hi-lo)):1;}
+  // --- AI alpha resampled
+  let aiA=null;
+  if(ai){aiA=new Float32Array(N);for(let y=0;y<wh;y++){const sy=Math.min(ai.mh-1,Math.floor(y*ai.mh/wh));for(let x=0;x<ww;x++){const sx=Math.min(ai.mw-1,Math.floor(x*ai.mw/ww));aiA[y*ww+x]=ai.alpha[sy*ai.mw+sx];}}}
+  const uniform=(P.mode==='color'||P.mode==='multi')||(domFrac>=0.55||ringFrac>=0.8)&&bgFrac>0.04&&bgFrac<0.95;
+  let A,used;
+  if(uniform||!aiA){
+    A=colA;used=(P.mode==='multi'?'Multi-colour':'Solid colour');
+    if(aiA&&P.mode==='auto'){for(let i=0;i<N;i++)if(aiA[i]>0.6)A[i]=Math.max(A[i],clamp01((aiA[i]-0.45)/0.35));used='Smart (colour + AI)';}
+  }else{
+    used=P.mode==='person'?'Person AI':'Smart (AI, busy background)';
+    const bin=new Uint8Array(N);const th=0.42-e*0.18;for(let i=0;i<N;i++)bin[i]=aiA[i]>th?1:0;
+    const r=1+Math.round(P.clean/100*2);
+    let m=_morph(_morph(bin,ww,wh,r+1,true),ww,wh,r+1,false);   // closing: fills gaps in clothes/hair
+    m=_morph(m,ww,wh,Math.max(0,Math.round(e*2)),true);          // small grow so edges are not cut
+    A=new Float32Array(N);for(let i=0;i<N;i++)A[i]=Math.max(m[i]?0.92:0,smoothstep(0.2,0.55,aiA[i]));
   }
-
-  showLoading(id,'AI background removal loading...');
-  setStatus(id,'Removing background...');
+  // --- clean: remove tiny floating specks, keep the main subject(s)
+  const bin2=new Uint8Array(N);for(let i=0;i<N;i++)bin2[i]=A[i]>0.5?1:0;
+  const cc=_components(bin2,ww,wh,1);const big=Math.max(0,...cc.sizes);const minA=Math.max(N*(0.0002+P.clean/100*0.006),Math.min(big*0.08,N*0.01*P.clean/100));
+  for(let i=0;i<N;i++){if(bin2[i]&&cc.sizes[cc.label[i]]<minA&&cc.sizes[cc.label[i]]<big)A[i]=0;}
+  // --- feather
+  const fr=Math.round(P.feather/100*3);if(fr>0)A=_boxBlur(A,ww,wh,fr);
+  return{A,ww,wh,bgColor:dom,used,bgFrac};
+}
+function bgCompose(source,res){
+  const w=source.naturalWidth||source.width,h=source.naturalHeight||source.height;
+  const sm=document.createElement('canvas');sm.width=res.ww;sm.height=res.wh;const sctx=sm.getContext('2d');
+  const id=sctx.createImageData(res.ww,res.wh);for(let i=0,p=0;i<res.A.length;i++,p+=4){id.data[p]=255;id.data[p+1]=255;id.data[p+2]=255;id.data[p+3]=Math.round(clamp01(res.A[i])*255);}sctx.putImageData(id,0,0);
+  const full=document.createElement('canvas');full.width=w;full.height=h;const fctx=full.getContext('2d',{willReadFrequently:true});
+  fctx.imageSmoothingEnabled=true;fctx.imageSmoothingQuality='high';fctx.drawImage(sm,0,0,w,h);const md=fctx.getImageData(0,0,w,h).data;
+  fctx.clearRect(0,0,w,h);fctx.drawImage(source,0,0,w,h);const im=fctx.getImageData(0,0,w,h),d=im.data,bc=res.bgColor||[255,255,255];
+  for(let i=0;i<d.length;i+=4){const a=md[i+3]/255;
+    if(a>0.01&&a<0.99){for(let k=0;k<3;k++){const v=(d[i+k]-(1-a)*bc[k])/a;d[i+k]=Math.max(0,Math.min(255,Math.round(d[i+k]*0.35+v*0.65)));}}
+    d[i+3]=Math.round(d[i+3]*a);}
+  fctx.putImageData(im,0,0);return full.toDataURL('image/png');
+}
+function getBGParams(id){
+  const g=(n,d)=>{const v=Number(document.getElementById(`${n}-${id}`)?.value);return isNaN(v)?d:v;};
+  return{tol:g('bg-tol',38),edge:g('bg-edge',55),clean:g('bg-clean',25),feather:g('bg-feather',35),mode:document.getElementById(`bg-mode-${id}`)?.value||'auto'};
+}
+function applyBG(id,push){
+  const s=state[id],b=s.bgSrc;if(!b||b.source!==s.currentImg)return;
   try{
-    const source=s.currentImg;
-    const segmenter=await getImageSegmenter();
-    const result=segmenter.segment(source);
-    if(!result || !result.confidenceMasks || result.confidenceMasks.length<6){
-      throw new Error('MediaPipe mask unavailable.');
-    }
-
-    const baseMask=buildBaseMultiMask(result);
-    lastSegmentationMask[id]={source,alpha:baseMask.alpha,mw:baseMask.mw,mh:baseMask.mh};
-
-    const edge=Number(document.getElementById(`bg-edge-${id}`)?.value||55);
-    const clean=Number(document.getElementById(`bg-clean-${id}`)?.value||25);
-    const feather=Number(document.getElementById(`bg-feather-${id}`)?.value||35);
-    const refined=buildRefinedMask(lastSegmentationMask[id],edge,clean,feather);
-    const url=applyAlphaToSource(source,refined,edge);
-
-    await new Promise((resolve,reject)=>{
-      const out=new Image();
-      out.onload=()=>{
-        pushHistory(id);
-        s.foregroundImg=out;
-        s.fillColor='transparent';
-        processImage(id);
-        hideLoading(id);
-        setStatus(id,'AI background removed successfully');
-        try{result.close?.();}catch{}
-        resolve();
-      };
-      out.onerror=()=>{
-        try{result.close?.();}catch{}
-        reject(new Error('Image decoding failed for segmentation result'));
-      };
-      out.src=url;
-    });
-  }catch(err){
-    console.error('AI BG removal failed:',err);
+    const res=bgAnalyze(b.source,getBGParams(id),b.ai),url=bgCompose(b.source,res),out=new Image();
+    out.onload=()=>{if(push)pushHistory(id);s.foregroundImg=out;s.shadowImg=null;s.fillColor='transparent';processImage(id);hideLoading(id);
+      setStatus(id,`BG removed • ${res.used} • ${Math.round(res.bgFrac*100)}% background • tune Tol / Edge / Clean / Feather, then 🖌 Restore or 🧽 Eraser`);};
+    out.src=url;
+  }catch(err){console.error(err);hideLoading(id);setStatus(id,'BG removal failed: '+err.message);}
+}
+const _bgTimers={};
+function rerunBG(id){const s=state[id];if(!s.bgSrc||s.bgSrc.source!==s.currentImg){setStatus(id,'Click ✂️ Remove BG again to adjust');return;}
+  clearTimeout(_bgTimers[id]);_bgTimers[id]=setTimeout(()=>applyBG(id,false),120);}
+async function removeBackgroundAI(id){
+  const s=state[id];if(!s.currentImg)return;
+  if(s.mode==="sig"){removeSignatureBackground(id);return;}
+  showLoading(id,'Removing background...');setStatus(id,'Removing background...');
+  const mode=document.getElementById(`bg-mode-${id}`)?.value||'auto';
+  let ai=null;
+  if(mode!=='color'&&mode!=='multi'){
     try{
-      fallbackColorDistanceBG(id);
-      hideLoading(id);
-      setStatus(id,'Fallback BG removal applied');
-    }catch(localErr){
-      console.error(localErr);
-      hideLoading(id);
-      setStatus(id,'BG removal failed');
-    }
+      const seg=await getImageSegmenter(),r=seg.segment(s.currentImg);
+      if(r&&r.confidenceMasks&&r.confidenceMasks.length>=6){const m=buildBaseMultiMask(r);ai={alpha:m.alpha,mw:m.mw,mh:m.mh};}
+      try{r.close?.()}catch(_){}
+    }catch(err){console.warn('AI mask unavailable, using colour method',err);}
   }
+  s.bgSrc={source:s.currentImg,ai};
+  await new Promise(r=>setTimeout(r,20));
+  applyBG(id,true);
+}
+function toggleRestore(id){
+  const s=state[id];
+  if(!s.foregroundImg){setStatus(id,'Run Remove BG first, then Restore wrongly cut parts');return;}
+  const on=!(s.restoreMode&&s.eraserOn);
+  s.restoreMode=on;s.eraserOn=on;s.eraserDrawing=false;if(!on)s.eraserCanvas=null;
+  document.getElementById(`restore-btn-${id}`)?.classList.toggle('eraser-restore',on);
+  document.getElementById(`eraser-btn-${id}`)?.classList.remove('eraser-on');
+  document.getElementById(`container-${id}`)?.classList.toggle('eraser-mode',on);
+  if(!on){const cur=document.getElementById(`eraser-cursor-${id}`);if(cur)cur.style.display='none';}
+  setStatus(id,on?'Restore ON • paint over parts that were wrongly cut (brush size = Size box)':'Restore OFF');
 }
 
 function fallbackColorDistanceBG(id){

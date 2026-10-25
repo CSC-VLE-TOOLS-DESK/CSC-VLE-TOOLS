@@ -169,3 +169,7 @@ textarea{min-height:80px;resize:vertical}
 @keyframes psFlash{0%,100%{box-shadow:0 0 0 0 rgba(255,179,0,.55);border-color:#ffb300}50%{box-shadow:0 0 0 8px rgba(255,179,0,0);border-color:#fff}}
 @media(prefers-reduced-motion:reduce){.ps-flash{animation:none}}
 @media print{.ps-flash{display:none!important}}
+
+/* Daily Use App header button */
+.hdr nav a.nav-daily{background:linear-gradient(135deg,#f59e0b,#ef4444);color:#fff;border-radius:999px;padding:6px 13px;font-weight:800;box-shadow:0 3px 10px rgba(239,68,68,.4)}
+.hdr nav a.nav-daily:hover{filter:brightness(1.1);background:linear-gradient(135deg,#f59e0b,#ef4444)}

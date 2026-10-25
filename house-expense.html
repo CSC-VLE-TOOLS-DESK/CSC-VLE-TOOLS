@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>House Expense Manager — CSC VLE TOOLS</title>
+<style>
+:root{--bg:#0b0f19;--p:#131c2e;--b:#1e293b;--t:#f1f5f9;--m:#8294ad;--g:#10b981;--r:#ef4444;--bl:#2563eb}
+*{box-sizing:border-box;margin:0;padding:0;font-family:'Segoe UI',system-ui,sans-serif}
+body{background:var(--bg);color:var(--t);font-size:13px;padding-bottom:40px}
+header{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;padding:10px 14px;background:#0f172a;border-bottom:1px solid var(--b);position:sticky;top:0;z-index:50}
+h1{font-size:17px}h1 span{color:var(--g);font-size:12px;border:1px solid #10b98155;padding:2px 7px;border-radius:6px;margin-left:6px}
+button,select,input{background:#1e293b;color:var(--t);border:1px solid #334155;border-radius:6px;padding:6px 9px;font-size:12px}
+button{cursor:pointer;font-weight:600}button:hover{background:#334155}
+.pri{background:var(--g);color:#022c22;border-color:var(--g)}.dng{background:#ef444426;color:#fca5a5}.inc{background:#2563eb;border-color:#3b82f6}
+a.home{background:var(--bl);color:#fff;text-decoration:none;padding:6px 11px;border-radius:7px;font-weight:700}
+.wrap{padding:12px 14px;max-width:1400px;margin:auto}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;margin-bottom:12px}
+.card{background:var(--p);border:1px solid var(--b);border-radius:10px;padding:10px}.card small{color:var(--m);display:block;font-size:10px;text-transform:uppercase;letter-spacing:.5px}.card b{font-size:18px}
+.pos{color:#34d399}.neg{color:#f87171}
+.box{background:var(--p);border:1px solid var(--b);border-radius:10px;padding:10px;margin-bottom:12px}.box h2{font-size:13px;margin-bottom:8px;color:#cbd5e1}
+.form{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px}.form label{display:flex;flex-direction:column;gap:3px;color:var(--m);font-size:10px;font-weight:600}.form input,.form select{width:100%;color:#fff}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;align-items:center}.tabs button.on{background:var(--g);color:#022c22}
+.tw{overflow:auto;max-height:400px;border:1px solid var(--b);border-radius:8px}
+table{border-collapse:collapse;width:100%;min-width:700px}th,td{padding:6px 8px;border-bottom:1px solid var(--b);text-align:right;white-space:nowrap}
+th{position:sticky;top:0;background:#16213a;color:#a5b4cf;font-size:11px}td:first-child,th:first-child,td.l,th.l{text-align:left}tr:hover td{background:#0f1a2e}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}@media(max-width:900px){.two{grid-template-columns:1fr}}
+.bar{height:8px;background:#1e293b;border-radius:5px;overflow:hidden;min-width:90px}.bar i{display:block;height:100%;background:var(--g)}.bar i.over{background:var(--r)}
+.tag{padding:1px 6px;border-radius:5px;font-size:10px;font-weight:700}.I{background:#2563eb33;color:#93c5fd}.E{background:#ef444426;color:#f87171}
+.note{color:var(--m);font-size:11px;margin-top:6px}
+.modal{position:fixed;inset:0;background:#000a;display:none;align-items:center;justify-content:center;z-index:100;padding:10px}.modal.on{display:flex}
+.mc{background:var(--p);border:1px solid #334155;border-radius:12px;padding:14px;max-width:760px;width:100%;max-height:90vh;overflow:auto}.mc table{min-width:0}.mc td input{width:90px}
+.printhead{display:none}
+@media print{header,.noprint,.form,.modal{display:none!important}body{background:#fff;color:#000}.card,.box{background:#fff;border-color:#999;color:#000}th{background:#eee;color:#000;position:static}td,th{border-color:#bbb;color:#000}.tw{max-height:none;overflow:visible}.printhead{display:block;margin-bottom:8px}.pos{color:#060}.neg{color:#b00}.two{grid-template-columns:1fr 1fr}}
+</style></head><body>
+<header><div style="display:flex;gap:8px;align-items:center"><a class="home" href="index.html">🏠 Home</a><h1>🏠 House Expense Manager<span>Daily • Monthly • Yearly</span></h1></div>
+<div style="display:flex;gap:6px;flex-wrap:wrap"><button onclick="openCols()">🧩 Columns</button><button onclick="openCat()">🗂 Categories &amp; Budget</button><button onclick="openFixed()">🔁 Fixed Bills</button><button onclick="exportCSV()">⬇ CSV</button><button onclick="backup()">💾 Backup</button><button onclick="document.getElementById('rf').click()">📂 Restore</button><input id="rf" type="file" accept=".json" hidden onchange="restore(event)"><button class="pri" onclick="window.print()">🖨 Print</button></div></header>
+<div class="wrap">
+<div class="printhead"><h2>House Expense Report</h2><div id="phead"></div></div>
+<div class="cards" id="cards"></div>
+<div class="box noprint"><h2 id="ftitle">➕ New Entry</h2><div class="form" id="form"></div>
+<div style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap"><button class="pri" onclick="saveE()">💾 Save</button><button onclick="buildForm()">Clear</button><button onclick="applyFixed()" title="Adds all Fixed Bills for the date chosen above, skipping ones already added this month">🔁 Add this month's fixed bills</button></div></div>
+
+<div class="box"><div class="tabs noprint"><b>Records:</b>
+<button data-p="day" onclick="setP('day')">Daily</button><button data-p="week" onclick="setP('week')">Weekly</button><button data-p="month" class="on" onclick="setP('month')">Monthly</button><button data-p="year" onclick="setP('year')">Yearly</button>
+<span style="margin-left:10px">From <input type="date" id="ff" onchange="render()"> To <input type="date" id="ft" onchange="render()"></span>
+<select id="fc" onchange="render()"></select><button onclick="clr()">Reset</button></div>
+<div class="two"><div class="tw"><table id="sum"></table></div><div class="tw"><table id="cat"></table></div></div></div>
+<div class="box"><h2>📒 All Entries</h2><div class="tw"><table id="tb"></table></div></div>
+<div class="note noprint">Data stays in this browser only. Take a 💾 Backup regularly (e.g. monthly) and keep it in Google Drive / pen drive.</div>
+</div>
+<div class="modal" id="mcols"><div class="mc"><h2>🧩 Columns</h2><div id="colbody"></div><div style="margin-top:10px;display:flex;gap:6px;flex-wrap:wrap"><input id="ncn" placeholder="New column (e.g. Shop name)"><select id="nct"><option value="text">Text</option><option value="number">Number</option><option value="date">Date</option></select><button class="pri" onclick="addCol()">＋ Add</button><button onclick="closeM()">Close</button></div></div></div>
+<div class="modal" id="mcat"><div class="mc"><h2>🗂 Categories &amp; monthly budget</h2><div id="catbody"></div><div style="margin-top:10px;display:flex;gap:6px;flex-wrap:wrap"><input id="ncat" placeholder="New category"><select id="ncg"><option>Daily</option><option>Monthly</option><option>Yearly</option><option>Income</option></select><button class="pri" onclick="addCat()">＋ Add</button><button class="pri" onclick="saveCat()">Save budgets</button><button onclick="closeM()">Close</button></div></div></div>
+<div class="modal" id="mfix"><div class="mc"><h2>🔁 Fixed monthly bills</h2><p class="note">Rent, EMI, school fee, internet… Save once, then press “Add this month's fixed bills” each month.</p><div id="fixbody"></div><div style="margin-top:10px;display:flex;gap:6px;flex-wrap:wrap"><select id="nfc"></select><input id="nfa" type="number" placeholder="Amount ₹" style="width:110px"><input id="nfd" type="number" min="1" max="28" placeholder="Day" style="width:70px"><button class="pri" onclick="addFix()">＋ Add</button><button onclick="closeM()">Close</button></div></div></div>
+<script>
+"use strict";
+const KEY='csc_house_expense_v1',$=id=>document.getElementById(id);
+const INR=n=>(n<0?'-':'')+'₹'+Math.abs(n).toLocaleString('en-IN',{minimumFractionDigits:0,maximumFractionDigits:2});
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const DEFCATS=[
+ ...['Milk','Vegetables','Fruits','Grocery / Kirana','Newspaper','Fuel (Petrol/Diesel)','Local Transport','Mobile Recharge','Eating Out / Snacks','Maid / Help','Medicines','Kids / Pocket Money','Other Daily'].map(n=>[n,'Daily']),
+ ...['House Rent','Home Loan EMI','Vehicle EMI','Electricity Bill','Water Bill','Gas Cylinder (LPG)','Internet / WiFi','DTH / Cable','Society Maintenance','School / Tuition Fee','OTT / Subscriptions','Doctor / Hospital','Insurance Premium (Monthly)','Salary to Staff','Other Monthly'].map(n=>[n,'Monthly']),
+ ...['Property Tax','Life / Health Insurance','Vehicle Insurance','Vehicle Service / Repair','House Repair / Paint','Clothes / Shopping','Festival / Puja','Marriage / Function','Travel / Vacation','Gifts','Appliances / Furniture','Annual School Fees','Other Yearly'].map(n=>[n,'Yearly']),
+ ...['Salary','Business Income','Rent Received','Interest / Dividend','Other Income'].map(n=>[n,'Income'])].map(([name,grp])=>({name,grp,bud:0}));
+let D=load();
+function load(){try{const d=JSON.parse(localStorage.getItem(KEY));if(d&&d.entries)return d}catch(e){}return{entries:[],cats:DEFCATS,cols:[],hidden:[],fixed:[],seq:1}}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(D))}catch(e){alert('Save failed: '+e.message)}}
+const today=()=>{const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')};
+const isInc=c=>(D.cats.find(x=>x.name===c)||{}).grp==='Income';
+const BUILTIN=[['date','Date'],['type','Type'],['cat','Category'],['amt','Amount'],['mode','Paid by'],['note','Notes']];
+let ed=null,P='month';
+function catOpts(sel){return['Daily','Monthly','Yearly','Income'].map(g=>`<optgroup label="${g}">${D.cats.filter(c=>c.grp===g).map(c=>`<option ${c.name===sel?'selected':''}>${esc(c.name)}</option>`).join('')}</optgroup>`).join('')}
+function buildForm(){ed=null;$('ftitle').textContent='➕ New Entry';
+ $('form').innerHTML=`<label>Date<input type="date" id="f_date" value="${today()}"></label><label>Category<select id="f_cat">${catOpts()}</select></label>
+ <label>Amount ₹<input type="number" id="f_amt" min="0" step="any"></label><label>Paid by<select id="f_mode"><option>Cash</option><option>UPI</option><option>Card</option><option>Bank</option></select></label>
+ <label>Notes<input id="f_note"></label>${D.cols.map(c=>`<label>${esc(c.name)}<input id="x_${c.id}" type="${c.type}"></label>`).join('')}`;
+ $('fc').innerHTML='<option value="">All categories</option>'+catOpts()}
+function saveE(){const amt=+$('f_amt').value;if(!$('f_date').value||!(amt>0)){alert('Enter Date and Amount.');return}
+ const e={id:ed||D.seq++,date:$('f_date').value,cat:$('f_cat').value,amt,mode:$('f_mode').value,note:$('f_note').value,x:{}};D.cols.forEach(c=>e.x[c.id]=$('x_'+c.id).value);
+ if(ed){D.entries[D.entries.findIndex(z=>z.id===ed)]=e}else D.entries.push(e);save();const d=e.date;buildForm();$('f_date').value=d;render()}
+function editE(id){const e=D.entries.find(z=>z.id===id);if(!e)return;buildForm();ed=id;$('ftitle').textContent='✏️ Edit Entry #'+id;$('f_date').value=e.date;$('f_cat').value=e.cat;$('f_amt').value=e.amt;$('f_mode').value=e.mode;$('f_note').value=e.note||'';D.cols.forEach(c=>$('x_'+c.id).value=e.x?.[c.id]||'');scrollTo({top:0,behavior:'smooth'})}
+function delE(id){if(confirm('Delete entry?')){D.entries=D.entries.filter(z=>z.id!==id);save();render()}}
+function inR(e){const f=$('ff').value,t=$('ft').value,c=$('fc').value;return(!f||e.date>=f)&&(!t||e.date<=t)&&(!c||e.cat===c)}
+function grp(d,p){if(p==='day')return d;if(p==='month')return d.slice(0,7);if(p==='year')return d.slice(0,4);const x=new Date(d+'T00:00:00');x.setDate(x.getDate()-(x.getDay()+6)%7);return'Wk '+x.getFullYear()+'-'+String(x.getMonth()+1).padStart(2,'0')+'-'+String(x.getDate()).padStart(2,'0')}
+function setP(p){P=p;document.querySelectorAll('[data-p]').forEach(b=>b.classList.toggle('on',b.dataset.p===p));render()}
+function clr(){$('ff').value=$('ft').value=$('fc').value='';render()}
+function render(){
+ const v=D.entries.filter(inR).sort((a,b)=>a.date<b.date?-1:a.date>b.date?1:a.id-b.id);
+ const inc=v.filter(e=>isInc(e.cat)).reduce((a,e)=>a+e.amt,0),exp=v.filter(e=>!isInc(e.cat)).reduce((a,e)=>a+e.amt,0),sav=inc-exp;
+ const tm=today().slice(0,7),mExp=D.entries.filter(e=>e.date.startsWith(tm)&&!isInc(e.cat)).reduce((a,e)=>a+e.amt,0),ty=today().slice(0,4),yExp=D.entries.filter(e=>e.date.startsWith(ty)&&!isInc(e.cat)).reduce((a,e)=>a+e.amt,0);
+ const bud=D.cats.reduce((a,c)=>a+(c.grp!=='Income'&&c.grp!=='Yearly'?(+c.bud||0):0),0);
+ $('cards').innerHTML=`<div class="card"><small>Income (filter)</small><b class="pos">${INR(inc)}</b></div><div class="card"><small>Expense (filter)</small><b class="neg">${INR(exp)}</b></div><div class="card"><small>Savings</small><b class="${sav>=0?'pos':'neg'}">${INR(sav)}</b>${inc?`<div class="note">${Math.round(sav*100/inc)}% of income</div>`:''}</div><div class="card"><small>This month spent</small><b>${INR(mExp)}</b>${bud?`<div class="note">Budget ${INR(bud)} • ${mExp>bud?'<span class=neg>over by '+INR(mExp-bud)+'</span>':'left '+INR(bud-mExp)}</div>`:''}</div><div class="card"><small>This year spent</small><b>${INR(yExp)}</b></div>`;
+ $('phead').textContent='Printed: '+new Date().toLocaleString('en-IN')+' • View: '+P.toUpperCase();
+ const g={};v.forEach(e=>{const k=grp(e.date,P),o=g[k]=g[k]||{i:0,x:0,n:0};o.n++;isInc(e.cat)?o.i+=e.amt:o.x+=e.amt});
+ $('sum').innerHTML=`<tr><th class="l">${{day:'Date',week:'Week (Mon)',month:'Month',year:'Year'}[P]}</th><th>Entries</th><th>Income</th><th>Expense</th><th>Savings</th></tr>`+Object.keys(g).sort().reverse().map(k=>{const o=g[k],s=o.i-o.x;return`<tr><td>${k}</td><td>${o.n}</td><td class="pos">${INR(o.i)}</td><td class="neg">${INR(o.x)}</td><td class="${s>=0?'pos':'neg'}">${INR(s)}</td></tr>`}).join('')||'<tr><td colspan="5" class="l">No entries yet</td></tr>';
+ // category breakdown + budget (budget compared to selected-range expense only when viewing month-ish)
+ const cs={};v.filter(e=>!isInc(e.cat)).forEach(e=>cs[e.cat]=(cs[e.cat]||0)+e.amt);const top=Math.max(1,...Object.values(cs));
+ const monthsN=new Set(v.map(e=>e.date.slice(0,7))).size||1;
+ $('cat').innerHTML='<tr><th class="l">Category</th><th>Spent</th><th>%</th><th class="l">Bar / budget</th></tr>'+Object.entries(cs).sort((a,b)=>b[1]-a[1]).map(([c,a])=>{const cf=D.cats.find(x=>x.name===c)||{},b=(+cf.bud||0)*monthsN,over=b&&a>b;return`<tr><td>${esc(c)}</td><td>${INR(a)}</td><td>${exp?Math.round(a*100/exp):0}%</td><td class="l"><div class="bar"><i class="${over?'over':''}" style="width:${Math.min(100,(b?a*100/b:a*100/top))}%"></i></div>${b?`<small class="${over?'neg':''}">of ${INR(b)}</small>`:''}</td></tr>`}).join('')||'<tr><td colspan="4" class="l">—</td></tr>';
+ const cols=BUILTIN.filter(c=>!D.hidden.includes(c[0])),cx=D.cols.filter(c=>!D.hidden.includes(c.id));
+ const cell=(e,k)=>({date:e.date,type:`<span class="tag ${isInc(e.cat)?'I':'E'}">${isInc(e.cat)?'IN':'OUT'}</span>`,cat:esc(e.cat),amt:`<span class="${isInc(e.cat)?'pos':'neg'}">${INR(e.amt)}</span>`,mode:e.mode,note:esc(e.note)})[k];
+ const L=['date','type','cat','note','mode'];
+ $('tb').innerHTML=`<tr>${cols.map(c=>`<th class="${L.includes(c[0])?'l':''}">${c[1]}</th>`).join('')}${cx.map(c=>`<th>${esc(c.name)}</th>`).join('')}<th class="noprint">⚙</th></tr>`+v.slice().reverse().map(e=>`<tr>${cols.map(c=>`<td class="${L.includes(c[0])?'l':''}">${cell(e,c[0])}</td>`).join('')}${cx.map(c=>`<td>${esc(e.x?.[c.id]||'')}</td>`).join('')}<td class="noprint"><button onclick="editE(${e.id})">✏️</button> <button class="dng" onclick="delE(${e.id})">🗑</button></td></tr>`).join('')||'<tr><td colspan="9" class="l">Nothing here yet — add your first entry above.</td></tr>'}
+/* columns */
+function openCols(){$('colbody').innerHTML='<p class="note">Tick = show in table &amp; print.</p><table>'+BUILTIN.map(c=>`<tr><td class="l"><label><input type="checkbox" ${D.hidden.includes(c[0])?'':'checked'} onchange="tog('${c[0]}')"> ${c[1]}</label></td><td></td></tr>`).join('')+D.cols.map(c=>`<tr><td class="l"><label><input type="checkbox" ${D.hidden.includes(c.id)?'':'checked'} onchange="tog('${c.id}')"> ${esc(c.name)}</label></td><td><button class="dng" onclick="delCol('${c.id}')">Remove</button></td></tr>`).join('')+'</table>';$('mcols').classList.add('on')}
+function tog(k){D.hidden=D.hidden.includes(k)?D.hidden.filter(x=>x!==k):[...D.hidden,k];save();render()}
+function addCol(){const n=$('ncn').value.trim();if(!n)return;D.cols.push({id:'c'+Date.now(),name:n,type:$('nct').value});$('ncn').value='';save();buildForm();render();openCols()}
+function delCol(id){if(!confirm('Remove column and its data?'))return;D.cols=D.cols.filter(c=>c.id!==id);D.entries.forEach(e=>e.x&&delete e.x[id]);save();buildForm();render();openCols()}
+function closeM(){document.querySelectorAll('.modal').forEach(m=>m.classList.remove('on'))}
+/* categories */
+function openCat(){$('catbody').innerHTML='<table><tr><th class="l">Category</th><th class="l">Group</th><th>Monthly budget ₹</th><th></th></tr>'+D.cats.map((c,i)=>`<tr><td class="l">${esc(c.name)}</td><td class="l">${c.grp}</td><td>${c.grp==='Income'?'—':`<input data-i="${i}" type="number" value="${c.bud||0}">`}</td><td><button class="dng" onclick="delCat(${i})">✕</button></td></tr>`).join('')+'</table>';$('mcat').classList.add('on')}
+function saveCat(){document.querySelectorAll('#catbody [data-i]').forEach(e=>D.cats[+e.dataset.i].bud=+e.value||0);save();render();closeM()}
+function addCat(){const n=$('ncat').value.trim();if(!n||D.cats.some(c=>c.name===n))return;D.cats.push({name:n,grp:$('ncg').value,bud:0});$('ncat').value='';save();buildForm();openCat()}
+function delCat(i){if(D.entries.some(e=>e.cat===D.cats[i].name)&&!confirm('Entries use this category. Remove anyway? (entries stay)'))return;D.cats.splice(i,1);save();buildForm();render();openCat()}
+/* fixed bills */
+function openFixed(){$('nfc').innerHTML=catOpts();$('fixbody').innerHTML='<table><tr><th class="l">Category</th><th>Amount</th><th>Day</th><th></th></tr>'+D.fixed.map((f,i)=>`<tr><td class="l">${esc(f.cat)}</td><td>${INR(f.amt)}</td><td>${f.day}</td><td><button class="dng" onclick="delFix(${i})">✕</button></td></tr>`).join('')+'</table>';$('mfix').classList.add('on')}
+function addFix(){const a=+$('nfa').value,d=Math.min(28,Math.max(1,+$('nfd').value||1));if(!(a>0))return;D.fixed.push({cat:$('nfc').value,amt:a,day:d});$('nfa').value='';save();openFixed()}
+function delFix(i){D.fixed.splice(i,1);save();openFixed()}
+function applyFixed(){if(!D.fixed.length){alert('No fixed bills saved yet. Open 🔁 Fixed Bills first.');return}
+ const ym=($('f_date')?.value||today()).slice(0,7);let n=0;
+ D.fixed.forEach(f=>{if(!D.entries.some(e=>e.date.startsWith(ym)&&e.cat===f.cat&&e.fixed)){D.entries.push({id:D.seq++,date:ym+'-'+String(f.day).padStart(2,'0'),cat:f.cat,amt:f.amt,mode:'Bank',note:'Fixed bill',x:{},fixed:1});n++}});
+ save();render();alert(n?`${n} fixed bill(s) added for ${ym}.`:`Already added for ${ym}.`)}
+/* export */
+function exportCSV(){const v=D.entries.filter(inR).sort((a,b)=>a.date<b.date?-1:1),q=s=>'"'+String(s??'').replace(/"/g,'""')+'"';
+ dl('house-expense.csv','\ufeff'+[['Date','Type','Category','Amount','Paid by','Notes',...D.cols.map(c=>c.name)].map(q).join(','),...v.map(e=>[e.date,isInc(e.cat)?'Income':'Expense',e.cat,e.amt,e.mode,e.note,...D.cols.map(c=>e.x?.[c.id]||'')].map(q).join(','))].join('\n'),'text/csv')}
+function backup(){dl('house-expense-backup-'+today()+'.json',JSON.stringify(D),'application/json')}
+function restore(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const d=JSON.parse(r.result);if(!d.entries)throw 0;D=d;D.cols=D.cols||[];D.hidden=D.hidden||[];D.fixed=D.fixed||[];save();buildForm();render()}catch(x){alert('Invalid backup file')}};r.readAsText(f)}
+function dl(n,c,t){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([c],{type:t}));a.download=n;a.click()}
+D.cols=D.cols||[];D.hidden=D.hidden||[];D.fixed=D.fixed||[];buildForm();render();
+</script></body></html>
