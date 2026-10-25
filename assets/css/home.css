@@ -333,3 +333,25 @@ html{scroll-behavior:smooth}
 .topics a:nth-child(6n+2){--c:#10b981;--c2:#065f46}.topics a:nth-child(6n+3){--c:#f59e0b;--c2:#92400e}
 .topics a:nth-child(6n+4){--c:#ec4899;--c2:#9d174d}.topics a:nth-child(6n+5){--c:#8b5cf6;--c2:#5b21b6}.topics a:nth-child(6n+6){--c:#06b6d4;--c2:#155e75}
 @media(prefers-reduced-motion:reduce){.du-card,.cat-item,.topics a{transform:none!important;transition:none!important}.du-card:hover .du-i{transform:none}}
+
+/* ===== v12: All Tools category chips = colourful 3D buttons ===== */
+.cats{gap:12px 10px;margin-bottom:18px}
+.cats .chip{--c:#2563eb;--c2:#1e3a8a;--c3:#93c5fd;position:relative;border:2px solid rgba(255,255,255,.7);color:#fff;padding:9px 17px;font-weight:800;font-size:.85rem;text-shadow:0 1px 0 rgba(0,0,0,.35);
+  background:linear-gradient(160deg,var(--c3),var(--c) 50%,var(--c2));
+  box-shadow:0 5px 0 var(--c2),0 11px 18px color-mix(in srgb,var(--c) 45%,transparent),inset 0 2px 0 rgba(255,255,255,.5),inset 0 -3px 6px rgba(0,0,0,.15);
+  transform:translateY(var(--ty,0));transition:transform .15s,box-shadow .2s,filter .2s}
+.cats .chip:hover{--ty:-4px;filter:brightness(1.1);color:#fff;border-color:rgba(255,255,255,.9);
+  box-shadow:0 9px 0 var(--c2),0 18px 28px color-mix(in srgb,var(--c) 60%,transparent),0 0 0 4px color-mix(in srgb,var(--c) 28%,transparent),inset 0 2px 0 rgba(255,255,255,.5)}
+.cats .chip:active{--ty:3px;box-shadow:0 1px 0 var(--c2),0 3px 6px rgba(0,0,0,.25)}
+.cats .chip[aria-pressed=true]{--ty:3px;background:linear-gradient(160deg,var(--c2),var(--c));border-color:#fff;outline:3px solid var(--c);outline-offset:2px;
+  box-shadow:0 2px 0 var(--c2),inset 0 3px 8px rgba(0,0,0,.35),0 0 18px color-mix(in srgb,var(--c) 60%,transparent)}
+.cats .chip:nth-child(9n+1){--c:#2563eb;--c2:#1e3a8a;--c3:#93c5fd}
+.cats .chip:nth-child(9n+2){--c:#ec4899;--c2:#9d174d;--c3:#f9a8d4}
+.cats .chip:nth-child(9n+3){--c:#f59e0b;--c2:#92400e;--c3:#fcd34d}
+.cats .chip:nth-child(9n+4){--c:#ef4444;--c2:#991b1b;--c3:#fca5a5}
+.cats .chip:nth-child(9n+5){--c:#10b981;--c2:#065f46;--c3:#6ee7b7}
+.cats .chip:nth-child(9n+6){--c:#8b5cf6;--c2:#5b21b6;--c3:#c4b5fd}
+.cats .chip:nth-child(9n+7){--c:#06b6d4;--c2:#155e75;--c3:#67e8f9}
+.cats .chip:nth-child(9n+8){--c:#f97316;--c2:#9a3412;--c3:#fdba74}
+.cats .chip:nth-child(9n+9){--c:#84cc16;--c2:#3f6212;--c3:#bef264}
+@media(prefers-reduced-motion:reduce){.cats .chip{transition:none}.cats .chip:hover{--ty:0}}
