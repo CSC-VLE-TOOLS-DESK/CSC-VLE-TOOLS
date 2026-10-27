@@ -16,8 +16,8 @@ Open `assets/js/site.js` and edit the block called **SITE SETTINGS** near the to
 Anything left as `''` is hidden automatically. Filled-in links appear in the footer on every page, on the Contact page, the Feedback page and the home page.
 
 ## 3. SEO checklist after publishing
-1. Open https://search.google.com/search-console and add the property `https://csc-vle-tools-desk.github.io/CSC-VLE-TOOLS/`.
-2. Submit `https://csc-vle-tools-desk.github.io/CSC-VLE-TOOLS/sitemap.xml`.
+1. Open https://search.google.com/search-console and add the property `https://cschelpdesk.github.io/`.
+2. Submit `https://cschelpdesk.github.io/sitemap.xml`.
 3. Use "URL inspection" > "Request indexing" for the home page.
 4. Add the same site to Bing Webmaster Tools.
 5. Share the site links on WhatsApp and Telegram groups; real visits and links help ranking.

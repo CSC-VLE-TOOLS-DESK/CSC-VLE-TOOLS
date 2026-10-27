@@ -1,0 +1,13 @@
+v13 - five new tools added to v12
+
+New pages (registered in assets/js/site.js, added to sitemap.xml):
+  tools_pdf_compressor.html      PDF Compressor (target 50 KB to 2 MB)          PDF Tools
+  tools_jpg_png_converter.html   JPG / PNG Converter & Compressor               Photo & Image Tools
+  tools_image_merger.html        Image Merger (vertical/horizontal, spacing)    Photo & Image Tools
+  tools_bg_remover_pro.html      Background Remover Pro (hair detail, brushes,  Photo & Image Tools
+                                 Original/After windows, colour fill)
+  tools_ai_bg_remover.html       AI Background Remover (MODNet via transformers.js,
+                                 needs internet the first time to load the model)
+
+Changed files: assets/js/site.js (5 registry entries), sitemap.xml (5 URLs), index.html (static tool count).
+Existing tools_bg_remover.html is untouched. Canonical URLs use https://cschelpdesk.github.io/ like the rest of v12.

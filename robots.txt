@@ -2,4 +2,4 @@ User-agent: *
 Allow: /
 Disallow: /TEMPLATE_STARTER.html
 
-Sitemap: https://csc-vle-tools-desk.github.io/CSC-VLE-TOOLS/sitemap.xml
+Sitemap: https://cschelpdesk.github.io/sitemap.xml

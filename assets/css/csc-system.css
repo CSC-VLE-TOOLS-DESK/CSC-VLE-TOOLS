@@ -221,3 +221,5 @@ button,a,input,select,textarea{touch-action:manipulation}
   #site-header .hdr nav>a,#site-header .hdr .bgbtn{padding:6px 9px;font-size:.8rem;border-radius:11px}
   #site-header .hdr .bgbtn i{display:none}
 }
+/* Claude follow button */
+.s-claude:hover{background:#d97757}.soc-a.on-light.s-claude{background:#d97757;color:#fff!important}
