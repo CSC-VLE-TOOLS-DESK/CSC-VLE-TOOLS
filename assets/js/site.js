@@ -24,6 +24,10 @@
     ['tools_image_converter_pro', 'Image Converter', 'Convert images between JPG, PNG and WebP.', 'photo', 'fa-right-left'],
     ['tools_image_crop', 'Image Crop Tool', 'Crop images with free or fixed aspect ratios.', 'photo', 'fa-crop'],
     ['tools_bg_remover', 'Background Remover', 'Remove or replace a plain background colour. Works best on studio style photos.', 'photo', 'fa-wand-magic-sparkles'],
+    ['tools_bg_remover_pro', 'Background Remover Pro', 'Remove a photo background with hair detail, brush touch-up and colour fill.', 'photo', 'fa-eraser'],
+    ['tools_ai_bg_remover', 'AI Background Remover', 'AI cut-out for any photo background with fine hair edges and colour fill.', 'photo', 'fa-robot'],
+    ['tools_jpg_png_converter', 'JPG / PNG Converter & Compressor', 'Convert JPG, PNG and WebP, resize and compress to a KB limit.', 'photo', 'fa-photo-film'],
+    ['tools_image_merger', 'Image Merger', 'Join images vertically or horizontally with spacing and background colour.', 'photo', 'fa-table-cells-large'],
     ['tools_ai_passport_studio', 'Passport & Stamp Photo Studio', 'Make passport and stamp size photo sheets with a background colour and cut lines.', 'photo', 'fa-user-large'],
     ['tools_name_date_photo', 'Name & Date on Photo', 'Add the candidate name and date strip below a photo for job forms.', 'photo', 'fa-calendar-day'],
     ['tools_photo_sign_joiner', 'Photo & Signature Joiner', 'Join photo and signature into a single image with adjustable border.', 'photo', 'fa-object-group'],
@@ -36,6 +40,7 @@
     ['tools_pdf_merger', 'PDF Merger', 'Join several PDF files into one.', 'pdf', 'fa-object-ungroup'],
     ['tools_pdf_splitter', 'PDF Splitter', 'Split a PDF into pages or page ranges.', 'pdf', 'fa-scissors'],
     ['tools_pdf_watermark', 'PDF Watermark', 'Add a text watermark to every page of a PDF.', 'pdf', 'fa-droplet'],
+    ['tools_pdf_compressor', 'PDF Compressor', 'Reduce PDF size to 100 KB, 200 KB, 500 KB or 1 MB for form upload.', 'pdf', 'fa-file-zipper'],
     ['tools_word_to_pdf', 'Word to PDF', 'Convert a .docx file to PDF (text, tables and basic formatting).', 'pdf', 'fa-file-word'],
     // Govt
     ['haryana-application-generator', 'Application Generator', 'Ready application letters for common government services, in English and Hindi.', 'govt', 'fa-file-signature'],
@@ -122,7 +127,7 @@
      ===================================================================== */
   var SITE = {
     name: 'CSC VLE TOOLS',
-    url: 'https://csc-vle-tools-desk.github.io/CSC-VLE-TOOLS/',
+    url: 'https://cschelpdesk.github.io/',
     tagline: 'Free online tools for CSC & VLE centres',
     location: 'Rohtak, Haryana, India',
     hours: 'Mon - Sat, 9:00 AM - 7:00 PM',
@@ -138,14 +143,15 @@
       youtube: '',        // https://youtube.com/@yourchannel
       x: '',              // https://x.com/yourid
       linkedin: '',       // https://linkedin.com/in/yourid
-      github: 'https://github.com/CSC-VLE-TOOLS-DESK'
+      github: 'https://github.com/CSCHelpDesk/cschelpdesk.github.io',
+      claude: 'https://claude.ai'   // Claude (Anthropic)
     }
   };
   var SOCIAL_META = [
     ['whatsapp', 'WhatsApp', 'fa-brands fa-whatsapp'], ['telegram', 'Telegram', 'fa-brands fa-telegram'],
     ['facebook', 'Facebook', 'fa-brands fa-facebook-f'], ['instagram', 'Instagram', 'fa-brands fa-instagram'],
     ['youtube', 'YouTube', 'fa-brands fa-youtube'], ['x', 'X (Twitter)', 'fa-brands fa-x-twitter'],
-    ['linkedin', 'LinkedIn', 'fa-brands fa-linkedin-in'], ['github', 'GitHub', 'fa-brands fa-github']
+    ['linkedin', 'LinkedIn', 'fa-brands fa-linkedin-in'], ['github', 'GitHub', 'fa-brands fa-github'], ['claude', 'Claude', 'fa-solid fa-asterisk']
   ];
 
   var CSC = window.CSC = { LINKS: LINKS, TOOLS: TOOLS, CATS: CATS, SITE: SITE, SOCIAL_META: SOCIAL_META, tools: {} };
