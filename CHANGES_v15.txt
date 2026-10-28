@@ -1,0 +1,13 @@
+v15 (on top of v14 Kids Corner)
+HOME
+  Daily Use Apps: 5 cards always in ONE row. Desktop and tablet: 5 equal columns that shrink to fit. Phone (under 700 px): one swipe row.
+  Phone: the category sidebar (which repeated the same list as the buttons and overlapped them) is hidden; the category buttons are one swipe row.
+  Phone: the back-to-top button no longer sits on the Try Demo button.
+KIDS CORNER
+  New: kids-corner-standalone.html = the whole Kids Corner in ONE file (styles, 10 games and all 72 pictures inside). Opens by double click, works offline
+  (only the icon font and the Baloo font need internet). Not listed in the sitemap (noindex).
+CHECKED (no errors found)
+  74 pages loaded in a test browser: no script errors, headers and all tool pages mount. All 10 Kids games played to the end. 72 pictures, all referenced, none missing.
+  No old csc-vle-tools-desk address left. Sitemap, registry and files match (66 tools).
+NOTE: kids-corner.html needs assets/css/kids.css, assets/js/kids.js and the whole assets/kids/ folder on the server. If any is missing the page shows
+  plain buttons and broken pictures.
