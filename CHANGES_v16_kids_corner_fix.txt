@@ -1,0 +1,16 @@
+v16 - Kids Corner website integration repair
+
+FIX
+- The live kids-corner.html now uses the self-contained Kids Corner implementation from kids-corner-standalone.html.
+- All game JavaScript, styles, and learning pictures are embedded in the page, so the live page no longer depends on assets/js/kids.js, assets/css/kids.css, or assets/kids/*.png loading correctly.
+- Updated canonical URL and navigation links to the CSC-VLE-TOOLS GitHub Pages site.
+- Kept the original standalone file for offline use and kept the separate assets-based files for reference/future maintenance.
+
+DAILY USE APPS
+- Verified the home page has exactly five cards: Pro Studio, Stock Ledger, House Expense, Haryana Apply, and Kids Corner.
+- Kept five equal columns on desktop/tablet and a horizontal swipe row on phones.
+- Kids Corner remains the fifth card and links to kids-corner.html.
+
+VALIDATION
+- Checked ZIP structure, HTML metadata, exactly five Daily Use Apps links, integrated Kids Corner game IDs, and inline JavaScript syntax.
+- Browser automation was blocked by the execution environment, so this is a static/source validation rather than a claim of live-host testing.
