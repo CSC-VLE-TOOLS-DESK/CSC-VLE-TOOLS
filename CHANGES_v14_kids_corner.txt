@@ -1,0 +1,21 @@
+v14 - Kids Corner + site fixes (on top of v13)
+
+NEW
+  kids-corner.html, assets/css/kids.css, assets/js/kids.js, assets/kids/*.png (72 pictures)
+  Ten picture games in English and Hindi: ABC Letters (KG), Hindi Alphabet (UKG), Numbers 1-20 (KG/UKG), Count & Pick (KG),
+  Add with Pictures (UKG), Picture Words (UKG), Missing Letter (Class 1), Opposites (Class 1), Days of the Week (Class 1), Shapes & Colours.
+  Hear-it buttons (browser voice), sound toggle, try-again mode, stars saved on the device, printable ABC and Hindi charts.
+  To add a picture: put NAME.png in assets/kids/ and add one line to PICS in assets/js/kids.js.
+
+HOMEPAGE
+  Daily Use Apps row (below the hero) now has 5 boxes; Kids Corner is the 5th. Layout: 5 / 3 / 2 columns by screen width.
+  Kids Corner also added to the header menu, footer, tools list (new category), and sitemap.xml. Tool count 66.
+
+PICTURES (from your zip/rar)
+  Picked the best of each duplicate: queen (cartoon), sun (cartoon), strawberry (single), rabbit (orange), zebra, xmas tree, watch/clock drawn new.
+  Removed the fake checkerboard backgrounds baked into many files; all pictures are 400x400 transparent PNG, under 50 KB.
+  Fixed from your checklist notes: mouse = animal (rat photo used), arrow-up now green like arrow-down, new drawn pictures for
+  ball (was missing), full glass, happy face, chick (old one was a hen), egg (was Easter eggs) and wrist watch.
+
+FIXES
+  Phone layout: 10 tool pages scrolled sideways (ID card tools, invoice, salary slip, biodata, visiting card, Pro Studio). Fixed in csc-system.css and pro-studio.html.
