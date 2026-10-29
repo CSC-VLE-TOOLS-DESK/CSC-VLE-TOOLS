@@ -1,0 +1,14 @@
+v19 - Hindi Varnmala 44 + new Kids games + smaller Daily Use boxes (on top of v18)
+
+HINDI VARNMALA (Kids Corner > Hindi Alphabet)
+- Now all 44 letters: 11 swar (vowels) + 33 vyanjan (consonants). Added the missing ऋ and ए.
+- ङ ञ ण have no common picture word, so they show a bright letter card with an example (गङ्गा, पञ्च, घण्टा).
+- Vowel tiles are pink, consonant tiles blue. Print chart now has all 44. Quiz has 10 questions.
+NEW GAMES (3): Balloon Pop, Varnmala Train (missing coach), Match the Pair (memory cards). Total 13 games.
+REWARDS: Chintu parrot cheers in every game; finishing a game wins a sticker; "My sticker box" shelf on the Kids home.
+PICTURES: 14 letter pictures + Chintu + train + treasure box + 10 sticker badges added (embedded in kids-corner.html and also saved in assets/kids/).
+  Also saved for future games (not used yet): lily-pad, pond, station, basket, streak-fire.
+  Chosen from the duplicates you sent; backgrounds removed; all 400x400 transparent PNG, under 50 KB.
+  van-forest: your scene showed a van, so a clean cartoon forest was drawn instead (वन, not van).
+DAILY USE APPS: boxes are smaller. Desktop/tablet: all 6 in one row. Phone: 5 boxes visible in one row (icon + name), swipe for the 6th.
+NOTE: kids-corner.html and kids-corner-standalone.html carry all games inside the file. assets/js/kids.js is the older reference copy and was not changed.
