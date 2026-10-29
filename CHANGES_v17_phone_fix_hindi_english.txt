@@ -1,0 +1,29 @@
+v17 - phone "not responding" fix + Kids Corner Hindi / English
+
+ROOT CAUSE FIXED
+- Phone: the homepage was ~1850px wide on a 390px screen (the All Tools category swipe row stretched the page).
+  The browser zoomed out and taps on Daily Use cards, search results, categories and footer links missed.
+  Fix: assets/css/home.css (v17 block at the end: .workspace minmax(0,1fr) and min-width:0).
+
+OTHER FIXES
+- kids-corner.html: removed stray "\n" text at the top, removed duplicate empty footer, canonical now https://csc-vle-tools-desk.github.io/CSC-VLE-TOOLS/kids-corner.html
+- sitemap.xml: Kids Corner URL moved to cschelpdesk.github.io (was csc-vle-tools-desk.github.io).
+- 404.html: <base> now adapts to the /CSC-VLE-TOOLS/ sub-folder of a GitHub project page.
+- index.html: Kids Corner card shows a lion emoji if assets/kids/lion.png is missing.
+
+NEW
+- Kids Corner: English / हिंदी buttons at the top of the page (saved on the device, work inside games too).
+  Translates hero, tabs, game cards, all 10 games (questions, options, buttons, praise, finish screen) and the spoken voice.
+- kids-corner-standalone.html regenerated from the same code (works offline as one file).
+
+DAILY USE APPS
+- Exactly 5 cards: Pro Studio, Stock Ledger, House Expense, Haryana Apply, Kids Corner. One row on desktop/tablet, swipe row on phone.
+
+TESTED (headless browser)
+- 75 pages x desktop+phone over http: 0 script errors, 0 sideways overflow, 0 broken local files.
+- All 10 Kids games played to the end in English and Hindi, desktop and phone (live page and standalone).
+- Homepage: all 5 cards, header menu, search, category and footer links open the right page by click and by tap.
+NOTE: the CDN icon font and Baloo font need internet; the sandbox had none, so icons were not visible in screenshots.
+
+SEARCH NOTE: Google reads robots.txt only at the domain root, so the copy inside /CSC-VLE-TOOLS/ is ignored. The sitemap still works:
+  submit https://csc-vle-tools-desk.github.io/CSC-VLE-TOOLS/sitemap.xml in Google Search Console (add the URL-prefix property for the full address).
