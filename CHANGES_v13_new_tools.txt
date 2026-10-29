@@ -10,4 +10,4 @@ New pages (registered in assets/js/site.js, added to sitemap.xml):
                                  needs internet the first time to load the model)
 
 Changed files: assets/js/site.js (5 registry entries), sitemap.xml (5 URLs), index.html (static tool count).
-Existing tools_bg_remover.html is untouched. Canonical URLs use https://cschelpdesk.github.io/ like the rest of v12.
+Existing tools_bg_remover.html is untouched. Canonical URLs use https://csc-vle-tools-desk.github.io/CSC-VLE-TOOLS/ like the rest of v12.

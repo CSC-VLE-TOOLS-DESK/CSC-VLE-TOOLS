@@ -1,0 +1,8 @@
+v18 (includes v17 fixes)
+- Daily Use Apps (below the hero) now has SIX boxes in one row: Pro Studio, Stock Ledger, House Expense, Haryana Apply, Kids Corner, Shop Ledger.
+  Desktop/tablet: 6 equal columns, buttons aligned. Phone: swipe row. To change the 6th box edit the du6 line in index.html.
+- New Kids Corner icon (assets/img/kids-corner-icon.png): used on the homepage Kids box, the Kids Corner page hero and the browser-tab icon.
+- v17: phone page was ~1850px wide (category swipe row stretched it) so taps missed; fixed in assets/css/home.css.
+- v17: Kids Corner Hindi / English buttons; stray "\n" and duplicate footer removed in kids-corner.html.
+- v17: every address now https://csc-vle-tools-desk.github.io/CSC-VLE-TOOLS/ (canonical, og, JSON-LD, sitemap, robots, site.js); 404.html adapts to the sub-folder.
+- Submit https://csc-vle-tools-desk.github.io/CSC-VLE-TOOLS/sitemap.xml in Google Search Console.
