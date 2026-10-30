@@ -1,0 +1,23 @@
+WHY SOME FILES (especially the "assets" folder) DO NOT UPLOAD
+
+GitHub's website upload accepts only about 100 files at one time. If you drag a folder or many files together,
+the extra files are silently left out. This site has 238 files:
+   main folder = 106 files, assets/kids = 107 files  (both are over 100).
+
+BEST WAY (easy): upload in parts
+1. Use the three files  CSC_VLE_UPLOAD_PART_1_of_3.zip , PART_2_of_3 , PART_3_of_3 .
+2. Unzip PART 1 on your computer. Open your GitHub repository > Add file > Upload files.
+3. Drag ALL the files and folders from inside the unzipped PART 1 folder (do not drag the zip itself; GitHub does not unzip).
+   Wait until the list finishes, press "Commit changes".
+4. Do the same for PART 2, then PART 3. Folders merge by themselves.
+5. Open  your-site-address/upload-check.html . It shows green when all files are there, or lists every missing file name (it checks all files except itself).
+   If something is missing, upload only those files into the same folder again.
+   (When everything is green, you may delete upload-check.html.)
+
+OTHER TIPS
+- Wait for the page to say every file is uploaded before pressing Commit. On a slow connection big batches can stop halfway.
+- Files over 25 MB cannot be uploaded in the browser. This site has none (the biggest is 3.4 MB).
+- Do not upload the zip itself. Unzip first.
+- GitHub Desktop or the git command line has no 100-file limit: add the whole folder and push.
+- If the site looks plain or broken after upload, assets/css or assets/js did not upload: run upload-check.html.
+- Kids Corner pictures: if an assets/kids file is missing, the game still shows its built-in picture, so it will not break.

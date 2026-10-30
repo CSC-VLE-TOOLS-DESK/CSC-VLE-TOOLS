@@ -1,0 +1,6 @@
+CSC VLE TOOLS v21  (30 Oct 2026)
+Kids Corner pictures now load from the folder assets/kids/<name>.png (balloons: assets/kids/balloons/balloon-<colour>.png).
+If a file is missing, the picture built into the page is used, so nothing breaks.
+Replace a picture = put a new PNG with the SAME NAME in the folder and upload. See HOW_TO_CHANGE_KIDS_IMAGES.txt and assets/kids/IMAGE_NAMES.txt.
+Example done: assets/kids/ice-cream.png is now the cupcake picture (the word still says "Ice cream").
+Cache number: var IMGV = '1' in kids-corner.html; raise it if browsers show an old picture.

@@ -28,6 +28,8 @@
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "Organization", "@id": "https://csc-vle-tools-desk.github.io/CSC-VLE-TOOLS/#org", "name": "CSC VLE TOOLS", "url": "https://csc-vle-tools-desk.github.io/CSC-VLE-TOOLS/", "logo": "https://csc-vle-tools-desk.github.io/CSC-VLE-TOOLS/icon-512.png", "sameAs": ["https://github.com/csc-vle-tools-desk/CSC-VLE-TOOLS"], "areaServed": "IN", "address": {"@type": "PostalAddress", "addressLocality": "Rohtak", "addressRegion": "Haryana", "addressCountry": "IN"}}</script>
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "What is CSC VLE TOOLS?", "acceptedAnswer": {"@type": "Answer", "text": "CSC VLE TOOLS is a free collection of browser-based tools made for CSC and VLE centres, cyber cafes, students and job seekers. It includes a photo and signature resizer, passport photo sheets, ID card and PAN/Aadhaar print layouts, PDF tools, resume and application formats, billing tools and calculators."}}, {"@type": "Question", "name": "Are these tools really free to use?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. Every tool on the site is free to use, and no sign-up or login is needed."}}, {"@type": "Question", "name": "Are my photos and documents uploaded to a server?", "acceptedAnswer": {"@type": "Answer", "text": "No. The tools run inside your own browser, so your photos, signatures and documents are not uploaded to our servers. A few tools load helper libraries or OCR language data from public CDNs when you open them, which needs an internet connection."}}, {"@type": "Question", "name": "How do I resize a photo or signature to an exact size in KB for a form?", "acceptedAnswer": {"@type": "Answer", "text": "Open the Photo Resizer or Signature Resizer, upload your image, enter the required width, height and maximum file size in KB, then download the result. The same method works for thumb impression images."}}, {"@type": "Question", "name": "Can I print PAN, Aadhaar and other ID cards at actual size?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. Use the PAN & Aadhaar Print, PVC ID Card Print and ID Card Print tools. They place the front and back of a card at standard card size on an A4 sheet so it can be printed and cut."}}, {"@type": "Question", "name": "Is CSC VLE TOOLS an official government website?", "acceptedAnswer": {"@type": "Answer", "text": "No. It is an independent project and is not connected to CSC e-Governance Services India Ltd, UIDAI or any government department. Official portal links on this page open the original government and service websites."}}]}</script>
   <script src="assets/js/site.js" defer></script>
+  <link rel="stylesheet" href="assets/css/websearch.css">
+  <script src="assets/js/websearch.js" defer></script>
 </head>
 <body class="home-page">
   <a class="skip-link" href="#main">Skip to content</a>
@@ -87,8 +89,16 @@
         <span class="go">Search</span></label>
     </div>
 
+        <section class="wsb" aria-labelledby="ws-t">
+      <h2 id="ws-t"><i class="fa-solid fa-globe" aria-hidden="true"></i> Search the Web</h2>
+      <p>Search anything, or type a website address. Results open in a new tab.</p>
+      <form class="ws" data-ws role="search"><select aria-label="Search engine"></select><input type="search" placeholder="Search Google, or type a website like irctc.co.in" aria-label="Search the web or open a website" autocomplete="off"><button type="submit">Search</button></form>
+      <div class="ws-chips" data-ws-sites="6"></div>
+      <a class="ws-more" href="web-search.html">Open the full Web Search page <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+    </section>
+
     <div class="stats-strip" aria-label="Site highlights">
-      <div class="stat"><b id="tool-count">66</b><span>Ready-to-use tools</span></div>
+      <div class="stat"><b id="tool-count">68</b><span>Ready-to-use tools</span></div>
       <div class="stat"><b>Free</b><span>No login, no charges</span></div>
       <div class="stat"><b>Private</b><span>Runs in your browser</span></div>
       <div class="stat"><b>Mobile</b><span>Works on phone &amp; PC</span></div>

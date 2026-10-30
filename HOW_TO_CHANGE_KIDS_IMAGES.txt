@@ -1,0 +1,14 @@
+HOW TO CHANGE A KIDS CORNER PICTURE (no rebuild needed)
+
+1. Open the folder  assets/kids/  . Every game picture is a PNG there. See assets/kids/IMAGE_NAMES.txt for the list of names.
+2. Make your new picture a PNG, about 400 x 400 pixels, with the object in the middle (transparent background looks best).
+3. Give it EXACTLY the same name as the old one, for example  ice-cream.png  (small letters, same spelling), and replace the old file.
+   Balloons are in  assets/kids/balloons/  (balloon-red.png, balloon-blue.png ...). Use a tall picture, about 100 x 210 pixels.
+4. Upload the folder to GitHub. Open the game and press Ctrl+F5 (on a phone: close the tab and open it again).
+5. If you still see the old picture, open kids-corner.html, find   var IMGV = '1';   and change 1 to 2 (then 3, 4 ...). This makes every browser fetch the pictures again.
+
+IMPORTANT
+- Only the PICTURE changes. The WORD shown with it (for example "Ice cream") stays the same, because words are inside the game code.
+  So replace a picture with something of the same kind. (In the example, ice-cream.png is now a cupcake, and the game still says "Ice cream".)
+- If a file is missing or has a wrong name, the game safely uses its built-in picture, so nothing breaks.
+- kids-corner-standalone.html used alone (away from the assets folder) always shows the built-in pictures.
