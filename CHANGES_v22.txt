@@ -1,0 +1,7 @@
+CSC VLE TOOLS v22  (31 Oct 2026)
+KIDS CORNER (now 23 games)
+- Add with Pictures: after a correct answer the sum is completed with a tick on the picture line AND in the text below (6 + 4 = 10 ✓).
+- 5 new games: Starts With (first letter), Before and After (numbers), Even or Odd, Which Has More?, Find the Number.
+HOME PAGE
+- Daily Use Apps: all 6 boxes now sit in ONE small row on phone and computer.
+Changed files: kids-corner.html, kids-corner-standalone.html, assets/css/home.css, assets/js/site.js, CHANGES_v22.txt
