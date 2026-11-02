@@ -29,7 +29,21 @@ th{position:sticky;top:0;background:#16213a;color:#a5b4cf;font-size:11px}td:firs
 .mc{background:var(--p);border:1px solid #334155;border-radius:12px;padding:14px;max-width:760px;width:100%;max-height:90vh;overflow:auto}.mc table{min-width:0}.mc td input{width:90px}
 .printhead{display:none}
 @media print{header,.noprint,.form,.modal{display:none!important}body{background:#fff;color:#000}.card,.box{background:#fff;border-color:#999;color:#000}th{background:#eee;color:#000;position:static}td,th{border-color:#bbb;color:#000}.tw{max-height:none;overflow:visible}.printhead{display:block;margin-bottom:8px}.pos{color:#060}.neg{color:#b00}.two{grid-template-columns:1fr 1fr}}
-</style></head><body>
+</style>  <meta name="description" content="Free home budget and expense tracker. Add income and daily spending, see monthly totals and reports. Your data stays on your device.">
+  <link rel="canonical" href="https://csc-vle-tools-desk.github.io/CSC-VLE-TOOLS/house-expense.html">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="CSC VLE TOOLS">
+  <meta property="og:locale" content="en_IN">
+  <meta property="og:title" content="House Expense Manager | CSC VLE TOOLS">
+  <meta property="og:description" content="Free home budget and expense tracker. Add income and daily spending, see monthly totals and reports. Your data stays on your device.">
+  <meta property="og:url" content="https://csc-vle-tools-desk.github.io/CSC-VLE-TOOLS/house-expense.html">
+  <meta property="og:image" content="https://csc-vle-tools-desk.github.io/CSC-VLE-TOOLS/og-image.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="House Expense Manager | CSC VLE TOOLS">
+  <meta name="twitter:description" content="Free home budget and expense tracker. Add income and daily spending, see monthly totals and reports. Your data stays on your device.">
+  <meta name="twitter:image" content="https://csc-vle-tools-desk.github.io/CSC-VLE-TOOLS/og-image.png">
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebApplication", "name": "House Expense Manager", "url": "https://csc-vle-tools-desk.github.io/CSC-VLE-TOOLS/house-expense.html", "description": "Free home budget and expense tracker. Add income and daily spending, see monthly totals and reports. Your data stays on your device.", "applicationCategory": "FinanceApplication", "operatingSystem": "Any (web browser)", "browserRequirements": "Requires JavaScript", "inLanguage": "en-IN", "isAccessibleForFree": true, "offers": {"@type": "Offer", "price": "0", "priceCurrency": "INR"}, "publisher": {"@type": "Organization", "name": "CSC VLE TOOLS", "url": "https://csc-vle-tools-desk.github.io/CSC-VLE-TOOLS/"}}</script>
+</head><body>
 <header><div style="display:flex;gap:8px;align-items:center"><a class="home" href="index.html">🏠 Home</a><h1>🏠 House Expense Manager<span>Daily • Monthly • Yearly</span></h1></div>
 <div style="display:flex;gap:6px;flex-wrap:wrap"><button onclick="openCols()">🧩 Columns</button><button onclick="openCat()">🗂 Categories &amp; Budget</button><button onclick="openFixed()">🔁 Fixed Bills</button><button onclick="exportCSV()">⬇ CSV</button><button onclick="backup()">💾 Backup</button><button onclick="document.getElementById('rf').click()">📂 Restore</button><input id="rf" type="file" accept=".json" hidden onchange="restore(event)"><button class="pri" onclick="window.print()">🖨 Print</button></div></header>
 <div class="wrap">

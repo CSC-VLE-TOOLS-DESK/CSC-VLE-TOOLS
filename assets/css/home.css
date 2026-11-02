@@ -355,3 +355,126 @@ html{scroll-behavior:smooth}
 .cats .chip:nth-child(9n+8){--c:#f97316;--c2:#9a3412;--c3:#fdba74}
 .cats .chip:nth-child(9n+9){--c:#84cc16;--c2:#3f6212;--c3:#bef264}
 @media(prefers-reduced-motion:reduce){.cats .chip{transition:none}.cats .chip:hover{--ty:0}}
+
+
+/* ===== v14: Daily Use row now has 5 cards (Kids Corner added) ===== */
+.du-row{grid-template-columns:repeat(5,minmax(0,1fr));gap:16px}
+.du5{background:linear-gradient(135deg,#f43f5e,#f59e0b);--edge:#9f1239;--glow:rgba(244,63,94,.55);--ic:#e11d48}
+.du5 .du-i img{width:46px;height:46px;object-fit:contain;filter:drop-shadow(0 2px 2px rgba(0,0,0,.25))}
+.du5 em{animation:du5pulse 2.2s ease-in-out infinite}
+@keyframes du5pulse{50%{transform:scale(1.07)}}
+@media(max-width:1000px){.du-row{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:760px){.du-row{grid-template-columns:repeat(2,minmax(0,1fr))}.du5{grid-column:1/-1;flex-direction:row;flex-wrap:wrap;justify-content:center;gap:6px 14px}.du5 em{margin-top:0}}
+@media(prefers-reduced-motion:reduce){.du5 em{animation:none}}
+
+/* ===== v15: Daily Use Apps always sit in ONE row (5 cards) ===== */
+.du-row{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:clamp(8px,1.4vw,16px)}
+.du5{grid-column:auto;flex-direction:column;flex-wrap:nowrap;justify-content:flex-start;gap:5px}
+.du5 em{margin-top:8px}
+@media(max-width:1000px){
+  .du-row{grid-template-columns:repeat(5,minmax(0,1fr))}
+  .du-card{padding:14px 6px 12px;border-width:2px}
+  .du-card:before{inset:4px}
+  .du-card strong{font-size:.95rem}.du-card small{font-size:.72rem;line-height:1.25}
+  .du-i{width:46px;height:46px;font-size:1.3rem;border-radius:14px}
+  .du5 .du-i img{width:34px;height:34px}
+  .du-card em{padding:4px 10px;font-size:.72rem;margin-top:6px}
+}
+@media(max-width:700px){
+  .du-row{display:flex;overflow-x:auto;gap:12px;padding:12px 6px 20px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:thin}
+  .du-card{flex:0 0 152px;scroll-snap-align:center;padding:16px 8px 14px}
+  .du-card strong{font-size:1rem}.du-card small{font-size:.76rem}
+}
+
+/* ===== v15: phone - category buttons in one swipe row, sidebar hidden (it repeated the same list) ===== */
+@media(max-width:780px){
+  .categories-sidebar{display:none}
+  .cats{flex-wrap:nowrap;overflow-x:auto;padding:6px 4px 16px;margin-bottom:6px;scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch;scrollbar-width:thin}
+  .cats .chip{flex:0 0 auto;scroll-snap-align:start;white-space:nowrap}
+}
+
+/* ===== v17: phone fix - the swipe row of category buttons no longer stretches the page ===== */
+.workspace>*{min-width:0}
+@media(max-width:780px){
+  .workspace{grid-template-columns:minmax(0,1fr)}
+  .cats,.tool-list{max-width:100%}
+}
+
+/* ===== v18: Daily Use Apps now has SIX cards in one row (Kids Corner = 5th, Shop Ledger = 6th) ===== */
+.du-row{grid-template-columns:repeat(6,minmax(0,1fr))}
+.du6{background:linear-gradient(135deg,#6366f1,#0ea5e9);--edge:#312e81;--glow:rgba(79,70,229,.55)}
+.du5 .du-i img{width:56px;height:56px}
+@media(max-width:1000px){
+  .du-row{grid-template-columns:repeat(6,minmax(0,1fr));gap:8px}
+  .du-card{padding:12px 4px 10px}
+  .du-card strong{font-size:.82rem;line-height:1.15}
+  .du-card small{font-size:.66rem}
+  .du-i{width:40px;height:40px;font-size:1.1rem}
+  .du5 .du-i img{width:38px;height:38px}
+  .du-card em{padding:3px 8px;font-size:.66rem}
+}
+@media(max-width:700px){
+  .du-row{display:flex}
+  .du-card{flex:0 0 152px}
+  .du-card strong{font-size:1rem}.du-card small{font-size:.76rem}
+  .du-i{width:46px;height:46px}.du5 .du-i img{width:44px;height:44px}
+}
+/* v18: "Open / Play" buttons line up at the bottom of every box */
+.du-row .du-card{justify-content:flex-start}
+.du-row .du-card small{margin-bottom:6px}
+.du-row .du-card em{margin-top:auto}
+
+/* ===== v19: Daily Use Apps - smaller cards, 5 always visible in one row on phones (6th by swipe) ===== */
+@media(min-width:701px){
+  .du{padding:18px clamp(12px,2.4vw,24px)}
+  .du-row{gap:clamp(6px,1.1vw,12px)}
+  .du-card{padding:12px 4px 10px}
+  .du-i{width:44px;height:44px;font-size:1.2rem;border-radius:13px}
+  .du5 .du-i img{width:40px;height:40px}
+  .du-card strong{font-size:clamp(.78rem,1.25vw,1rem);line-height:1.15}
+  .du-card small{font-size:clamp(.62rem,.9vw,.74rem);line-height:1.2}
+  .du-card em{padding:3px 9px;font-size:.68rem;margin-top:4px}
+}
+@media(max-width:700px){
+  .du{padding:14px 8px 10px;margin:16px 0 40px}
+  .du-s{display:none}
+  .du-row{display:flex;gap:6px;padding:6px 2px 12px;overflow-x:auto;scroll-snap-type:x proximity}
+  .du-card{flex:0 0 calc((100% - 24px) / 5);min-width:62px;padding:9px 2px 8px;gap:4px;border-radius:14px;border-width:2px;scroll-snap-align:start}
+  .du-card:before{inset:3px;border-radius:10px}
+  .du-i{width:34px;height:34px;font-size:1rem;border-radius:10px;margin-bottom:0}
+  .du5 .du-i img{width:30px;height:30px}
+  .du-card strong{font-size:.64rem;line-height:1.15;text-align:center}
+  .du-card small,.du-card em{display:none}
+}
+
+/* v22: Daily Use Apps - all 6 in one small row */
+.du-row{display:grid!important;grid-template-columns:repeat(6,minmax(0,1fr))!important;gap:8px!important;overflow:visible!important;padding:0!important;scroll-snap-type:none!important}
+.du-row .du-card{flex:none!important;width:auto!important;min-width:0!important;grid-column:auto!important;scroll-snap-align:none}
+.du-card{padding:12px 3px 10px!important;gap:3px!important;border-radius:14px!important;min-width:0}
+.du-card small,.du-card em{display:none!important}
+.du-i{width:44px!important;height:44px!important;border-radius:12px!important;font-size:1.2rem!important;margin-bottom:2px!important}
+.du-i img{width:34px!important;height:34px!important}
+.du-card strong{font-size:.82rem!important;line-height:1.15;text-align:center}
+@media(max-width:560px){.du-row{gap:5px!important}.du-card{padding:9px 2px 8px!important;border-width:2px!important}.du-i{width:36px!important;height:36px!important;font-size:1rem!important}.du-i img{width:28px!important;height:28px!important}.du-card strong{font-size:.62rem!important}}
+
+/* v23: compact tool cards, search suggestions, blinking Kids Corner hero card */
+#tool-list{grid-template-columns:repeat(auto-fill,minmax(235px,1fr))!important;gap:10px!important}
+.tool-card{padding:11px 12px!important;min-height:0!important;gap:10px!important;border-radius:14px!important;align-items:center!important}
+.tool-card .ic{width:38px!important;height:38px!important;flex:0 0 38px!important;border-radius:11px!important;font-size:.95rem!important}
+.tool-card strong{font-size:.92rem!important}
+.tool-card span.d{margin-top:2px!important;font-size:.76rem!important;line-height:1.35!important;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.sband{position:relative}
+.spop{position:absolute;left:50%;transform:translateX(-50%);top:100%;width:min(640px,calc(100% - 24px));z-index:40;background:#fff;border:2px solid #d8e3ff;border-radius:16px;box-shadow:0 18px 40px rgba(14,40,120,.25);overflow:hidden;margin-top:4px;text-align:left}
+.spop[hidden]{display:none}
+.spop a{display:flex;align-items:center;gap:12px;padding:10px 14px;text-decoration:none;color:#16224a;border-bottom:1px solid #eef2ff}
+.spop a:hover,.spop a:focus{background:#eef3ff}
+.spop a i{width:34px;height:34px;border-radius:10px;background:#eef3ff;color:#1a3fa6;display:grid;place-items:center;flex:none}
+.spop a b{display:block;font-size:.95rem}.spop a small{color:#5b6785}
+.spop-web{background:#fff8e1}.spop-no{margin:0;padding:12px 14px;color:#5b6785}
+.hero-kids{display:inline-flex;align-items:center;gap:10px;padding:8px 14px 8px 8px;border-radius:16px;background:linear-gradient(135deg,#ff6a3d,#ffb300);color:#2b1200;text-decoration:none;font-weight:800;border:2px solid #fff;box-shadow:0 6px 0 #b34700,0 10px 22px rgba(0,0,0,.3);animation:kidsblink 1.4s ease-in-out infinite}
+.hero-kids img{width:46px;height:46px;border-radius:12px;background:#fff;object-fit:cover}
+.hero-kids span{display:flex;flex-direction:column;line-height:1.15;text-align:left}.hero-kids b{font-size:1.05rem}.hero-kids small{font-weight:700;opacity:.85}
+.hero-kids em{font-style:normal;background:#fff;color:#c2410c;border-radius:999px;padding:5px 12px;font-size:.85rem}
+.hero-kids:hover{filter:brightness(1.08)}.hero-kids:active{transform:translateY(3px);box-shadow:0 2px 0 #b34700}
+@keyframes kidsblink{0%,100%{transform:scale(1);box-shadow:0 6px 0 #b34700,0 10px 22px rgba(0,0,0,.3)}50%{transform:scale(1.05);box-shadow:0 6px 0 #b34700,0 0 0 6px rgba(255,255,255,.55),0 12px 28px rgba(255,179,0,.7)}}
+@media(prefers-reduced-motion:reduce){.hero-kids{animation:none}}

@@ -1,0 +1,12 @@
+CSC VLE TOOLS v20  (30 Oct 2026)
+1. NEW  Web Search band on the front page (index.html) + full page web-search.html.
+        Pick Google / Bing / DuckDuckGo / Images / YouTube / Wikipedia / Maps, or type a website address.
+        Results always open in a NEW tab (other sites cannot be shown inside our page).
+        Edit the quick-site list in assets/js/websearch.js (SITES).
+2. NEW  tools_handwriting_converter.html: photos of handwritten pages -> text -> Word (.docx), PDF, Notepad (.txt).
+        Reads English and Hindi in the browser (Tesseract). Big photos are shrunk and cleaned; reading runs in a Web Worker so the page does not freeze.
+3. KIDS CORNER (kids-corner.html and kids-corner-standalone.html) = v21:
+        18 games (5 new), numbers pictures stay on screen, bottom bar (Home / Back / Next / Games / Zoom / Sound),
+        volume sliders, female Hindi voice when available, Missing Letter fills the word, Take Away shows 9 - 6 = 3,
+        coloured balloons, one-coach train with 6 windows, Match the Pair hints + Peek, thumbs up / down, mobile fit + pinch zoom.
+4. Site: Web Search link in the menu and footer, tool count 68, sitemap updated.

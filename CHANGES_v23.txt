@@ -1,0 +1,8 @@
+CSC VLE TOOLS v23  (31 Oct 2026)
+1. SEARCH: typing in the tool search now shows live suggestions right under the box (click one, or press Enter for the first). Includes a "Search the web instead" link.
+2. KIDS CORNER removed from the All Tools list (still in Daily Use Apps and its own page). A blinking Kids Corner card replaces "Launch Pro Studio" in the hero.
+3. CATEGORIES now shorter: Photo split into 3 (Resize & Compress / Background & Photo Edit / Photo Sheets & Print); ID Card split into 3 (ID Card Print / ID Card Makers / Cards, Stamps & Stickers).
+   Duplicate tools hidden from the list (pages still work): Photo Signature Joiner, Photo Name Joiner, Passport Photo Sheet, PDF Split, Resume Builder (shortcut). 62 tools listed.
+4. TOOL CARDS made smaller (2-line description).
+5. TYPING TEST rebuilt: Lessons + Speed Test, on-screen keyboard with finger colours, next-key highlight, hand guide, English and Hindi (built-in Inscript keyboard, no Hindi keyboard needed), 1/2/5/10 minute tests, best score saved.
+Changed files: index.html, tools_typing_test.html, assets/css/home.css, assets/js/site.js, assets/js/typing-pro.js (new), upload-check.html, CHANGES_v23.txt

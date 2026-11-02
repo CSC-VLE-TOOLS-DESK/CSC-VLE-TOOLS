@@ -6,13 +6,13 @@
   var saved = new Map(), active = false;
   var style = document.createElement('style');
   style.textContent = `
-    #ss-demo-launch{position:fixed;right:22px;bottom:22px;z-index:2147483000;border:0;border-radius:999px;padding:13px 19px;background:#1a3fa6;color:#fff;font:700 14px/1.2 system-ui,sans-serif;box-shadow:0 8px 24px #063d2b44;cursor:pointer;letter-spacing:.1px}
+    #ss-demo-launch{position:fixed;left:22px;bottom:22px;z-index:2147483000;border:0;border-radius:999px;padding:13px 19px;background:#1a3fa6;color:#fff;font:700 14px/1.2 system-ui,sans-serif;box-shadow:0 8px 24px #063d2b44;cursor:pointer;letter-spacing:.1px}
     #ss-demo-launch:hover{background:#0f2a73;transform:translateY(-1px)}
-    #ss-demo-panel{position:fixed;right:22px;bottom:82px;z-index:2147483000;width:min(340px,calc(100vw - 32px));padding:16px;border:1px solid #a8d9c3;border-radius:16px;background:#f7fffb;color:#12392c;box-shadow:0 16px 48px #102f2440;font:14px/1.45 system-ui,sans-serif;display:none}
+    #ss-demo-panel{position:fixed;left:22px;bottom:82px;z-index:2147483000;width:min(340px,calc(100vw - 32px));padding:16px;border:1px solid #a8d9c3;border-radius:16px;background:#f7fffb;color:#12392c;box-shadow:0 16px 48px #102f2440;font:14px/1.45 system-ui,sans-serif;display:none}
     #ss-demo-panel strong{display:block;font-size:15px;margin-bottom:5px;color:#0f2a73}#ss-demo-panel p{margin:5px 0 12px}#ss-demo-panel .ss-demo-actions{display:flex;gap:8px;flex-wrap:wrap}#ss-demo-panel button{border:0;border-radius:8px;padding:9px 12px;font-weight:700;cursor:pointer}#ss-demo-load{background:#1a3fa6;color:white}#ss-demo-reset{background:#e5eee9;color:#173e30}#ss-demo-close{float:right;background:transparent;color:#456b5a;padding:0 4px;font-size:20px}
-    #ss-demo-notice{position:fixed;right:22px;bottom:146px;z-index:2147483000;max-width:min(340px,calc(100vw - 32px));padding:10px 13px;border-radius:10px;background:#12392c;color:#fff;font:13px/1.4 system-ui,sans-serif;box-shadow:0 8px 24px #063d2b33;display:none}
+    #ss-demo-notice{position:fixed;left:22px;bottom:146px;z-index:2147483000;max-width:min(340px,calc(100vw - 32px));padding:10px 13px;border-radius:10px;background:#12392c;color:#fff;font:13px/1.4 system-ui,sans-serif;box-shadow:0 8px 24px #063d2b33;display:none}
     .ss-demo-filled{outline:2px solid #43a982!important;outline-offset:1px!important}
-    @media(max-width:520px){#ss-demo-launch{right:12px;bottom:12px}#ss-demo-panel{right:12px;bottom:70px}#ss-demo-notice{right:12px;bottom:132px}}
+    @media(max-width:520px){#ss-demo-launch{left:12px;bottom:12px}#ss-demo-panel{left:12px;bottom:70px}#ss-demo-notice{left:12px;bottom:132px}}
   `;
   document.head.appendChild(style);
   var panel=document.createElement('section'); panel.id='ss-demo-panel'; panel.setAttribute('aria-label','CSC VLE TOOLS Demo Mode');

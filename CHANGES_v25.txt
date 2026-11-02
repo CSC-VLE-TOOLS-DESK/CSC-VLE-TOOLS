@@ -1,0 +1,4 @@
+CSC VLE TOOLS v25  (1 Nov 2026)
+- Animal, Fruit or Vehicle? and Odd One Out: dog and cow pictures removed from these games (their cut-out is damaged). Frog picture cleaned (plate removed). Replace assets/kids/dog.png and cow.png with clean PNGs to bring them back in other games.
+- Favicon links now carry ?v=3 so browsers load the CSC VLE TOOLS icon instead of an old cached one.
+- SEO: Kids Corner, Stock Ledger and House Expense now have description, canonical, social (Open Graph / Twitter) tags and JSON-LD. Shorter Kids Corner title. New wording for Typing Test, Web Search and Handwriting pages.

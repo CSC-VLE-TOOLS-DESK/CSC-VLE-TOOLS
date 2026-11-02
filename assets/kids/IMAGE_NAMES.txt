@@ -1,0 +1,104 @@
+KIDS CORNER PICTURE NAMES
+File name in this folder -> word shown in the game (English / Hindi)
+
+apple.png  ->  Apple / सेब
+arrow-down.png  ->  Arrow down / नीचे
+arrow-up.png  ->  Arrow up / ऊपर
+baby.png  ->  Baby / बच्चा
+badge-balloon.png  ->  Balloon sticker / गुब्बारे
+badge-book.png  ->  Book sticker / किताब
+badge-crown.png  ->  Crown sticker / ताज
+badge-flower.png  ->  Flower sticker / फूल
+badge-heart.png  ->  Heart sticker / दिल
+badge-medal.png  ->  Medal sticker / मेडल
+badge-rocket.png  ->  Rocket sticker / रॉकेट
+badge-star.png  ->  Star sticker / सितारा
+badge-sun.png  ->  Sun sticker / सूरज
+badge-trophy.png  ->  Trophy sticker / ट्रॉफी
+ball.png  ->  Ball / गेंद
+balloon.png  ->  Balloon / गुब्बारा
+bat.png  ->  Bat / बल्ला
+bed.png  ->  Bed / बिस्तर
+bhalu.png  ->  Bear / भालू
+bus.png  ->  Bus / बस
+calendar.png  ->  Calendar / कैलेंडर
+car.png  ->  Car / कार
+card-back.png  ->  Card / पत्ता
+cat.png  ->  Cat / बिल्ली
+chick.png  ->  Chick / चूज़ा
+cow.png  ->  Cow / गाय
+damru.png  ->  Damru / डमरू
+darwaza.png  ->  Door / दरवाज़ा
+dew-drops.png  ->  Dew drops / ओस
+dhanush.png  ->  Bow / धनुष
+dhol.png  ->  Dhol / ढोल
+dog.png  ->  Dog / कुत्ता
+duck.png  ->  Duck / बतख
+egg.png  ->  Egg / अंडा
+ek-one.png  ->  One / एक
+elephant.png  ->  Elephant / हाथी
+empty-glass.png  ->  Empty glass / खाली
+fire.png  ->  Fire / आग
+fish.png  ->  Fish / मछली
+flag.png  ->  Flag / झंडा
+flower.png  ->  Flower / फूल
+flower-pot.png  ->  Flower pot / गमला
+fox.png  ->  Fox / लोमड़ी
+frog.png  ->  Frog / मेंढक
+full-glass.png  ->  Full glass / भरा
+glasses.png  ->  Spectacles / ऐनक
+grapes.png  ->  Grapes / अंगूर
+happy-face.png  ->  Happy face / खुश
+hat.png  ->  Hat / टोपी
+hen.png  ->  Hen / मुर्गी
+house.png  ->  House / घर
+ice-cream.png  ->  Ice cream / आइसक्रीम
+juice.png  ->  Juice / जूस
+kite.png  ->  Kite / पतंग
+lattu.png  ->  Spinning top / लट्टू
+lion.png  ->  Lion / शेर
+mango.png  ->  Mango / आम
+mascot-chintu.png  ->  Chintu parrot / चिंटू तोता
+moon.png  ->  Moon / चाँद
+mouse.png  ->  Mouse / चूहा
+nose.png  ->  Nose / नाक
+old-man.png  ->  Old man / बूढ़ा
+orange.png  ->  Orange / संतरा
+owl.png  ->  Owl / उल्लू
+parrot.png  ->  Parrot / तोता
+pig.png  ->  Pig / सुअर
+pigeon.png  ->  Pigeon / कबूतर
+pomegranate.png  ->  Pomegranate / अनार
+queen.png  ->  Queen / रानी
+rabbit.png  ->  Rabbit / खरगोश
+rath.png  ->  Chariot / रथ
+rishi.png  ->  Sage / ऋषि
+sad-face.png  ->  Sad face / उदास
+shatkon.png  ->  Hexagon / षटकोण
+ship.png  ->  Ship / जहाज
+snowflake.png  ->  Snowflake / बर्फ
+spoon.png  ->  Spoon / चम्मच
+star.png  ->  Star / तारा
+strawberry.png  ->  Strawberry / स्ट्रॉबेरी
+sugarcane.png  ->  Sugarcane / ईख
+sun.png  ->  Sun / सूरज
+tamarind.png  ->  Tamarind / इमली
+thali.png  ->  Thali / थाली
+thela.png  ->  Handcart / ठेला
+tiger.png  ->  Tiger / बाघ
+tomato.png  ->  Tomato / टमाटर
+train-coach.png  ->  Coach / डिब्बा
+train-engine.png  ->  Train / रेल
+treasure-box.png  ->  Treasure box / खजाना
+turtle.png  ->  Turtle / कछुआ
+umbrella.png  ->  Umbrella / छतरी
+van.png  ->  Van / वैन
+van-forest.png  ->  Forest / वन
+watch.png  ->  Watch / घड़ी
+watermelon.png  ->  Watermelon / तरबूज
+woman.png  ->  Woman / औरत
+wool.png  ->  Wool / ऊन
+xmas-tree.png  ->  Christmas tree / क्रिसमस ट्री
+yaan.png  ->  Rocket / यान
+yacht.png  ->  Yacht / नाव
+zebra.png  ->  Zebra / ज़ेबरा

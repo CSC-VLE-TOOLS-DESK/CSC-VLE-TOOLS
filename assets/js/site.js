@@ -4,15 +4,20 @@
 
   /* ---------- Tool registry: single source of truth for the home page ---------- */
   var CATS = [
-    { id: 'photo', name: 'Photo & Image Tools', icon: 'fa-image' },
-    { id: 'id', name: 'ID Card, Cards & Print', icon: 'fa-id-card' },
+    { id: 'resize', name: 'Resize & Compress', icon: 'fa-crop-simple' },
+    { id: 'edit', name: 'Background & Photo Edit', icon: 'fa-wand-magic-sparkles' },
+    { id: 'sheets', name: 'Photo Sheets & Print', icon: 'fa-print' },
     { id: 'pdf', name: 'PDF Tools', icon: 'fa-file-pdf' },
+    { id: 'idprint', name: 'ID Card Print', icon: 'fa-id-card' },
+    { id: 'idmake', name: 'ID Card Makers', icon: 'fa-address-card' },
+    { id: 'cards', name: 'Cards, Stamps & Stickers', icon: 'fa-stamp' },
     { id: 'govt', name: 'Govt Applications & Affidavits', icon: 'fa-landmark' },
-    { id: 'docs', name: 'Resume & Documents', icon: 'fa-file-lines' },
+    { id: 'docs', name: 'Resume, Documents & Text', icon: 'fa-file-lines' },
     { id: 'bill', name: 'Receipts & Billing', icon: 'fa-receipt' },
     { id: 'calc', name: 'Calculators', icon: 'fa-calculator' },
     { id: 'exam', name: 'Exam & Education', icon: 'fa-graduation-cap' },
-    { id: 'util', name: 'Quick Utilities', icon: 'fa-bolt' }
+    { id: 'util', name: 'Quick Utilities', icon: 'fa-bolt' },
+    { id: 'kids', name: 'Kids Corner', icon: 'fa-child-reaching' }
   ];
 
   var TOOLS = [
@@ -32,6 +37,8 @@
     ['tools_name_date_photo', 'Name & Date on Photo', 'Add the candidate name and date strip below a photo for job forms.', 'photo', 'fa-calendar-day'],
     ['tools_photo_sign_joiner', 'Photo & Signature Joiner', 'Join photo and signature into a single image with adjustable border.', 'photo', 'fa-object-group'],
     ['tools_image_text_extractor', 'Image Text Extractor (OCR)', 'Read text from an image in English or Hindi and copy it.', 'photo', 'fa-font'],
+    ['tools_handwriting_converter', 'Handwriting to Word, PDF & Text', 'Upload photos of handwritten pages and save them as Word, PDF or a Notepad text file. English and Hindi.', 'docs', 'fa-pen-fancy'],
+    ['web-search', 'Web Search', 'Search Google, Bing, YouTube or Maps, or open any website. Results open in a new tab.', 'util', 'fa-magnifying-glass'],
     ['tools_whatsapp_image_print', 'WhatsApp Image Print', 'Enhance and print many images on A4 pages in a grid.', 'photo', 'fa-print'],
     // ID cards and print
     ['tools_admit_card_holder', 'Admit Card Holder', 'Printable admit card holder layouts.', 'id', 'fa-ticket'],
@@ -64,7 +71,9 @@
     ['tools_cgpa_calculator', 'CGPA Calculator', 'CGPA and SGPA to percentage and back.', 'calc', 'fa-chart-simple'],
     ['tools_gold_silver_rate', 'Gold & Silver Value Calculator', 'Enter today\'s rate and get value by weight and purity.', 'calc', 'fa-coins'],
     // Exam
-    ['tools_typing_test', 'Typing Test', 'Check typing speed and accuracy in English or Hindi.', 'exam', 'fa-keyboard'],
+    ['tools_typing_test', 'Typing Test & Lessons', 'Learn typing with a keyboard guide, finger colours and lessons, then test your speed. English and Hindi (Inscript).', 'exam', 'fa-keyboard'],
+    // Kids
+    ['kids-corner', 'Kids Corner', 'Twenty-three picture games in English and Hindi for KG, UKG and Class 1: ABC, Hindi alphabet, numbers, counting, subtraction, spelling, balloon pop, train, memory match, opposites, days, shapes and colours.', 'kids', 'fa-child-reaching'],
     // Utilities
     ['tools_qr_code_generator', 'QR Code Generator', 'QR codes for text, links, UPI and WhatsApp.', 'util', 'fa-qrcode'],
     ['tools_whatsapp_ultimate', 'WhatsApp Direct Message', 'Open a WhatsApp chat with any number without saving it.', 'util', 'fa-whatsapp'],
@@ -92,6 +101,16 @@
     ['tools_id_card_print', 'ID Card Print', 'General ID card for staff or members, front and back.', 'id', 'fa-id-card'],
     ['tools_multiple_id_card_print', 'Multiple ID Card Print', 'Paste a list and photos to print many ID cards, 10 per A4 page.', 'id', 'fa-people-group'],
   ].map(function (t) { return { file: t[0], name: t[1], desc: t[2], cat: t[3], icon: t[4] }; });
+  /* v23: shorter categories; duplicates and Kids Corner are not listed in All Tools (their pages still work) */
+  var NEWCAT = { tools_photo_resizer: 'resize', tools_sign_resizer: 'resize', tools_thumb_resizer: 'resize', tools_image_compressor: 'resize', tools_image_converter_pro: 'resize', tools_jpg_png_converter: 'resize', tools_image_crop: 'resize',
+    tools_bg_remover: 'edit', tools_bg_remover_pro: 'edit', tools_ai_bg_remover: 'edit', tools_name_date_photo: 'edit', tools_photo_sign_joiner: 'edit', tools_image_merger: 'edit',
+    tools_ai_passport_studio: 'sheets', tools_whatsapp_image_print: 'sheets', 'pro-studio': 'sheets', tools_image_text_extractor: 'docs',
+    tools_pvc_id_print: 'idprint', tools_pan_aadhaar_print: 'idprint', tools_id_card_print: 'idprint', tools_multiple_id_card_print: 'idprint', tools_admit_card_holder: 'idprint',
+    tools_student_id_creator: 'idmake', tools_student_id_card: 'idmake', tools_farmer_id_maker: 'idmake',
+    tools_visiting_card_maker: 'cards', tools_notebook_sticker: 'cards', tools_csc_stamp_maker: 'cards' };
+  var HIDE = { tools_photo_signature_joiner: 1, tools_photo_name_joiner: 1, tools_passport_photo_sheet: 1, tools_pdf_split: 1, tools_resume_builder: 1, 'kids-corner': 1 };
+  TOOLS.forEach(function (t) { if (NEWCAT[t.file]) t.cat = NEWCAT[t.file]; });
+  var LIST = TOOLS.filter(function (t) { return !HIDE[t.file]; });
 
   /* ---------- Official portal quick links: add a new link by adding one line here ---------- */
   var LINKS = [
@@ -127,7 +146,7 @@
      ===================================================================== */
   var SITE = {
     name: 'CSC VLE TOOLS',
-    url: 'https://cschelpdesk.github.io/',
+    url: 'https://csc-vle-tools-desk.github.io/CSC-VLE-TOOLS/',
     tagline: 'Free online tools for CSC & VLE centres',
     location: 'Rohtak, Haryana, India',
     hours: 'Mon - Sat, 9:00 AM - 7:00 PM',
@@ -143,7 +162,7 @@
       youtube: '',        // https://youtube.com/@yourchannel
       x: '',              // https://x.com/yourid
       linkedin: '',       // https://linkedin.com/in/yourid
-      github: 'https://github.com/CSCHelpDesk/cschelpdesk.github.io',
+      github: 'https://github.com/csc-vle-tools-desk/CSC-VLE-TOOLS',
       claude: 'https://claude.ai'   // Claude (Anthropic)
     }
   };
@@ -180,6 +199,7 @@
 
   /* ---------- Site theme (whole page: header, buttons, cards, background) ---------- */
   var THEMES = [['Royal Blue', '#1a3fa6'], ['Saffron', '#c2570c'], ['Green', '#0b5c3b'], ['Teal', '#0f766e'], ['Purple', '#6b3fa0'], ['Maroon', '#8b1e3f'], ['Slate', '#374151']];
+  var CARDS = [['Auto (each different)', ''], ['Blue', '#1a3fa6'], ['Purple', '#7c3aed'], ['Pink', '#db2777'], ['Red', '#dc2626'], ['Orange', '#ea580c'], ['Green', '#059669'], ['Teal', '#0d9488'], ['Slate', '#374151']];
   var BGS = [['Auto', ''], ['White', '#ffffff'], ['Cream', '#fbf6e9'], ['Sky', '#e8f1fb'], ['Mint', '#e6f5ec'], ['Rose', '#fbeaee'], ['Lilac', '#efe9fa'], ['Grey', '#e6e9ed']];
   function hex2rgb(h) { return [1, 3, 5].map(function (i) { return parseInt(h.substr(i, 2), 16); }); }
   function mix(h, to, t) { var a = hex2rgb(h), b = hex2rgb(to); return '#' + a.map(function (v, i) { return ('0' + Math.round(v + (b[i] - v) * t).toString(16)).slice(-2); }).join(''); }
@@ -189,6 +209,7 @@
     var br = /^#[0-9a-f]{6}$/i.test(t.brand) ? t.brand : THEMES[0][1];
     var bg = /^#[0-9a-f]{6}$/i.test(t.bg) ? t.bg : mix(br, '#ffffff', 0.94);
     st.textContent = ':root{--brand:' + br + ';--brand-strong:' + mix(br, '#000000', 0.35) + ';--soft:' + mix(br, '#ffffff', 0.88) + ';--bg:' + bg + ';--csc-brand:' + br + ';--csc-brand-strong:' + mix(br, '#000000', 0.35) + ';--csc-brand-soft:' + mix(br, '#ffffff', 0.88) + ';--csc-canvas:' + bg + '}' +
+      (/^#[0-9a-f]{6}$/i.test(t.card) ? '.tc,.tool-card,.quick-card,.du-card,.qtile{--c:' + t.card + ' !important;--c2:' + mix(t.card, '#000000', 0.4) + ' !important}' : '') +
       'body{background:var(--bg) !important}.t-drop.over{background:' + mix(br, '#ffffff', 0.78) + '}@media print{body{background:#fff !important}}';
     var m = document.querySelector('meta[name=theme-color]');
     if (!m) { m = document.createElement('meta'); m.name = 'theme-color'; document.head.appendChild(m); }
@@ -196,6 +217,7 @@
   }
   function themePicker(hdr) {
     var t = CSC.safe.get('cscvle_theme', null) || { brand: THEMES[0][1], bg: CSC.safe.get('cscvle_bg', '') || '' };
+    if (!t.card) t.card = '';
     if (t.bg === '#f4f7f6') t.bg = '';
     applyTheme(t);
     var nav = hdr.querySelector('nav'); if (!nav) return;
@@ -208,6 +230,9 @@
       '<div class="bgttl">Background only</div>' +
       BGS.map(function (b) { return '<button type="button" class="sw" data-k="bg" data-c="' + b[1] + '" title="' + b[0] + '" aria-label="' + b[0] + ' background" style="background:' + (b[1] || 'linear-gradient(135deg,#fff 50%,#d9e6df 50%)') + '"></button>'; }).join('') +
       '<label class="swc" title="Pick any background colour"><input type="color" data-k="bg" value="' + (t.bg || '#f4f7f6') + '" aria-label="Custom background colour"></label>' +
+      '<div class="bgttl">Card colour</div>' +
+      CARDS.map(function (b) { return '<button type="button" class="sw" data-k="card" data-c="' + b[1] + '" title="' + b[0] + '" aria-label="' + b[0] + ' cards" style="background:' + (b[1] || 'linear-gradient(135deg,#ec4899 25%,#0891b2 25% 50%,#ea580c 50% 75%,#059669 75%)') + '"></button>'; }).join('') +
+      '<label class="swc" title="Pick any card colour"><input type="color" data-k="card" value="' + (t.card || '#1a3fa6') + '" aria-label="Custom card colour"></label>' +
       '<button type="button" class="bgreset">Reset to default</button></div>';
     nav.appendChild(wrap);
     var btn = wrap.querySelector('.bgbtn'), menu = wrap.querySelector('.bgmenu');
@@ -216,7 +241,7 @@
     document.addEventListener('click', function (e) { if (!wrap.contains(e.target)) { menu.hidden = true; btn.setAttribute('aria-expanded', 'false'); } });
     [].forEach.call(menu.querySelectorAll('.sw'), function (b) { b.onclick = function () { set(b.getAttribute('data-k'), b.getAttribute('data-c')); }; });
     [].forEach.call(menu.querySelectorAll('input[type=color]'), function (i) { i.addEventListener('input', function () { set(i.getAttribute('data-k'), i.value); }); });
-    wrap.querySelector('.bgreset').onclick = function () { t = { brand: THEMES[0][1], bg: '' }; CSC.safe.set('cscvle_theme', t); applyTheme(t); };
+    wrap.querySelector('.bgreset').onclick = function () { t = { brand: THEMES[0][1], bg: '', card: '' }; CSC.safe.set('cscvle_theme', t); applyTheme(t); };
   }
   // keep the sticky sidebar exactly below the sticky header
   function hdrHeight() {
@@ -273,7 +298,7 @@
       h.innerHTML = '<div class="hdr"><a class="logo" href="index.html"><img src="favicon.svg" alt="" width="36" height="36"><span class="logo-t">CSC VLE <b>TOOLS</b></span></a>' +
         '<button class="nav-toggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="main-nav">&#9776;</button>' +
         '<nav id="main-nav" aria-label="Main"><a href="index.html"' + cur('index.html') + '>Home</a>' +
-        '<a href="index.html#tools">Tools</a><a class="nav-daily" href="index.html#daily-use"><i class="fa-solid fa-star" aria-hidden="true"></i> Daily Use App</a><a href="index.html#links">Portal Links</a>' +
+        '<a href="index.html#tools">Tools</a><a class="nav-daily" href="index.html#daily-use"><i class="fa-solid fa-star" aria-hidden="true"></i> Daily Use App</a><a class="nav-kids" href="kids-corner.html"' + cur('kids-corner.html') + '><i class="fa-solid fa-child-reaching" aria-hidden="true"></i> Kids Corner</a><a href="web-search.html"' + cur('web-search.html') + '><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i> Web Search</a><a href="index.html#links">Portal Links</a>' +
         '<a href="feedback.html"' + cur('feedback.html') + '>Feedback</a><a href="contact.html"' + cur('contact.html') + '>Contact</a></nav></div>';
       themePicker(h);
       var tg = h.querySelector('.nav-toggle'), nv = h.querySelector('nav');
@@ -287,7 +312,7 @@
         '<div class="ftr-brand"><a class="logo" href="index.html"><img src="favicon.svg" alt="" width="36" height="36"><span class="logo-t">CSC VLE <b>TOOLS</b></span></a>' +
         '<p>Free, fast online tools for CSC and VLE centres, cyber cafes and students: photo and signature resizer, ID card and passport photo print, PDF tools, resumes, applications and calculators.</p>' +
         '<div class="soc" aria-label="Social links">' + socialHTML() + '</div></div>' +
-        '<div><h4>Explore</h4><a href="index.html">Home</a><a href="index.html#tools">All Tools</a><a href="index.html#links">Portal Links</a><a href="pro-studio.html">Pro Studio</a><a href="shop-ledger.html">Shop Ledger</a><a href="stock-ledger.html">Stock Ledger</a><a href="house-expense.html">House Expense</a></div>' +
+        '<div><h4>Explore</h4><a href="index.html">Home</a><a href="index.html#tools">All Tools</a><a href="index.html#links">Portal Links</a><a href="pro-studio.html">Pro Studio</a><a href="shop-ledger.html">Shop Ledger</a><a href="stock-ledger.html">Stock Ledger</a><a href="house-expense.html">House Expense</a><a href="kids-corner.html">Kids Corner</a><a href="web-search.html">Web Search</a><a href="tools_handwriting_converter.html">Handwriting Converter</a></div>' +
         '<div><h4>Popular Tools</h4><a href="tools_photo_resizer.html">Photo Resizer</a><a href="tools_pdf_merger.html">PDF Merger</a><a href="tools_ai_passport_studio.html">Passport Photo Studio</a><a href="haryana-resume-generator.html">Resume Builder</a><a href="tools_loan_emi_calculator.html">Loan EMI Calculator</a></div>' +
         '<div><h4>Support</h4><a href="feedback.html">Send Feedback</a><a href="contact.html">Contact Us</a><a href="about.html">About Us</a><a href="disclaimer.html">Disclaimer</a><a href="privacy.html">Privacy Policy</a></div>' +
         '</div><div class="ftr-bar"><span>&copy; ' + yr + ' CSC VLE TOOLS. All rights reserved.</span><span>Made with <span class="heart" aria-label="love">&#10084;</span> in Rohtak, Haryana</span></div>' +
@@ -314,8 +339,8 @@
     var list = $('#tool-list'); if (!list) return;
     var cats = $('#cats'), side = $('#category-list'), q = $('#tool-search');
     var active = 'all';
-    var count = function (id) { return TOOLS.filter(function (t) { return id === 'all' || t.cat === id; }).length; };
-    var tc = $('#tool-count'); if (tc) tc.textContent = TOOLS.length;
+    var count = function (id) { return LIST.filter(function (t) { return id === 'all' || t.cat === id; }).length; };
+    var tc = $('#tool-count'); if (tc) tc.textContent = LIST.length;
 
     function chips() {
       if (!cats) return;
@@ -345,7 +370,8 @@
     }
     function render() {
       var term = (q && q.value || '').trim().toLowerCase();
-      var items = TOOLS.filter(function (t) {
+      if (!term) { list.innerHTML = ''; return; }
+      var items = LIST.filter(function (t) {
         return (active === 'all' || t.cat === active) && (!term || (t.name + ' ' + t.desc).toLowerCase().indexOf(term) > -1);
       });
       list.innerHTML = items.length ? items.map(function (t) {
@@ -353,7 +379,22 @@
       }).join('') : '<p class="empty">No tool found. Try another word.</p>';
       chips(); markSide();
     }
-    if (q) q.addEventListener('input', render);
+    var pop = null;
+    function suggest() {
+      var term = (q.value || '').trim().toLowerCase(); if (!pop) { pop = document.createElement('div'); pop.className = 'spop'; pop.id = 'search-pop'; pop.setAttribute('role', 'listbox'); q.closest('.sband').appendChild(pop); }
+      if (!term) { pop.hidden = true; return; }
+      var words = term.split(/\s+/), m = LIST.map(function (t) { var n = t.name.toLowerCase(), hay = (n + ' ' + t.desc + ' ' + t.file.replace(/_/g, ' ')).toLowerCase(), sc = 0;
+        if (!words.every(function (w) { return hay.indexOf(w) > -1; })) return null; if (n.indexOf(term) === 0) sc = 3; else if (n.indexOf(term) > -1) sc = 2; else sc = 1; return { t: t, s: sc }; }).filter(Boolean).sort(function (x, y) { return y.s - x.s; }).slice(0, 7);
+      var cn = function (id) { var c = CATS.filter(function (x) { return x.id === id; })[0]; return c ? c.name : ''; };
+      pop.innerHTML = (m.length ? m.map(function (x) { return '<a role="option" href="' + x.t.file + '.html"><i class="' + iconClass(x.t.icon) + '" aria-hidden="true"></i><span><b>' + esc(x.t.name) + '</b><small>' + esc(cn(x.t.cat)) + '</small></span></a>'; }).join('') : '<p class="spop-no">No tool found for &ldquo;' + esc(q.value) + '&rdquo;.</p>') +
+        '<a class="spop-web" href="web-search.html"><i class="fa-solid fa-globe" aria-hidden="true"></i><span><b>Search the web instead</b><small>Open Web Search</small></span></a>';
+      pop.hidden = false; try { pop.scrollIntoView({ block: 'nearest' }); } catch (e) { }
+    }
+    if (q) {
+      q.addEventListener('input', function () { render(); suggest(); });
+      q.addEventListener('keydown', function (e) { if (e.key === 'Enter') { var f = pop && pop.querySelector('a[role=option]'); if (f) { e.preventDefault(); location.href = f.getAttribute('href'); } } else if (e.key === 'Escape' && pop) pop.hidden = true; });
+      document.addEventListener('click', function (e) { if (pop && !e.target.closest('.sband')) pop.hidden = true; });
+    }
     sidebar(); render();
   }
 
@@ -639,7 +680,7 @@
   /* ---------- 3D hover tilt for cards (mouse only; off when the visitor prefers reduced motion) ---------- */
   function tilt() {
     if (!window.matchMedia || !matchMedia('(hover:hover)').matches || matchMedia('(prefers-reduced-motion:reduce)').matches) return;
-    var SEL = '.qtile,.tool-card,.quick-card,.cat-item,.du-card,.topics a';
+    var SEL = '.tc,.qtile,.tool-card,.quick-card,.cat-item,.du-card,.topics a';
     function reset(el) { el.style.removeProperty('--rx'); el.style.removeProperty('--ry'); }
     document.addEventListener('mousemove', function (e) {
       var el = e.target.closest && e.target.closest(SEL); if (!el) return;

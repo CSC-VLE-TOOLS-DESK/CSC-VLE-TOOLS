@@ -1,0 +1,18 @@
+CSC VLE TOOLS v26  (1 Nov 2026)  New layout: sidebar + category cards
+HOME (index.html)
+- Left sidebar with all categories, Kids Corner card at the top right, Daily Use Apps, search, Most Used Tools and All Categories as colourful 3D cards.
+- The old long "All Tools" list is gone. Other blocks (Web Search, stats, Why, How, Topics, Portal Links, FAQ) are unchanged.
+- Typing in the search box still shows tool results and suggestions.
+NEW PAGES: cat-resize, cat-edit, cat-sheets, cat-pdf, cat-idprint, cat-idmake, cat-cards, cat-govt, cat-docs, cat-bill, cat-calc, cat-exam, cat-util (.html)
+- Each lists only that category's tools, has its own search box, description text, breadcrumb and SEO tags. Added to sitemap.xml.
+- These pages are generated from the TOOLS list in assets/js/site.js. If you add a tool there, re-run the generator or copy a card into the matching cat-*.html.
+THEME MENU (all pages): new "Card colour" row (Auto = each card its own colour, or one colour for all cards, or any custom colour). Saved on the device. Reset clears it.
+SPEED: kids-corner.html is now 228 KB instead of 3.4 MB (pictures load from assets/kids/ on demand). Keep the assets/kids folder uploaded.
+NEW FILE: assets/css/layout3d.css (all new styles).
+CHANGED: index.html, assets/js/site.js, kids-corner.html, sitemap.xml
+NOT CHANGED: tool pages, header, footer, kids-corner-standalone.html (offline copy, still 3.4 MB).
+
+v26.1 (spacing + Kids Corner)
+- Balanced layout: left category sidebar, centred content, and on screens wider than 1500 px a right "Upcoming Tools" panel (home and category pages). The search box is centred.
+- Upcoming Tools list is SAMPLE text. Edit the names in index.html and the cat-*.html files (search for "Coming soon"), or ask to change the list.
+- Kids Corner: new pink-purple-cyan hero, Chintu greeting, "Start playing" button, coloured 3D level buttons (All, KG, UKG, Class 1), livelier cards. Games and Hindi switch are unchanged.

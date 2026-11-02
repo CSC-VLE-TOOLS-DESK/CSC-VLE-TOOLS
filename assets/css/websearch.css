@@ -1,0 +1,16 @@
+/* Web search (front page band + web-search.html) */
+.wsb{max-width:900px;margin:26px auto 8px;padding:20px 16px;text-align:center;background:linear-gradient(135deg,#eef3ff,#fff7e6);border:2px solid #d8e3ff;border-radius:24px}
+.wsb h2{margin:0 0 4px;font-size:1.35rem;color:var(--brand,#1a3fa6)}.wsb p{margin:0 0 12px;color:var(--muted,#5b6785)}
+.ws{display:flex;align-items:center;gap:8px;background:#fff;border:2px solid #d8e3ff;border-radius:18px;padding:6px 6px 6px 8px;box-shadow:0 10px 26px rgba(14,40,120,.14);text-align:left}
+.ws:focus-within{border-color:var(--accent,#ff9800);box-shadow:0 10px 26px rgba(14,40,120,.14),0 0 0 4px rgba(255,152,0,.22)}
+.ws select{border:0;background:#eef3ff;color:var(--brand,#1a3fa6);font-weight:800;border-radius:12px;padding:12px 8px;max-width:130px;font:inherit;font-weight:800;font-size:.9rem}
+.ws input{flex:1;min-width:0;border:0!important;outline:0!important;box-shadow:none!important;font:inherit;font-size:1.05rem;padding:12px 4px!important;background:transparent}
+.ws button{border:0;cursor:pointer;background:linear-gradient(180deg,#ffa726,#e68900);color:#2b1700;font-weight:800;border-radius:12px;padding:12px 20px;font-size:.95rem;box-shadow:0 4px 0 #b36b00}
+.ws button:active{transform:translateY(3px);box-shadow:0 1px 0 #b36b00}
+.ws-chips{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:14px}
+.ws-chips a,.ws-grid a{display:inline-flex;align-items:center;gap:8px;text-decoration:none;background:#fff;color:var(--brand,#1a3fa6);border:2px solid #d8e3ff;border-radius:999px;padding:7px 14px;font-weight:700;font-size:.9rem}
+.ws-chips a:hover,.ws-grid a:hover{border-color:var(--accent,#ff9800)}
+.ws-more{display:inline-block;margin-top:12px;font-weight:800;color:var(--brand,#1a3fa6)}
+.ws-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px}.ws-grid a{border-radius:14px;align-items:flex-start;flex-direction:column;gap:2px}.ws-grid small{font-weight:400;color:#5b6785}
+.ws-note{background:#fff8e1;border:2px dashed #f59e0b;border-radius:14px;padding:10px 14px;color:#7a4b00;margin:14px 0}
+@media(max-width:560px){.ws{flex-wrap:wrap}.ws input{flex-basis:100%;order:1;background:#f5f8ff;border-radius:10px}.ws select{order:2;max-width:none;flex:1}.ws button{order:3;flex:1}}

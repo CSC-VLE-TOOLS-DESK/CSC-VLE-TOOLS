@@ -223,3 +223,17 @@ button,a,input,select,textarea{touch-action:manipulation}
 }
 /* Claude follow button */
 .s-claude:hover{background:#d97757}.soc-a.on-light.s-claude{background:#d97757;color:#fff!important}
+
+/* v14 mobile fix: grid children may shrink, wide previews scroll inside their card instead of widening the page */
+.t-grid>*,.cv-grid>*,.row2>*,.row3>*{min-width:0}
+@media(max-width:860px){
+  .t-grid{grid-template-columns:minmax(0,1fr)}
+  .card{max-width:100%;min-width:0}
+  .card .t-paper,.card #pv{max-width:100%;overflow-x:auto}
+  .t-grid .card,.t-grid>div{overflow-x:auto}
+  .row2,.row3{grid-template-columns:minmax(0,1fr)}
+}
+.t-paper img,#pv img{max-width:100%;height:auto}
+
+/* v15: floating buttons never sit on top of each other on phones */
+@media(max-width:520px){.to-top{right:12px;bottom:76px}}
