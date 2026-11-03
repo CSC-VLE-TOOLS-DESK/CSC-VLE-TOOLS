@@ -16,6 +16,7 @@
     { id: 'bill', name: 'Receipts & Billing', icon: 'fa-receipt' },
     { id: 'calc', name: 'Calculators', icon: 'fa-calculator' },
     { id: 'exam', name: 'Exam & Education', icon: 'fa-graduation-cap' },
+    { id: 'studio', name: 'Scanner, Album & Wedding Studio', icon: 'fa-camera-retro' },
     { id: 'util', name: 'Quick Utilities', icon: 'fa-bolt' },
     { id: 'kids', name: 'Kids Corner', icon: 'fa-child-reaching' }
   ];
@@ -90,6 +91,7 @@
     ['tools_invoice_generator', 'Invoice Generator', 'GST or simple invoices with item table and totals.', 'bill', 'fa-file-invoice'],
     ['tools_salary_slip_generator', 'Salary Slip Generator', 'Monthly salary slip with earnings and deductions.', 'bill', 'fa-money-check-dollar'],
     ['tools_service_rate_list', 'Service Rate List', 'Editable rate board for your shop. Saved on this device.', 'bill', 'fa-list-check'],
+    ['tools_maps_print', 'Map Download & Print', 'World, India and Haryana maps with names, in English or Hindi. Print or download.', 'exam', 'fa-map-location-dot'],
     ['tools_question_paper_maker', 'Question Paper Maker', 'Create a printable question paper with MCQ and descriptive questions.', 'exam', 'fa-file-circle-question'],
     ['tools_pdf_merge', 'PDF Merge', 'Join several PDF files into one (same tool as PDF Merger).', 'pdf', 'fa-object-group'],
     ['tools_pdf_split', 'PDF Split', 'Split or extract pages from a PDF (same tool as PDF Splitter).', 'pdf', 'fa-scissors'],
@@ -99,6 +101,12 @@
     ['tools_resume_builder', 'Resume Builder (shortcut)', 'Opens the Resume Builder with several templates.', 'docs', 'fa-id-badge'],
     ['tools_student_id_card', 'Student ID Card', 'Student ID card with photo, front and back, 85.6 × 54 mm.', 'id', 'fa-id-card'],
     ['tools_id_card_print', 'ID Card Print', 'General ID card for staff or members, front and back.', 'id', 'fa-id-card'],
+    ['tools_ai_couple_photo', 'AI Couple Photo Creator', 'Make a wedding or couple photo frame from two photos. Heart, arch and round layouts, 8 border styles, AI cut-out.', 'studio', 'fa-heart-circle-check'],
+    ['tools_ai_family_photo', 'AI Family Photo Creator', 'Join up to 8 family photos into one frame with names, border styles and AI cut-out.', 'studio', 'fa-people-roof'],
+    ['tools_document_album', 'Document Album Creator', 'Arrange Aadhaar, PAN, marksheets and other documents on A4 pages with border, cover page and PDF.', 'studio', 'fa-folder-open'],
+    ['tools_idcard_album_cover', 'ID Card Album Cover Creator', 'Make a cover page for an ID card album, with photo, name, border style and the card at real size.', 'studio', 'fa-id-card-clip'],
+    ['tools_mobile_cam_scanner', 'Mobile Cam Scanner', 'Scan papers with your phone camera: straighten, clean and save as PDF or JPG.', 'studio', 'fa-camera'],
+    ['tools_ai_marriage_biodata', 'AI Marriage Biodata Creator', 'Matrimonial bio-data in English or Hindi with 8 border styles, 4 templates, photo and smart intro line.', 'studio', 'fa-ring'],
     ['tools_multiple_id_card_print', 'Multiple ID Card Print', 'Paste a list and photos to print many ID cards, 10 per A4 page.', 'id', 'fa-people-group'],
   ].map(function (t) { return { file: t[0], name: t[1], desc: t[2], cat: t[3], icon: t[4] }; });
   /* v23: shorter categories; duplicates and Kids Corner are not listed in All Tools (their pages still work) */

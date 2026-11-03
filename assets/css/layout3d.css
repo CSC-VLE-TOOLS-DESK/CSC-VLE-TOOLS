@@ -94,3 +94,18 @@
 .n-home .sbox{width:100%}
 .n-cat .csrch{max-width:560px}
 .n-home .sec-t{justify-content:flex-start}
+
+/* ===== v27: HOME PAGE ONLY (body.n-home). Category pages and tool pages are not changed. ===== */
+/* 1) Previous home background: soft blue glow top-left + warm peach glow top-right over the theme background colour */
+body.n-home{background:radial-gradient(900px 420px at 8% -5%,#dfe9ff 0,transparent 60%),radial-gradient(700px 380px at 100% 12%,#fff1da 0,transparent 55%),var(--bg) !important}
+@media print{body.n-home{background:#fff !important}}
+/* 2) Cyan 3D sidebar */
+.n-home .catnav{background:linear-gradient(180deg,#67e8f9 0%,#22d3ee 28%,#06b6d4 62%,#0e7490 100%);border-right:4px solid #0e7490;box-shadow:inset 4px 0 0 rgba(255,255,255,.45),inset -8px 0 14px rgba(0,60,80,.28),8px 0 22px rgba(8,145,178,.35)}
+.n-home .cn-t{color:#ecfeff;text-shadow:0 1px 2px rgba(0,60,80,.5)}
+.n-home .cn-a{color:#fff;text-shadow:0 1px 1px rgba(0,50,70,.55);background:linear-gradient(180deg,rgba(255,255,255,.42) 0%,rgba(255,255,255,.14) 48%,rgba(0,80,100,.18) 100%);border:1px solid rgba(255,255,255,.55);box-shadow:0 5px 0 #0b6a84,0 9px 14px rgba(0,50,70,.3),inset 0 2px 0 rgba(255,255,255,.7),inset 0 -2px 0 rgba(0,70,90,.25)}
+.n-home .cn-a:hover{background:linear-gradient(180deg,rgba(255,255,255,.6) 0%,rgba(255,255,255,.22) 50%,rgba(0,80,100,.14) 100%);box-shadow:0 7px 0 #0b6a84,0 13px 18px rgba(0,50,70,.35),inset 0 2px 0 rgba(255,255,255,.85)}
+.n-home .cn-a:active{transform:translateY(4px);box-shadow:0 1px 0 #0b6a84,inset 0 2px 4px rgba(0,50,70,.35)}
+.n-home .cn-a em{background:rgba(0,60,80,.28);color:#fff;text-shadow:none}
+.n-home .cn-a.on{color:#2b1700;text-shadow:none;background:linear-gradient(180deg,#ffe29a,var(--accent,#ff9800));border-color:#ffe9b8;box-shadow:0 5px 0 var(--accent-strong,#e68600),0 9px 14px rgba(120,60,0,.3),inset 0 2px 0 rgba(255,255,255,.75)}
+.n-home .cn-a.on em{background:rgba(0,0,0,.15);color:#2b1700}
+.n-home .cn-kids{background:linear-gradient(180deg,#f9a8d4,#ec4899 45%,#8b5cf6);color:#fff;box-shadow:0 5px 0 #5b21b6,0 9px 14px rgba(60,20,120,.35),inset 0 2px 0 rgba(255,255,255,.6)}

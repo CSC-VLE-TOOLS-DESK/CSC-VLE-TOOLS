@@ -1,0 +1,18 @@
+CSC VLE TOOLS v27  (3 Nov 2026)  6 new tools + home page background and cyan sidebar
+NEW CATEGORY: "Scanner, Album & Wedding Studio" (cat-studio.html), shown in the home sidebar, home category cards and all category pages.
+NEW TOOLS
+1. tools_ai_couple_photo.html      AI Couple Photo Creator   (2 photos; layouts: two arches + heart, two round frames, heart shape, diagonal split, standing together)
+2. tools_ai_family_photo.html      AI Family Photo Creator   (up to 8 photos; grid, big centre + row, round photos, standing together)
+   Both: 10 backgrounds + custom colour or picture, 8 border styles, heading / names / date line, zoom and move for each photo, auto enhance,
+   optional AI cut-out (same MODNet model as AI Background Remover; needs internet the first time), PNG / JPG / print, A4 / 4x6 / square / WhatsApp status sizes.
+3. tools_document_album.html       Document Album Creator    (many document pictures -> A4 album pages 1/2/4/6 per page, captions, rotate, cover page, border, PDF / print / JPG ZIP)
+4. tools_idcard_album_cover.html   ID Card Album Cover Creator (cover page + optional second page with ID card front/back at real size 85.6 x 54 mm, PDF / PNG / print)
+5. tools_mobile_cam_scanner.html   Mobile Cam Scanner        (live camera or phone camera photo, drag 4 corners, straighten, Magic colour / Original / Grey / B&W / Enhance, many pages -> PDF, JPG, print)
+6. tools_ai_marriage_biodata.html  AI Marriage Biodata Creator (English or Hindi headings, 4 templates, 8 border styles, photo, blessing line, smart intro line, extra rows, A4 print / Save as PDF)
+BORDER STYLES (assets/js/borders.js, used by all of the above): Golden Royal, Ornate Red, Blue, Pink, Floral Pattern, Classic Double, Modern, Traditional (+ No border).
+HOME PAGE ONLY (index.html, assets/css/layout3d.css, section "v27"):
+- Background is back to the earlier soft blue + peach glow (the theme colour still shows underneath).
+- Left category sidebar is now cyan with 3D buttons. Category pages and tool pages keep the v26 look.
+CHANGED: assets/js/site.js (6 tools + category), assets/js/tools-docs.js (new biodata tool), assets/css/layout3d.css, index.html, all cat-*.html (sidebar link), sitemap.xml
+NEW: assets/js/borders.js, tools-album.js, tools-scan.js, cat-studio.html, 6 tool pages
+NOTE: "AI" here = AI cut-out (real AI model, in the browser) + auto enhance. The tools do not draw new faces or people; they arrange YOUR photos.
