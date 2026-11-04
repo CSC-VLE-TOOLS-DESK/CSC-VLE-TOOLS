@@ -395,6 +395,78 @@
     };
   };
 
+
+  /* =============== v27: AI Marriage Biodata Creator (8 border styles, 4 templates, English / Hindi) =============== */
+  CSC.docTool = docTool; CSC.readPhoto = readPhoto;
+  T.ai_marriage_biodata = function (root) {
+    var G = [
+      ['Personal Details', 'व्यक्तिगत विवरण', [['nm', 'Name', 'नाम'], ['dob', 'Date of Birth', 'जन्म तिथि', 'date'], ['tob', 'Time of Birth', 'जन्म समय'], ['pob', 'Place of Birth', 'जन्म स्थान'], ['ht', 'Height', 'कद'], ['wt', 'Weight', 'वज़न'], ['cx', 'Complexion', 'रंग'], ['bg', 'Blood Group', 'ब्लड ग्रुप'], ['diet', 'Diet', 'आहार'], ['ms', 'Marital Status', 'वैवाहिक स्थिति']]],
+      ['Religion & Horoscope', 'धर्म व कुंडली', [['rl', 'Religion / Caste', 'धर्म / जाति'], ['gt', 'Gotra', 'गोत्र'], ['rs', 'Rashi / Nakshatra', 'राशि / नक्षत्र'], ['mg', 'Manglik', 'मांगलिक']]],
+      ['Education & Career', 'शिक्षा व व्यवसाय', [['ed', 'Education', 'शिक्षा'], ['oc', 'Occupation / Company', 'व्यवसाय / कंपनी'], ['inc', 'Annual Income', 'वार्षिक आय']]],
+      ['Family Details', 'पारिवारिक विवरण', [['fa', "Father's Name", 'पिता का नाम'], ['fo', "Father's Occupation", 'पिता का व्यवसाय'], ['mo', "Mother's Name", 'माता का नाम'], ['mc', "Mother's Occupation", 'माता का व्यवसाय'], ['br', 'Brothers', 'भाई'], ['sr', 'Sisters', 'बहन'], ['ft', 'Family Type', 'परिवार का प्रकार'], ['nat', 'Native Place', 'पैतृक स्थान']]],
+      ['Contact', 'संपर्क', [['ad', 'Address', 'पता', 'textarea'], ['ph', 'Mobile', 'मोबाइल']]]
+    ];
+    var DEITY = [['', 'None'], ['॥ श्री गणेशाय नमः ॥', 'श्री गणेशाय नमः'], ['॥ ॐ ॥', 'ॐ'], ['॥ जय श्री राम ॥', 'जय श्री राम'], ['॥ जय श्री कृष्ण ॥', 'जय श्री कृष्ण'], ['॥ ॐ नमः शिवाय ॥', 'ॐ नमः शिवाय'], ['॥ जय माता दी ॥', 'जय माता दी'], ['॥ ੴ ਸਤਿ ਨਾਮੁ ॥', 'ੴ (Sikh)'], ['786', '786 (Muslim)']];
+    var fields = [
+      { id: 'lang', label: 'Language of headings', type: 'select', opts: [['en', 'English'], ['hi', 'हिन्दी (Hindi)']], def: 'en' },
+      { id: 'tpl', label: 'Template', type: 'select', opts: [['classic', 'Classic table'], ['two', 'Two columns'], ['side', 'Side panel with photo'], ['center', 'Centred (traditional)']], def: 'classic' },
+      { id: 'bd', label: 'Border style', type: 'select', opts: Object.keys(CSC.borders ? CSC.borders.info : { gold: { name: 'Golden Royal' } }).map(function (k) { return [k, CSC.borders.info[k].name]; }), def: 'gold' },
+      { id: 'fs', label: 'Text size', type: 'select', opts: [['10', 'Small'], ['11.5', 'Medium'], ['13', 'Large']], def: '11.5' },
+      { id: 'dy', label: 'Top blessing line', type: 'select', opts: DEITY, def: '॥ श्री गणेशाय नमः ॥' },
+      { id: 'hd', label: 'Heading (blank = Marriage Bio-Data)' },
+      { id: 'gd', label: 'Boy or girl (for the smart intro line)', type: 'select', opts: [['m', 'Boy / Groom'], ['f', 'Girl / Bride']], def: 'm' },
+      { id: 'ai', label: 'Smart intro line at the top', type: 'select', opts: [['y', 'Yes, write it from my details'], ['n', 'No']], def: 'y' },
+      { id: 'ph0', label: 'Photo', type: 'photo' }
+    ];
+    G.forEach(function (g) { fields.push({ id: 's_' + g[0], label: g[0], type: 'section' }); g[2].forEach(function (f) { fields.push({ id: f[0], label: f[1], type: f[3] || undefined, rows: f[3] === 'textarea' ? 2 : undefined }); }); });
+    fields.push({ id: 's_x', label: 'Extra', type: 'section' }, { id: 'ex', label: 'Expectations / About (optional)', type: 'textarea', rows: 3 },
+      { id: 'xr', label: 'Add your own rows (e.g. Hobbies, Languages)', type: 'items', cols: [{ id: 'l', label: 'Title', w: '1fr' }, { id: 'v', label: 'Details', w: '2fr' }], def: [{}] });
+    var css = '.bm{position:relative;width:210mm;height:297mm;box-sizing:border-box;overflow:hidden;color:#222;font-family:"Mukta","Noto Sans Devanagari","Nirmala UI","Times New Roman",serif;-webkit-print-color-adjust:exact;print-color-adjust:exact;line-height:1.35}' +
+      '.bm .bb{position:absolute;inset:0}.bm .bc{position:absolute;inset:0;padding:21mm 21mm 20mm;display:flex;flex-direction:column}' +
+      '.bm .dy{text-align:center;font-weight:800;font-size:1.1em}.bm h2{margin:2px 0 4px;text-align:center;font-size:2em;letter-spacing:.02em}.bm .in{text-align:center;font-style:italic;margin:2px 4mm 6px;font-size:.95em}' +
+      '.bm table{width:100%;border-collapse:collapse}.bm td{padding:3px 4px;vertical-align:top}.bm td:first-child{width:38%;font-weight:700}.bm .gt{font-weight:800;padding:3px 8px;margin:7px 0 2px;border-radius:3px;font-size:1em}' +
+      '.bm img.ph{object-fit:cover;border:2px solid;padding:2px;background:#fff;display:block}.bm .row{display:flex;gap:10px;align-items:flex-start}.bm .grow{flex:1;min-width:0}';
+    CSC.docTool(root, {
+      key: 'aibiodata', css: css, printCss: ' .nop{}', fields: fields,
+      render: function (v) {
+        var hi = v.lang === 'hi', bd = v.bd || 'gold', I = (CSC.borders && CSC.borders.info[bd]) || { c1: '#7b1e1e', c2: '#d4a017', soft: '#fff', ink: '#333' }, fs = +v.fs || 11.5, tpl = v.tpl || 'classic';
+        var groups = G.map(function (g) {
+          var rows = g[2].filter(function (f) { return v[f[0]]; }).map(function (f) { return [hi ? f[2] : f[1], f[0] === 'dob' ? dmy(v.dob) : nl2br(v[f[0]])]; });
+          if (g[0] === 'Education & Career') { (v.xr || []).filter(function (x) { return x.l || x.v; }).forEach(function (x) { rows.push([esc(x.l), nl2br(x.v)]); }); }
+          return { t: hi ? g[1] : g[0], rows: rows };
+        }).filter(function (g) { return g.rows.length; });
+        var head = v.hd || (hi ? 'विवाह बायोडाटा' : 'Marriage Bio-Data'), dy = v.dy ? '<div class="dy" style="color:' + I.c1 + '">' + esc(v.dy) + '</div>' : '';
+        var intro = '';
+        if (v.ai !== 'n' && v.nm) {
+          var son = v.gd === 'f' ? (hi ? 'सुपुत्री' : 'daughter') : (hi ? 'सुपुत्र' : 'son'), par = [v.fa, v.mo].filter(Boolean).join(hi ? ' व ' : ' and ');
+          intro = hi ? esc(v.nm) + (par ? ', ' + esc(par) + ' के ' + son : '') + (v.dob ? ', जन्म ' + dmy(v.dob) : '') + (v.pob ? ' (' + esc(v.pob) + ')' : '') + (v.ed ? '। शिक्षा: ' + esc(v.ed) : '') + (v.oc ? ', व्यवसाय: ' + esc(v.oc) : '') + '।'
+            : esc(v.nm) + (par ? ', ' + son + ' of ' + esc(par) : '') + (v.dob ? ', born on ' + dmy(v.dob) : '') + (v.pob ? ' at ' + esc(v.pob) : '') + (v.ed ? '. Education: ' + esc(v.ed) : '') + (v.oc ? ', working as ' + esc(v.oc) : '') + '.';
+          intro = '<div class="in" style="color:' + I.ink + '">' + intro + '</div>';
+        }
+        var ex = v.ex ? '<div class="gt" style="background:' + I.c1 + ';color:#fff">' + (hi ? 'अपेक्षाएँ / परिचय' : 'Expectations / About') + '</div><div style="padding:2px 6px">' + nl2br(v.ex) + '</div>' : '';
+        var photo = function (w, h, round) { return v.ph0 ? '<img class="ph" alt="Photo" src="' + v.ph0 + '" style="width:' + w + 'mm;height:' + h + 'mm;border-color:' + I.c2 + (round ? ';border-radius:50%' : '') + '">' : ''; };
+        var tbl = function (g) { return '<div class="gt" style="background:' + I.c1 + ';color:#fff">' + esc(g.t) + '</div><table>' + g.rows.map(function (r) { return '<tr><td style="color:' + I.ink + '">' + esc(r[0]) + '</td><td>: ' + r[1] + '</td></tr>'; }).join('') + '</table>'; };
+        var body;
+        if (tpl === 'two') {
+          body = dy + '<h2 style="color:' + I.c1 + '">' + esc(head) + '</h2>' + intro + (v.ph0 ? '<div style="text-align:center;margin:2px 0 4px">' + photo(34, 42, false) + '</div>' : '') +
+            '<div style="columns:2;column-gap:8mm">' + groups.map(function (g) { return '<div style="break-inside:avoid;margin-bottom:4px">' + tbl(g) + '</div>'; }).join('') + '</div>' + ex;
+        } else if (tpl === 'side') {
+          var nm = groups.length && groups[0].rows.length ? '' : '';
+          var contact = groups.filter(function (g) { return g.t === (hi ? 'संपर्क' : 'Contact'); })[0], others = groups.filter(function (g) { return g !== contact; });
+          body = '<div class="row" style="flex:1;gap:7mm"><div style="width:52mm;flex:none;background:' + I.c1 + ';color:#fff;border-radius:6px;padding:8mm 5mm;text-align:center;align-self:stretch"><div style="font-weight:800;margin-bottom:6px;color:' + I.c2 + '">' + esc(v.dy || '') + '</div>' + (v.ph0 ? photo(40, 50, false).replace('background:#fff', 'background:#fff') : '') +
+            '<div style="font-size:1.35em;font-weight:800;margin:8px 0 2px">' + esc(v.nm || '') + '</div><div style="opacity:.9">' + esc(head) + '</div>' + (contact ? '<div style="margin-top:12px;text-align:left;font-size:.92em">' + contact.rows.map(function (r) { return '<div style="margin-bottom:5px"><b style="color:' + I.c2 + '">' + esc(r[0]) + '</b><br>' + r[1] + '</div>'; }).join('') + '</div>' : '') + '</div>' +
+            '<div class="grow">' + intro.replace('text-align:center', '') + others.map(tbl).join('') + ex + '</div></div>';
+        } else if (tpl === 'center') {
+          body = dy + '<h2 style="color:' + I.c1 + '">' + esc(head) + '</h2><div style="text-align:center;margin:4px 0">' + photo(38, 38, true) + '</div>' + (v.nm ? '<div style="text-align:center;font-size:1.5em;font-weight:800;color:' + I.ink + '">' + esc(v.nm) + '</div>' : '') + intro +
+            groups.map(function (g) { return '<div style="text-align:center;margin-top:6px"><div style="font-weight:800;color:' + I.c2 + ';border-bottom:1px solid ' + I.c2 + ';display:inline-block;padding:0 14px;margin-bottom:2px">' + esc(g.t) + '</div>' + g.rows.filter(function (r) { return r[0] !== (hi ? 'नाम' : 'Name'); }).map(function (r) { return '<div><b style="color:' + I.ink + '">' + esc(r[0]) + ':</b> ' + r[1] + '</div>'; }).join('') + '</div>'; }).join('') + (v.ex ? '<div style="text-align:center;margin-top:8px"><b style="color:' + I.c2 + '">' + (hi ? 'अपेक्षाएँ / परिचय' : 'Expectations / About') + '</b><br>' + nl2br(v.ex) + '</div>' : '');
+        } else {
+          body = dy + '<h2 style="color:' + I.c1 + '">' + esc(head) + '</h2>' + intro + '<div class="row"><div class="grow">' + groups.map(tbl).join('') + '</div>' + (v.ph0 ? '<div style="margin-top:8px">' + photo(36, 44, false) + '</div>' : '') + '</div>' + ex;
+        }
+        return '<div class="bm" style="font-size:' + fs + 'pt;background:' + I.soft + '"><div class="bb">' + (bd !== 'none' ? CSC.borders.svg(bd, 210, 297) : '') + '</div><div class="bc">' + body + '</div></div>';
+      }
+    });
+  };
+
   /* =============== Aliases: duplicate file names from the original 58-template set =============== */
   ['pdf_merge:pdf_merger', 'pdf_split:pdf_splitter', 'photo_signature_joiner:photo_sign_joiner', 'photo_name_joiner:name_date_photo', 'passport_photo_sheet:ai_passport_studio'].forEach(function (p) {
     var a = p.split(':'); T[a[0]] = function (root) { return T[a[1]](root); };

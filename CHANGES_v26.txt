@@ -16,3 +16,15 @@ v26.1 (spacing + Kids Corner)
 - Balanced layout: left category sidebar, centred content, and on screens wider than 1500 px a right "Upcoming Tools" panel (home and category pages). The search box is centred.
 - Upcoming Tools list is SAMPLE text. Edit the names in index.html and the cat-*.html files (search for "Coming soon"), or ask to change the list.
 - Kids Corner: new pink-purple-cyan hero, Chintu greeting, "Start playing" button, coloured 3D level buttons (All, KG, UKG, Class 1), livelier cards. Games and Hindi switch are unchanged.
+
+v26.2 (new tool: Map Download & Print)
+- NEW tools_maps_print.html in Exam & Education (also on cat-exam.html, home search and sitemap).
+- World map, India map (36 states and UTs) and Haryana map (22 districts). English or Hindi. Labels: none, names, or numbers with a list (quiz). Styles: colourful, blank outline, soft grey. Highlight one region, add title and a Name / Class / Date line. Print A4, PNG (300 dpi) or SVG.
+- Map data files (loaded only when needed): assets/js/maps/world.js, india.js, haryana.js (about 115 KB in total).
+- India and Haryana data: udit-001/india-maps-data (GitHub, curated from public sources); World: Natural Earth with India drawn from the same India data. The tool shows a note: for study and general reference, not a legal boundary record. Please check the India border on the printed map once before you publish.
+
+v26.3 (Map tool: every State and Union Territory)
+- Map Download & Print now has a "State / UT" button with a drop-down of all 36 states and union territories. Each shows its districts, with the same labels, styles, highlight, English / Hindi, print, PNG and SVG options. Landscape or portrait A4 is chosen automatically.
+- New folder assets/js/maps/states/ (36 small files, loaded only when a state is chosen). The old assets/js/maps/haryana.js is removed (Haryana is now in the state list).
+- District boundaries follow Census 2011 with changes up to about 2016. Districts created after that (for example in Rajasthan and Andhra Pradesh) are not shown. Hindi district names are available for Haryana only; other states show English district names.
+- Standalone file CSC_Map_Print_Standalone.html updated with all states (about 0.6 MB, works offline).

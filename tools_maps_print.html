@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Map Download &amp; Print: World, India, Haryana | CSC VLE TOOLS</title>
+  <meta name="description" content="Download and print World map, India map with states and a district map of every state and union territory. Blank outline or labelled, English or Hindi, A4 PNG, SVG or print. Free for students.">
+  <meta name="robots" content="index,follow,max-image-preview:large">
+  <meta name="theme-color" content="#1a3fa6">
+  <link rel="canonical" href="https://csc-vle-tools-desk.github.io/CSC-VLE-TOOLS/tools_maps_print.html">
+  <meta property="og:type" content="website"><meta property="og:site_name" content="CSC VLE TOOLS"><meta property="og:title" content="Map Download &amp; Print: World, India, Haryana"><meta property="og:description" content="Free printable World, India and Haryana maps for students."><meta property="og:url" content="https://csc-vle-tools-desk.github.io/CSC-VLE-TOOLS/tools_maps_print.html"><meta property="og:image" content="https://csc-vle-tools-desk.github.io/CSC-VLE-TOOLS/og-image.png">
+  <link rel="icon" href="favicon.ico?v=3" sizes="any"><link rel="icon" href="favicon.svg?v=3" type="image/svg+xml"><link rel="apple-touch-icon" href="apple-touch-icon.png?v=3"><link rel="manifest" href="site.webmanifest">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="assets/css/portal.css">
+  <link rel="stylesheet" href="assets/css/csc-system.css">
+  <style>
+    .mp-wrap{display:grid;grid-template-columns:320px minmax(0,1fr);gap:18px;align-items:start}
+    .mp-ctl{display:grid;gap:12px}
+    .mp-ctl label{display:block;font-weight:700;font-size:.88rem;margin-bottom:4px}
+    .mp-ctl [hidden]{display:none}
+    .mp-ctl select,.mp-ctl input[type=text]{width:100%;padding:9px 10px;border:2px solid var(--line,#d5dce4);border-radius:10px;font:inherit;background:#fff}
+    .mp-seg{display:flex;gap:6px;flex-wrap:wrap}
+    .mp-seg button{flex:1;min-width:84px;padding:9px 8px;border:0;border-radius:11px;font:inherit;font-weight:800;cursor:pointer;color:#fff;background:#6b7a99;box-shadow:0 4px 0 #4b5877;transition:transform .1s,box-shadow .1s}
+    .mp-seg button[aria-pressed="true"]{background:var(--brand,#1a3fa6);box-shadow:0 4px 0 var(--brand-strong,#0f2a73)}
+    .mp-seg button:active{transform:translateY(3px);box-shadow:none}
+    .mp-chk{display:flex;gap:8px;align-items:center;font-weight:600}
+    .mp-act{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:4px}
+    .mp-act button{padding:12px;border:0;border-radius:12px;font:inherit;font-weight:800;cursor:pointer;color:#2b1700;background:linear-gradient(180deg,#ffc15a,#ff9800);box-shadow:0 5px 0 #e68600;transition:transform .1s,box-shadow .1s}
+    .mp-act button.p{grid-column:1/3;color:#fff;background:linear-gradient(180deg,#2f66e0,#1a3fa6);box-shadow:0 5px 0 #0f2a73}
+    .mp-act button:hover{transform:translateY(-2px)}.mp-act button:active{transform:translateY(3px);box-shadow:none}
+    .mp-prev{background:#e9edf5;border-radius:14px;padding:14px;display:flex;justify-content:center;overflow:auto;min-height:260px}
+    .mp-prev svg{background:#fff;box-shadow:0 8px 24px rgba(20,40,110,.25);max-width:100%;height:auto;display:block}
+    .mp-note{font-size:.82rem;color:var(--muted,#5d6b7a);margin-top:10px}
+    #mp-print{display:none}
+    @media (max-width:860px){.mp-wrap{grid-template-columns:1fr}}
+    @media print{
+      body *{visibility:hidden!important}
+      #mp-print,#mp-print *{visibility:visible!important}
+      #mp-print{display:block!important;position:absolute;left:0;top:0;width:100%}
+      #mp-print svg{width:100%;height:auto;display:block}
+    }
+  </style>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Map Download & Print","applicationCategory":"EducationalApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"INR"},"url":"https://csc-vle-tools-desk.github.io/CSC-VLE-TOOLS/tools_maps_print.html"}</script>
+  <script src="assets/js/site.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header id="site-header"></header>
+  <main id="main" class="csc-container">
+    <nav class="csc-breadcrumbs" aria-label="Breadcrumb"><a href="index.html">Home</a><span aria-hidden="true">/</span><a href="cat-exam.html">Exam &amp; Education</a><span aria-hidden="true">/</span><span aria-current="page">Map Download &amp; Print</span></nav>
+    <header class="page-head">
+      <p class="csc-eyebrow">CSC VLE TOOLS TOOL</p>
+      <h1>Map Download &amp; Print</h1>
+      <p class="csc-muted">World map, India map with states, and a district map of every State and Union Territory. Print a blank outline for practice or a labelled map for study, in English or Hindi.</p>
+    </header>
+    <section class="csc-panel" aria-labelledby="tool-heading">
+      <h2 id="tool-heading">Make your map</h2>
+      <div class="mp-wrap">
+        <div class="mp-ctl">
+          <div><label>Map</label><div class="mp-seg" id="mp-map"><button data-v="world" aria-pressed="false">World</button><button data-v="india" aria-pressed="true">India</button><button data-v="state" aria-pressed="false">State / UT</button></div></div>
+          <div id="mp-strow" hidden><label for="mp-state">State or Union Territory</label><select id="mp-state"></select></div>
+          <div><label>Language</label><div class="mp-seg" id="mp-lang"><button data-v="en" aria-pressed="true">English</button><button data-v="hi" aria-pressed="false">हिन्दी</button></div></div>
+          <div><label for="mp-labels">Labels</label><select id="mp-labels"></select></div>
+          <div><label for="mp-style">Style</label><select id="mp-style"><option value="color">Colourful</option><option value="outline">Blank outline (for practice)</option><option value="soft">Soft grey</option></select></div>
+          <div><label for="mp-hi">Highlight one region</label><select id="mp-hi"><option value="">None</option></select></div>
+          <div><label for="mp-title">Title</label><input type="text" id="mp-title" maxlength="60"></div>
+          <label class="mp-chk"><input type="checkbox" id="mp-name"> Add Name / Class / Date line</label>
+          <label class="mp-chk"><input type="checkbox" id="mp-frame" checked> Border frame</label>
+          <div class="mp-act"><button class="p" id="mp-printbtn"><i class="fa-solid fa-print" aria-hidden="true"></i> Print (A4)</button><button id="mp-png"><i class="fa-solid fa-image" aria-hidden="true"></i> PNG</button><button id="mp-svg"><i class="fa-solid fa-file-code" aria-hidden="true"></i> SVG</button></div>
+        </div>
+        <div><div class="mp-prev" id="mp-prev" aria-live="polite">Loading map...</div>
+          <p class="mp-note" id="mp-hint" hidden>Hindi district names are available for Haryana only. Other states show English district names.</p>
+          <p class="mp-note">Maps are simplified for study and general reference. District boundaries follow Census 2011 with changes up to about 2016, so newer districts are not shown. They are not legal boundary records. For an official map, use Survey of India.</p></div>
+      </div>
+      <div id="mp-print" aria-hidden="true"></div>
+    </section>
+    <section class="csc-panel" aria-labelledby="help-heading">
+      <h2 id="help-heading">How to use this tool</h2>
+      <ol><li>Choose World, India, or State / UT and pick any state or union territory from the list. Choose English or Hindi.</li><li>Choose labels: none, names, or numbers with a list. Blank outline with numbers is good for a quiz.</li><li>Optionally highlight one state or district, and add a title or a Name / Class / Date line.</li><li>Click Print for an A4 sheet (choose Save as PDF in the print window if you want a PDF), or download a PNG or SVG file.</li></ol>
+    </section>
+  </main>
+  <footer id="site-footer"></footer>
+  <script>
+  (function(){
+    'use strict';
+    var $=function(i){return document.getElementById(i)};
+    var STATES=[["Andaman and Nicobar Islands","andaman-and-nicobar-islands","अंडमान और निकोबार द्वीपसमूह"],["Andhra Pradesh","andhra-pradesh","आंध्र प्रदेश"],["Arunachal Pradesh","arunachal-pradesh","अरुणाचल प्रदेश"],["Assam","assam","असम"],["Bihar","bihar","बिहार"],["Chandigarh","chandigarh","चंडीगढ़"],["Chhattisgarh","chhattisgarh","छत्तीसगढ़"],["Dadra and Nagar Haveli and Daman and Diu","dnh-and-dd","दादरा नगर हवेली और दमन दीव"],["Delhi","delhi","दिल्ली"],["Goa","goa","गोवा"],["Gujarat","gujarat","गुजरात"],["Haryana","haryana","हरियाणा"],["Himachal Pradesh","himachal-pradesh","हिमाचल प्रदेश"],["Jammu and Kashmir","jammu-and-kashmir","जम्मू और कश्मीर"],["Jharkhand","jharkhand","झारखंड"],["Karnataka","karnataka","कर्नाटक"],["Kerala","kerala","केरल"],["Ladakh","ladakh","लद्दाख"],["Lakshadweep","lakshadweep","लक्षद्वीप"],["Madhya Pradesh","madhya-pradesh","मध्य प्रदेश"],["Maharashtra","maharashtra","महाराष्ट्र"],["Manipur","manipur","मणिपुर"],["Meghalaya","meghalaya","मेघालय"],["Mizoram","mizoram","मिज़ोरम"],["Nagaland","nagaland","नागालैंड"],["Odisha","odisha","ओडिशा"],["Puducherry","puducherry","पुदुचेरी"],["Punjab","punjab","पंजाब"],["Rajasthan","rajasthan","राजस्थान"],["Sikkim","sikkim","सिक्किम"],["Tamil Nadu","tamil-nadu","तमिलनाडु"],["Telangana","telangana","तेलंगाना"],["Tripura","tripura","त्रिपुरा"],["Uttar Pradesh","uttar-pradesh","उत्तर प्रदेश"],["Uttarakhand","uttarakhand","उत्तराखंड"],["West Bengal","west-bengal","पश्चिम बंगाल"]];
+    var state={map:'india',lang:'en',st:'haryana'},cache={},cur=null;
+    var PAL=['#fde68a','#bbf7d0','#bfdbfe','#fbcfe8','#fed7aa','#ddd6fe','#a7f3d0','#fecaca','#e9d5ff','#bae6fd'];
+    var SHORT={'Dadra and Nagar Haveli and Daman and Diu':['DNH & DD','दादरा-दमन दीव'],'Andaman and Nicobar Islands':['Andaman & Nicobar','अंडमान-निकोबार']};
+    var NUDGE={'Chandigarh':[-1.6,.7],'Delhi':[1.2,-.1],'Puducherry':[2.3,-.1],'Goa':[-1.3,0],'Dadra and Nagar Haveli and Daman and Diu':[-2.2,-.2],'Lakshadweep':[0,0]};
+    var DEF={world:{t:'World Map',th:'विश्व का मानचित्र',o:'l'},india:{t:'India: States and Union Territories',th:'भारत: राज्य और केंद्र शासित प्रदेश',o:'p'}};
+    var CONT=[['North America','उत्तरी अमेरिका',-100,46],['South America','दक्षिणी अमेरिका',-60,-14],['Europe','यूरोप',14,52],['Africa','अफ्रीका',20,4],['Asia','एशिया',88,46],['Australia / Oceania','ऑस्ट्रेलिया / ओशिनिया',134,-25],['Antarctica','अंटार्कटिका',0,-80]];
+    var OCEAN=[['Pacific Ocean','प्रशांत महासागर',-150,5],['Pacific Ocean','प्रशांत महासागर',156,26],['Atlantic Ocean','अटलांटिक महासागर',-33,12],['Indian Ocean','हिंद महासागर',78,-27],['Southern Ocean','दक्षिणी महासागर',60,-64],['Arctic Ocean','आर्कटिक महासागर',0,83]];
+    function load(k,cb){
+      if(cache[k]){cb(cache[k]);return}
+      $('mp-prev').textContent='Loading map...';
+      var sc=document.createElement('script');sc.src=(k.indexOf('st_')===0?'assets/js/maps/states/'+k.slice(3):'assets/js/maps/'+k)+'.js';
+      sc.onload=function(){cache[k]=window.CSCMAPS[k];cb(cache[k])};
+      sc.onerror=function(){$('mp-prev').textContent='Could not load the map data. Check your internet and reload.'};
+      document.head.appendChild(sc);
+    }
+    function dec(r,sc){sc=sc||100;var o=[],x=r[0],y=r[1];o.push([x/sc,y/sc]);for(var i=2;i<r.length;i+=2){x+=r[i];y+=r[i+1];o.push([x/sc,y/sc])}return o}
+    function esc(t){return String(t).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+    function colors(feats,sc){
+      var bb=feats.map(function(f){var a=[1e9,1e9,-1e9,-1e9];f.p.forEach(function(r){dec(r,sc).forEach(function(p){if(p[0]<a[0])a[0]=p[0];if(p[1]<a[1])a[1]=p[1];if(p[0]>a[2])a[2]=p[0];if(p[1]>a[3])a[3]=p[1]})});return a});
+      var col=[];
+      feats.forEach(function(_,i){var used={};
+        for(var j=0;j<i;j++){var a=bb[i],b=bb[j];if(a[0]<=b[2]+.05&&a[2]>=b[0]-.05&&a[1]<=b[3]+.05&&a[3]>=b[1]-.05)used[col[j]]=1}
+        var c=0;while(used[c]&&c<PAL.length-1)c++;col[i]=c});
+      return col;
+    }
+    function build(){
+      var M=cur,k=state.map,hi=state.lang==='hi',opt=$('mp-labels').value,st=$('mp-style').value,hl=$('mp-hi').value;
+      var sc=M.sc||100,b=M.bbox,cl=(k==='world')?1:Math.cos((b[1]+b[3])/2*Math.PI/180),gw=(b[2]-b[0])*cl,gh=(b[3]-b[1]);
+      var land=(k==='world')||(gw>gh*1.15),W=land?297:210,H=land?210:297,mg=10;
+      var title=$('mp-title').value.trim(),showName=$('mp-name').checked,frame=$('mp-frame').checked;
+      var nl=(opt==='numbers'),items=M.feats.map(function(f,i){return{i:i,f:f,n:(hi&&f.h)?f.h:f.n}});
+      if(nl)items.sort(function(a,b){return a.n<b.n?-1:1});
+      var ni=items.length,legCols=ni>60?5:(ni>30?4:(ni>12?3:2)),lh=ni>60?4:4.6,lf=ni>60?2.9:3.3,legRows=nl?Math.ceil(ni/legCols):0,legH=nl?legRows*lh+8:0;
+      var top=mg+(title?12:0),bot=mg+(showName?10:0)+legH;
+      var bw=W-2*mg,bh=H-top-bot;
+      var s=Math.min(bw/gw,bh/gh);
+      var ox=mg+(bw-gw*s)/2,oy=top+(bh-gh*s)/2;
+      var X=function(lon){return ox+(lon-b[0])*cl*s},Y=function(lat){return oy+(b[3]-lat)*s};
+      var nf=M.feats.length,cols=(st==='color')?colors(M.feats,sc):null,sw=(k==='world'?.12:(k==='india'?.22:(nf>40?.2:.3)));
+      var fs=(k==='world'?1.7:(k==='india'?2.4:(nf>40?2.2:(nf>25?2.7:(nf>10?3.2:4)))));
+      var g=[],tx=[];
+      M.feats.forEach(function(f,i){
+        var d='';f.p.forEach(function(r){var pts=dec(r,sc);d+='M'+pts.map(function(p){return X(p[0]).toFixed(2)+' '+Y(p[1]).toFixed(2)}).join('L')+'Z'});
+        var fill=st==='outline'?'#fff':(st==='soft'?'#e5e7eb':PAL[cols[i]%PAL.length]);
+        if(hl&&f.n===hl)fill='#f59e0b';
+        g.push('<path d="'+d+'" fill="'+fill+'" stroke="#1f2937" stroke-width="'+sw+'" stroke-linejoin="round" fill-rule="evenodd"/>');
+      });
+      function T(x,y,t,sz,extra){tx.push('<text x="'+x.toFixed(2)+'" y="'+y.toFixed(2)+'" font-size="'+sz+'" text-anchor="middle" '+(extra||'')+' paint-order="stroke" stroke="#fff" stroke-width="'+(sz*.28).toFixed(2)+'" stroke-linejoin="round">'+esc(t)+'</text>')}
+      if(opt==='names'&&k!=='world'){M.feats.forEach(function(f){var n=(hi&&f.h)?f.h:f.n,sh=SHORT[f.n];if(sh)n=sh[hi?1:0];var nd=(k==='india'&&NUDGE[f.n])||[0,0];T(X(f.c[0]/sc+nd[0]),Y(f.c[1]/sc+nd[1])+fs*.35,n,fs,'fill="#111827" font-weight="600"')})}
+      if(nl){items.forEach(function(it,idx){T(X(it.f.c[0]/sc+((k==='india'&&NUDGE[it.f.n])||[0,0])[0]),Y(it.f.c[1]/sc+((k==='india'&&NUDGE[it.f.n])||[0,0])[1])+fs*.35,String(idx+1),fs*(k==='state'?1.15:1),'fill="#111827" font-weight="700"')})}
+      if(k==='world'&&opt!=='none'&&opt!=='numbers'){
+        if(opt==='cont'||opt==='both'){CONT.forEach(function(c){T(X(c[2]),Y(c[3]),hi?c[1]:c[0],4.2,'fill="#7c2d12" font-weight="800"')});OCEAN.forEach(function(c){T(X(c[2]),Y(c[3]),hi?c[1]:c[0],3.6,'fill="#1d4ed8" font-style="italic" font-weight="700"')})}
+        if(opt==='countries'||opt==='both'){M.feats.forEach(function(f){if(f.a>1500){var sz=Math.min(2.6,1.2+f.a/9000);T(X(f.c[0]/sc),Y(f.c[1]/sc)+sz*.3,f.n,sz,'fill="#111827"')}})}
+      }
+      var out=['<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 '+W+' '+H+'" width="'+W+'mm" height="'+H+'mm" font-family="Nirmala UI,Mukta,Arial,sans-serif">','<rect width="'+W+'" height="'+H+'" fill="#fff"/>'];
+      if(frame)out.push('<rect x="4" y="4" width="'+(W-8)+'" height="'+(H-8)+'" fill="none" stroke="#1f2937" stroke-width=".5"/>');
+      if(title)out.push('<text x="'+W/2+'" y="'+(mg+6)+'" font-size="7" font-weight="800" text-anchor="middle" fill="#111827">'+esc(title)+'</text>');
+      out=out.concat(g,tx);
+      if(nl){var y0=H-bot+ (showName?0:0)+3+ (showName?0:0);var cw=(W-2*mg)/legCols;var ly=H-mg-(showName?10:0)-legRows*lh+2;
+        items.forEach(function(it,idx){var c=Math.floor(idx/legRows),r=idx%legRows;out.push('<text x="'+(mg+c*cw)+'" y="'+(ly+r*lh)+'" font-size="'+lf+'" fill="#111827">'+(idx+1)+'. '+esc(it.n)+'</text>')})}
+      if(showName)out.push('<text x="'+mg+'" y="'+(H-mg-1)+'" font-size="4" fill="#111827">'+(hi?'नाम: ____________   कक्षा: ______   दिनांक: ________':'Name: ______________   Class: ______   Date: ________')+'</text>');
+      out.push('<text x="'+(W-mg)+'" y="'+(H-5.5)+'" font-size="2.2" text-anchor="end" fill="#6b7280">CSC VLE TOOLS</text>');
+      out.push('</svg>');
+      return{svg:out.join(''),W:W,H:H};
+    }
+    function render(){if(!cur)return;$('mp-hint').hidden=!(state.lang==='hi'&&state.map==='state'&&state.st!=='haryana');var r=build();cur.last=r;$('mp-prev').innerHTML=r.svg;$('mp-print').innerHTML=r.svg}
+    function setLabels(){
+      var k=state.map,sel=$('mp-labels'),old=sel.value,o=[];
+      if(k==='world')o=[['cont','Continents and oceans'],['countries','Big country names'],['both','Continents, oceans and countries'],['none','No labels']];
+      else o=[['names','Names on map'],['numbers','Numbers with list (quiz)'],['none','No labels']];
+      sel.innerHTML=o.map(function(x){return'<option value="'+x[0]+'">'+x[1]+'</option>'}).join('');
+      sel.value=o.some(function(x){return x[0]===old})?old:o[0][0];
+    }
+    function setHighlight(){var sel=$('mp-hi');sel.innerHTML='<option value="">None</option>'+cur.feats.map(function(f){return'<option value="'+esc(f.n)+'">'+esc(state.lang==='hi'&&f.h?f.h:f.n)+'</option>'}).sort(function(a,b){return a<b?-1:1}).join('')}
+    function setTitle(){var d=state.map==='state'?{t:cur.title,th:cur.th}:DEF[state.map];$('mp-title').value=state.lang==='hi'?d.th:d.t}
+    function key(){return state.map==='state'?'st_'+state.st:state.map}
+    function fillStates(){var sel=$('mp-state'),v=state.st;sel.innerHTML=STATES.map(function(x){return'<option value="'+x[1]+'">'+esc(state.lang==='hi'?x[2]:x[0])+'</option>'}).join('');sel.value=v}
+    function switchMap(k){
+      state.map=k;$('mp-strow').hidden=(k!=='state');
+      load(key(),function(m){cur=m;setLabels();var hv=$('mp-hi').value;setHighlight();setTitle();render()});
+      [].forEach.call($('mp-map').children,function(b){b.setAttribute('aria-pressed',b.dataset.v===k)});
+    }
+    $('mp-state').addEventListener('change',function(){state.st=this.value;switchMap('state')});
+    $('mp-map').addEventListener('click',function(e){var b=e.target.closest('button');if(b)switchMap(b.dataset.v)});
+    $('mp-lang').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;state.lang=b.dataset.v;[].forEach.call($('mp-lang').children,function(x){x.setAttribute('aria-pressed',x===b)});fillStates();var h=$('mp-hi').value;setHighlight();$('mp-hi').value=h;setTitle();render()});
+    ['mp-labels','mp-style','mp-hi','mp-title','mp-name','mp-frame'].forEach(function(i){$(i).addEventListener('input',render);$(i).addEventListener('change',render)});
+    function fname(ext){return 'map-'+(state.map==='state'?state.st:state.map)+'-'+state.lang+'.'+ext}
+    function dl(blob,name){var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();setTimeout(function(){URL.revokeObjectURL(a.href);a.remove()},500)}
+    $('mp-svg').addEventListener('click',function(){if(cur&&cur.last)dl(new Blob([cur.last.svg],{type:'image/svg+xml'}),fname('svg'))});
+    $('mp-png').addEventListener('click',function(){
+      if(!cur||!cur.last)return;var r=cur.last,pw=r.W>r.H?3508:2480,ph=r.W>r.H?2480:3508;
+      var svg=r.svg.replace(/width="[\d.]+mm" height="[\d.]+mm"/,'width="'+pw+'" height="'+ph+'"');
+      var img=new Image();img.onload=function(){var c=document.createElement('canvas');c.width=pw;c.height=ph;var x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,pw,ph);x.drawImage(img,0,0,pw,ph);c.toBlob(function(b){dl(b,fname('png'))},'image/png')};
+      img.onerror=function(){alert('PNG could not be created in this browser. Use SVG or Print instead.')};
+      img.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(svg);
+    });
+    $('mp-printbtn').addEventListener('click',function(){
+      if(!cur||!cur.last)return;var st=document.getElementById('mp-page')||document.createElement('style');st.id='mp-page';
+      st.textContent='@page{size:A4 '+(cur.last.W>cur.last.H?'landscape':'portrait')+';margin:0}';document.head.appendChild(st);window.print();
+    });
+    fillStates();
+    switchMap('india');
+  })();
+  </script>
+  <script src="assets/js/demo-mode.js"></script>
+</body>
+</html>

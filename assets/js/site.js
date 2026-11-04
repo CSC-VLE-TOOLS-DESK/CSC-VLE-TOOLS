@@ -16,6 +16,7 @@
     { id: 'bill', name: 'Receipts & Billing', icon: 'fa-receipt' },
     { id: 'calc', name: 'Calculators', icon: 'fa-calculator' },
     { id: 'exam', name: 'Exam & Education', icon: 'fa-graduation-cap' },
+    { id: 'studio', name: 'Scanner, Album & Wedding Studio', icon: 'fa-camera-retro' },
     { id: 'util', name: 'Quick Utilities', icon: 'fa-bolt' },
     { id: 'kids', name: 'Kids Corner', icon: 'fa-child-reaching' }
   ];
@@ -90,6 +91,7 @@
     ['tools_invoice_generator', 'Invoice Generator', 'GST or simple invoices with item table and totals.', 'bill', 'fa-file-invoice'],
     ['tools_salary_slip_generator', 'Salary Slip Generator', 'Monthly salary slip with earnings and deductions.', 'bill', 'fa-money-check-dollar'],
     ['tools_service_rate_list', 'Service Rate List', 'Editable rate board for your shop. Saved on this device.', 'bill', 'fa-list-check'],
+    ['tools_maps_print', 'Map Download & Print', 'World, India and Haryana maps with names, in English or Hindi. Print or download.', 'exam', 'fa-map-location-dot'],
     ['tools_question_paper_maker', 'Question Paper Maker', 'Create a printable question paper with MCQ and descriptive questions.', 'exam', 'fa-file-circle-question'],
     ['tools_pdf_merge', 'PDF Merge', 'Join several PDF files into one (same tool as PDF Merger).', 'pdf', 'fa-object-group'],
     ['tools_pdf_split', 'PDF Split', 'Split or extract pages from a PDF (same tool as PDF Splitter).', 'pdf', 'fa-scissors'],
@@ -99,6 +101,12 @@
     ['tools_resume_builder', 'Resume Builder (shortcut)', 'Opens the Resume Builder with several templates.', 'docs', 'fa-id-badge'],
     ['tools_student_id_card', 'Student ID Card', 'Student ID card with photo, front and back, 85.6 × 54 mm.', 'id', 'fa-id-card'],
     ['tools_id_card_print', 'ID Card Print', 'General ID card for staff or members, front and back.', 'id', 'fa-id-card'],
+    ['tools_ai_couple_photo', 'AI Couple Photo Creator', 'Make a wedding or couple photo frame from two photos. Heart, arch and round layouts, 8 border styles, AI cut-out.', 'studio', 'fa-heart-circle-check'],
+    ['tools_ai_family_photo', 'AI Family Photo Creator', 'Join up to 8 family photos into one frame with names, border styles and AI cut-out.', 'studio', 'fa-people-roof'],
+    ['tools_document_album', 'Document Album Creator', 'Arrange Aadhaar, PAN, marksheets and other documents on A4 pages with border, cover page and PDF.', 'studio', 'fa-folder-open'],
+    ['tools_idcard_album_cover', 'ID Card Album Cover Creator', 'Make a cover page for an ID card album, with photo, name, border style and the card at real size.', 'studio', 'fa-id-card-clip'],
+    ['tools_mobile_cam_scanner', 'Mobile Cam Scanner', 'Scan papers with your phone camera: straighten, clean and save as PDF or JPG.', 'studio', 'fa-camera'],
+    ['tools_ai_marriage_biodata', 'AI Marriage Biodata Creator', 'Matrimonial bio-data in English or Hindi with 8 border styles, 4 templates, photo and smart intro line.', 'studio', 'fa-ring'],
     ['tools_multiple_id_card_print', 'Multiple ID Card Print', 'Paste a list and photos to print many ID cards, 10 per A4 page.', 'id', 'fa-people-group'],
   ].map(function (t) { return { file: t[0], name: t[1], desc: t[2], cat: t[3], icon: t[4] }; });
   /* v23: shorter categories; duplicates and Kids Corner are not listed in All Tools (their pages still work) */
@@ -200,9 +208,18 @@
   /* ---------- Site theme (whole page: header, buttons, cards, background) ---------- */
   var THEMES = [['Royal Blue', '#1a3fa6'], ['Saffron', '#c2570c'], ['Green', '#0b5c3b'], ['Teal', '#0f766e'], ['Purple', '#6b3fa0'], ['Maroon', '#8b1e3f'], ['Slate', '#374151']];
   var CARDS = [['Auto (each different)', ''], ['Blue', '#1a3fa6'], ['Purple', '#7c3aed'], ['Pink', '#db2777'], ['Red', '#dc2626'], ['Orange', '#ea580c'], ['Green', '#059669'], ['Teal', '#0d9488'], ['Slate', '#374151']];
+  var SIDES = [['Auto (default)', ''], ['Cyan', '#0891b2'], ['Blue', '#1a3fa6'], ['Purple', '#7c3aed'], ['Pink', '#db2777'], ['Green', '#059669'], ['Orange', '#ea580c'], ['Maroon', '#8b1e3f'], ['Slate', '#374151']];
   var BGS = [['Auto', ''], ['White', '#ffffff'], ['Cream', '#fbf6e9'], ['Sky', '#e8f1fb'], ['Mint', '#e6f5ec'], ['Rose', '#fbeaee'], ['Lilac', '#efe9fa'], ['Grey', '#e6e9ed']];
   function hex2rgb(h) { return [1, 3, 5].map(function (i) { return parseInt(h.substr(i, 2), 16); }); }
   function mix(h, to, t) { var a = hex2rgb(h), b = hex2rgb(to); return '#' + a.map(function (v, i) { return ('0' + Math.round(v + (b[i] - v) * t).toString(16)).slice(-2); }).join(''); }
+  function sideCss(c) {
+    var s1 = mix(c, '#ffffff', 0.4), s3 = mix(c, '#000000', 0.38), dk = mix(c, '#000000', 0.5), rgb = hex2rgb(c),
+        light = (0.299 * rgb[0] + 0.587 * rgb[1] + 0.114 * rgb[2]) / 255 > 0.72, tx = light ? '#1b2430' : '#ffffff', grad = 'linear-gradient(180deg,' + s1 + ' 0%,' + c + ' 45%,' + s3 + ' 100%)';
+    return '.catnav,.n-home .catnav,.upnext{background:' + grad + ' !important;border-color:' + dk + ' !important}' +
+      '.catnav .cn-t,.upnext .cn-t,.n-home .cn-t,.n-home .upnext .cn-t{color:' + tx + ' !important;text-shadow:none !important}' +
+      '.cn-a:not(.on),.n-home .cn-a:not(.on){color:' + tx + ' !important;text-shadow:none !important;box-shadow:0 5px 0 ' + dk + ',0 9px 14px rgba(0,0,0,.25),inset 0 2px 0 rgba(255,255,255,.5) !important}' +
+      '.cn-a:not(.on):hover,.n-home .cn-a:not(.on):hover{box-shadow:0 7px 0 ' + dk + ',0 12px 16px rgba(0,0,0,.28),inset 0 2px 0 rgba(255,255,255,.6) !important}';
+  }
   function applyTheme(t) {
     var st = document.getElementById('csc-theme');
     if (!st) { st = document.createElement('style'); st.id = 'csc-theme'; document.head.appendChild(st); }
@@ -210,6 +227,7 @@
     var bg = /^#[0-9a-f]{6}$/i.test(t.bg) ? t.bg : mix(br, '#ffffff', 0.94);
     st.textContent = ':root{--brand:' + br + ';--brand-strong:' + mix(br, '#000000', 0.35) + ';--soft:' + mix(br, '#ffffff', 0.88) + ';--bg:' + bg + ';--csc-brand:' + br + ';--csc-brand-strong:' + mix(br, '#000000', 0.35) + ';--csc-brand-soft:' + mix(br, '#ffffff', 0.88) + ';--csc-canvas:' + bg + '}' +
       (/^#[0-9a-f]{6}$/i.test(t.card) ? '.tc,.tool-card,.quick-card,.du-card,.qtile{--c:' + t.card + ' !important;--c2:' + mix(t.card, '#000000', 0.4) + ' !important}' : '') +
+      (/^#[0-9a-f]{6}$/i.test(t.side) ? sideCss(t.side) : '') +
       'body{background:var(--bg) !important}.t-drop.over{background:' + mix(br, '#ffffff', 0.78) + '}@media print{body{background:#fff !important}}';
     var m = document.querySelector('meta[name=theme-color]');
     if (!m) { m = document.createElement('meta'); m.name = 'theme-color'; document.head.appendChild(m); }
@@ -218,6 +236,7 @@
   function themePicker(hdr) {
     var t = CSC.safe.get('cscvle_theme', null) || { brand: THEMES[0][1], bg: CSC.safe.get('cscvle_bg', '') || '' };
     if (!t.card) t.card = '';
+    if (!t.side) t.side = '';
     if (t.bg === '#f4f7f6') t.bg = '';
     applyTheme(t);
     var nav = hdr.querySelector('nav'); if (!nav) return;
@@ -233,6 +252,9 @@
       '<div class="bgttl">Card colour</div>' +
       CARDS.map(function (b) { return '<button type="button" class="sw" data-k="card" data-c="' + b[1] + '" title="' + b[0] + '" aria-label="' + b[0] + ' cards" style="background:' + (b[1] || 'linear-gradient(135deg,#ec4899 25%,#0891b2 25% 50%,#ea580c 50% 75%,#059669 75%)') + '"></button>'; }).join('') +
       '<label class="swc" title="Pick any card colour"><input type="color" data-k="card" value="' + (t.card || '#1a3fa6') + '" aria-label="Custom card colour"></label>' +
+      '<div class="bgttl">Sidebar colour (left and right)</div>' +
+      SIDES.map(function (b) { return '<button type="button" class="sw" data-k="side" data-c="' + b[1] + '" title="' + b[0] + '" aria-label="' + b[0] + ' sidebars" style="background:' + (b[1] || 'linear-gradient(135deg,#22d3ee 50%,#1a3fa6 50%)') + '"></button>'; }).join('') +
+      '<label class="swc" title="Pick any sidebar colour"><input type="color" data-k="side" value="' + (t.side || '#0891b2') + '" aria-label="Custom sidebar colour"></label>' +
       '<button type="button" class="bgreset">Reset to default</button></div>';
     nav.appendChild(wrap);
     var btn = wrap.querySelector('.bgbtn'), menu = wrap.querySelector('.bgmenu');
@@ -241,7 +263,7 @@
     document.addEventListener('click', function (e) { if (!wrap.contains(e.target)) { menu.hidden = true; btn.setAttribute('aria-expanded', 'false'); } });
     [].forEach.call(menu.querySelectorAll('.sw'), function (b) { b.onclick = function () { set(b.getAttribute('data-k'), b.getAttribute('data-c')); }; });
     [].forEach.call(menu.querySelectorAll('input[type=color]'), function (i) { i.addEventListener('input', function () { set(i.getAttribute('data-k'), i.value); }); });
-    wrap.querySelector('.bgreset').onclick = function () { t = { brand: THEMES[0][1], bg: '', card: '' }; CSC.safe.set('cscvle_theme', t); applyTheme(t); };
+    wrap.querySelector('.bgreset').onclick = function () { t = { brand: THEMES[0][1], bg: '', card: '', side: '' }; CSC.safe.set('cscvle_theme', t); applyTheme(t); var dv = { brand: THEMES[0][1], bg: '#f4f7f6', card: '#1a3fa6', side: '#0891b2' }; [].forEach.call(menu.querySelectorAll('input[type=color]'), function (i) { i.value = dv[i.getAttribute('data-k')] || i.value; }); };
   }
   // keep the sticky sidebar exactly below the sticky header
   function hdrHeight() {
@@ -473,7 +495,7 @@
   };
 
   CSC.toast = function (msg, bad) {
-    var t = CSC.h('div', { role: 'status', style: 'position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:' + (bad ? '#b3261e' : '#073d27') + ';color:#fff;padding:10px 18px;border-radius:8px;z-index:999;max-width:90vw;box-shadow:0 4px 14px rgba(0,0,0,.3)' }, msg);
+    var t = CSC.h('div', { role: 'status', style: 'position:fixed;right:16px;top:calc(var(--hdr-h,70px) + 12px);background:' + (bad ? '#b3261e' : '#073d27') + ';color:#fff;padding:10px 18px;border-radius:8px;z-index:999;max-width:90vw;box-shadow:0 4px 14px rgba(0,0,0,.3)' }, msg);
     document.body.appendChild(t); setTimeout(function () { t.remove(); }, 3500);
   };
 

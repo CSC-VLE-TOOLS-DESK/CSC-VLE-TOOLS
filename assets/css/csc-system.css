@@ -237,3 +237,14 @@ button,a,input,select,textarea{touch-action:manipulation}
 
 /* v15: floating buttons never sit on top of each other on phones */
 @media(max-width:520px){.to-top{right:12px;bottom:76px}}
+
+/* v27.2: preview stays in view while the long option column scrolls (new studio tools, desktop only) */
+@media (min-width:861px){
+.t-grid.sticky-pv>.card:nth-child(2){position:sticky;top:calc(var(--hdr-h,70px) + 12px);align-self:start}
+.t-grid.sticky-pv .t-preview{max-height:calc(100vh - var(--hdr-h,70px) - 60px);overflow:auto}
+.t-grid.sticky-pv .t-preview canvas,.t-grid.sticky-pv .t-preview img{max-height:calc(100vh - var(--hdr-h,70px) - 100px);width:auto;max-width:100%}
+}
+
+/* v27.2: sliders inside narrow option columns never wider than their box */
+.t-grid .card input[type=range]{width:100%;min-width:0;box-sizing:border-box}
+.t-grid .card label{min-width:0}
