@@ -62,6 +62,9 @@
     ['pro-studio', 'Pro Studio', 'Document cropping, photo editing, ID card layouts and print tools.', 'photo', 'fa-wand-magic-sparkles'],
     ['stock-ledger', 'Stock Ledger', 'Record option, future and stock buy/sell with charges, daily to yearly profit and loss.', 'bill', 'fa-chart-line'],
     ['house-expense', 'House Expense', 'Home income and expense diary: daily, monthly and yearly with budgets and print.', 'bill', 'fa-house-chimney'],
+    ['insurance-ledger', 'Insurance Ledger', 'Policies, renewal reminders with WhatsApp, premium collection, deposits, commission and GST for insurance agents.', 'bill', 'fa-shield-halved'],
+    ['medical-store-ledger', 'Medical Store Ledger', 'Medicine stock with batch no and expiry alerts, buying, selling bills, transport expense, GST and profit.', 'bill', 'fa-pills'],
+    ['book-shop-ledger', 'Book Shop Ledger', 'Books and stationery stock, buying with trade discount, selling bills, transport expense, GST and party dues.', 'bill', 'fa-book'],
     // Billing
     ['tools_bill_receipt_generator', 'Bill & Receipt Generator', 'Receipts for utility, recharge and other payments.', 'bill', 'fa-receipt'],
     // Calculators
@@ -635,13 +638,35 @@
     imgs.forEach(function (im) { if (im.complete) { if (!--left) go(); } else im.onload = im.onerror = function () { if (!--left) go(); }; });
   };
 
-  /* Mount a tool from the registry CSC.tools[name] into #tool-root */
-  CSC.mount = function (name) {
-    var root = $('#tool-root');
-    var fn = CSC.tools[name];
-    if (!root || !fn) { if (root) root.innerHTML = '<p class="err">This tool failed to load. Refresh the page.</p>'; return; }
+  /* Mount a tool from the registry CSC.tools[name] into #tool-root.
+     v28: if the tool's script did not load (missing file, stale cache, blocked download) it is fetched again with a cache-buster,
+     and if that still fails the page names the exact file that is missing so it can be uploaded. */
+  var TOOL_JS = ['assets/js/borders.js', 'assets/js/tools-album.js', 'assets/js/tools-scan.js', 'assets/js/tools-docs.js', 'assets/js/tools-calc.js', 'assets/js/tools-image.js', 'assets/js/tools-pdf.js'];
+  var jsErrs = [];
+  window.addEventListener('error', function (e) { if (e && e.filename && /assets\/js\//.test(e.filename)) jsErrs.push((e.filename.split('/').pop().split('?')[0]) + ': ' + e.message); });
+  function runTool(name, root, fn) {
     try { fn(root); } catch (e) { console.error(e); root.innerHTML = '<p class="err">Something went wrong: ' + esc(e.message) + '</p>'; }
     proStudioFlash(name, root);
+  }
+  function loadOnce(url) {
+    return new Promise(function (res) {
+      var s = document.createElement('script'); s.src = url + (url.indexOf('?') < 0 ? '?r=' : '&r=') + Date.now();
+      s.onload = function () { res(true); }; s.onerror = function () { res(false); }; document.head.appendChild(s);
+    });
+  }
+  CSC.mount = function (name) {
+    var root = $('#tool-root'); if (!root) return;
+    var fn = CSC.tools[name];
+    if (fn) { runTool(name, root, fn); return; }
+    root.innerHTML = '<p class="muted">Loading the tool…</p>';
+    var missing = [], chain = Promise.resolve();
+    TOOL_JS.forEach(function (u) { chain = chain.then(function () { return loadOnce(u).then(function (ok) { if (!ok) missing.push(u); }); }); });
+    chain.then(function () {
+      if (CSC.tools[name]) { runTool(name, root, CSC.tools[name]); return; }
+      var why = jsErrs.length ? ' Script error: ' + esc(jsErrs[jsErrs.length - 1]) + '.' : '';
+      var miss = missing.length ? ' These files were not found on the server: <b>' + missing.map(esc).join(', ') + '</b>. Upload the whole <b>assets</b> folder again.' : '';
+      root.innerHTML = '<p class="err">This tool failed to load. Press Ctrl+F5 (on a phone: close the tab and open it again).' + miss + why + '</p>';
+    });
   };
 
   /* Flashing Pro Studio message on photo, image, BG remove, crop and photo-print tools */

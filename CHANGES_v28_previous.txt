@@ -1,0 +1,22 @@
+CSC VLE TOOLS v28  (4 Nov 2026)  review + fixes, sidebar colour, 8 new Kids Corner games
+
+CHECKED BEFORE CHANGES
+- All 6 new tools (AI Couple Photo, AI Family Photo, Document Album, ID Card Album Cover, Mobile Cam Scanner, AI Marriage Biodata): page file, registry entry in site.js, cat-studio.html card, sitemap.xml, home right panel and script mount name are all present and match.
+- All 99 pages load with no script errors and no missing local files, on desktop and on a 390 px phone (no sideways scroll).
+- PDF, JPG ZIP, PNG, JPG downloads tested for Document Album, ID Card Album Cover, Mobile Cam Scanner, Couple and Family photo.
+
+FIXED
+1. Try Demo button (assets/js/demo-mode.js): was a big pill that covered the left sidebar and the tool forms. Now a small round button; the "Try Demo" label opens on hover / keyboard focus.
+2. Message boxes (CSC.toast in site.js) used to appear at the bottom centre, on top of the preview. They now appear top-right under the header.
+3. Couple / Family photo: "Only 2 photos are used" showed even when exactly 2 photos were added. Now it shows only when extra photos are really left out, and says how many.
+4. Couple / Family photo: the "Up-Down" slider and the name box ran outside the options card. Fixed (also for every slider in option cards: csc-system.css).
+5. Couple, Family, Document Album and ID Card Album Cover: the preview now stays in view while you scroll the long options column (desktop).
+6. Theme > Reset to default now also resets the colour pickers.
+
+NEW
+7. Theme menu: new row "Sidebar colour (left and right)" with 8 colours + any custom colour. It recolours the left category sidebar AND the right New Tools panel on home and all category pages, and is saved on the device. Auto = old look.
+8. Right "New Tools" panel is now a proper coloured sidebar (follows the Theme colour) and shows on screens from 1280 px (before: 1500 px only, so it was hidden on most 1366 px PCs). The 6 new tools are listed there; no "Coming soon" text is left anywhere.
+9. Kids Corner: 8 new games, 31 in total, English and Hindi, with stickers and stars: Animal Sounds (KG), Capital & Small Letters (KG), Number Names (UKG, Class 1), Shape Sides & Corners (UKG, Class 1), Hindi First Letter (UKG), Count the Money - Indian coins (Class 1), Read the Clock (Class 1), Months of the Year (Class 1). No new picture files needed. Added to kids-corner.html and kids-corner-standalone.html; "23" changed to "31" on the home card and in the page descriptions.
+
+CHANGED FILES: assets/js/site.js, demo-mode.js, tools-album.js; assets/css/csc-system.css, layout3d.css; index.html; kids-corner.html; kids-corner-standalone.html
+NOT TESTED HERE (needs internet / a real phone): AI cut-out model download, live camera, real printing, the Netlify badge.

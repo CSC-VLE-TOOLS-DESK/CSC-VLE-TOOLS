@@ -72,11 +72,7 @@
     var fam = kind === 'family', MAXP = fam ? 8 : 2, items = [], tok = 0, busy = false;
     var layouts = fam ? [['grid', 'Photo grid'], ['hero', 'Big centre photo + row'], ['circles', 'Round photos'], ['stand', 'Standing together (AI cut-out)']]
       : [['arch', 'Two arches + heart'], ['circle', 'Two round frames'], ['heart', 'Heart shape'], ['diag', 'Diagonal split'], ['stand', 'Standing together (AI cut-out)']];
-<<<<<<< HEAD
     root.innerHTML = '<div class="t-grid sticky-pv"><div class="card no-print">' +
-=======
-    root.innerHTML = '<div class="t-grid"><div class="card no-print">' +
->>>>>>> origin/main
       '<div class="field"><label>Photos (' + (fam ? 'up to 8 family members' : 'person 1 and person 2') + ')</label><div id="dz"></div></div><div id="rows"></div>' +
       '<div class="row2"><div class="field"><label for="lay">Layout</label><select id="lay">' + layouts.map(function (l) { return '<option value="' + l[0] + '">' + l[1] + '</option>'; }).join('') + '</select></div>' +
       '<div class="field"><label for="sz">Size</label><select id="sz">' + SIZES.map(function (s, i) { return '<option value="' + i + '">' + s[0] + '</option>'; }).join('') + '</select></div></div>' +
@@ -96,22 +92,18 @@
     q(root, '#bgi').onchange = function () { var f = this.files[0]; if (!f) { bgImg = null; return draw(); } fileCanvas(f, 1600).then(function (c) { bgImg = c; draw(); }); };
 
     async function addFiles(fl) {
-var room = MAXP - items.length, skipped = Math.max(0, fl.length - room);
-for (var i = 0; i < fl.length && items.length < MAXP; i++) {
-  try { var c = await fileCanvas(fl[i], 1800); items.push({ src: c, enh: null, cut: null, name: '', zoom: 1, ox: 0, oy: 0 }); } catch (e) { CSC.toast(e.message, true); }
-}
-if (skipped > 0) CSC.toast('Only ' + MAXP + ' photos can be used. ' + skipped + ' extra photo(s) were left out.', true);
+      var room = MAXP - items.length, skipped = Math.max(0, fl.length - room);
+      for (var i = 0; i < fl.length && items.length < MAXP; i++) {
+        try { var c = await fileCanvas(fl[i], 1800); items.push({ src: c, enh: null, cut: null, name: '', zoom: 1, ox: 0, oy: 0 }); } catch (e) { CSC.toast(e.message, true); }
+      }
+      if (skipped > 0) CSC.toast('Only ' + MAXP + ' photos can be used. ' + skipped + ' extra photo(s) were left out.', true);
       rows(); draw();
     }
     function rows() {
       var host = q(root, '#rows'); host.innerHTML = '';
       items.forEach(function (it, i) {
         var th = mk(60, 60); cover(th.getContext('2d'), it.src, 0, 0, 60, 60, it);
-<<<<<<< HEAD
         var d = CSC.h('div', { style: 'display:grid;grid-template-columns:60px minmax(0,1fr);gap:8px;margin:8px 0;padding:8px;border:1px solid var(--line);border-radius:10px' });
-=======
-        var d = CSC.h('div', { style: 'display:grid;grid-template-columns:60px 1fr;gap:8px;margin:8px 0;padding:8px;border:1px solid var(--line);border-radius:10px' });
->>>>>>> origin/main
         d.appendChild(th);
         var r = CSC.h('div', { html: '<input placeholder="' + (fam ? 'Name / relation (Papa, Mummy…)' : (i ? 'Name of person 2' : 'Name of person 1')) + '" value="' + esc(it.name) + '" data-k="name" aria-label="Name">' +
           '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;font-size:.78rem;margin-top:4px"><label>Zoom<input type="range" data-k="zoom" min="1" max="3" step=".05" value="' + it.zoom + '"></label><label>Left–Right<input type="range" data-k="ox" min="-100" max="100" value="' + it.ox + '"></label><label>Up–Down<input type="range" data-k="oy" min="-100" max="100" value="' + it.oy + '"></label></div>' +
@@ -226,11 +218,7 @@ if (skipped > 0) CSC.toast('Only ' + MAXP + ' photos can be used. ' + skipped + 
   /* =============== Document Album Creator =============== */
   T.document_album_creator = function (root) {
     var docs = [], tok = 0;
-<<<<<<< HEAD
     root.innerHTML = '<div class="t-grid sticky-pv"><div class="card no-print">' +
-=======
-    root.innerHTML = '<div class="t-grid"><div class="card no-print">' +
->>>>>>> origin/main
       '<div class="field"><label>Document pictures (Aadhaar, PAN, marksheets… JPG / PNG / photos)</label><div id="dz"></div></div><div id="rows"></div>' +
       '<div class="row2"><div class="field"><label for="per">Documents on one page</label><select id="per"><option value="1">1 (large)</option><option value="2" selected>2 (top and bottom)</option><option value="4">4 (2 x 2)</option><option value="6">6 (2 x 3)</option></select></div>' +
       '<div class="field"><label for="bd">Page border</label><select id="bd">' + B.options('gold') + '</select></div></div>' +
@@ -301,11 +289,7 @@ if (skipped > 0) CSC.toast('Only ' + MAXP + ' photos can be used. ' + skipped + 
   /* =============== ID Card Album Cover Creator =============== */
   T.idcard_album_cover = function (root) {
     var photo = null, f1 = null, f2 = null, tok = 0;
-<<<<<<< HEAD
     root.innerHTML = '<div class="t-grid sticky-pv"><div class="card no-print">' +
-=======
-    root.innerHTML = '<div class="t-grid"><div class="card no-print">' +
->>>>>>> origin/main
       '<div class="row2"><div class="field"><label for="ct">Cover title</label><input id="ct" value="ID CARD ALBUM"></div><div class="field"><label for="cs">Sub-line</label><input id="cs" value="Identity Documents"></div></div>' +
       '<div class="row2"><div class="field"><label for="cn">Name</label><input id="cn" placeholder="Name of card holder"></div><div class="field"><label for="co">Shop / organisation, phone</label><input id="co" placeholder="CSC Centre, Rohtak 98xxxxxx"></div></div>' +
       '<div class="row2"><div class="field"><label for="bd">Border style</label><select id="bd">' + B.options('red') + '</select></div><div class="field"><label for="cc">Cover colour</label><input type="color" id="cc" value="#7a0c1c"></div></div>' +

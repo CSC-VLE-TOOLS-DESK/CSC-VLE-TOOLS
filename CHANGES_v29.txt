@@ -1,0 +1,29 @@
+CSC VLE TOOLS v29  (5 Nov 2026)
+
+1. "This tool failed to load. Refresh the page." (AI Couple Photo etc.)
+   That message appears only when the tool's script file did not load. It worked on every test here, so on your server
+   the file is probably missing / not uploaded yet or an old copy is cached. What changed:
+   - site.js now retries the download by itself (with a cache-buster). If a file is really missing, the page now says
+     exactly which file: e.g. "These files were not found on the server: assets/js/tools-album.js. Upload the whole assets folder again."
+   - All pages now load their scripts/styles as ...?v=28, so after you upload this version browsers cannot mix old and new files.
+   >> When you upload to GitHub, upload the WHOLE "assets" folder (js, css, maps) and all .html files, not only some of them.
+      New files this time: assets/js/borders.js, tools-album.js, tools-scan.js (from v27) and the 3 new ledger .html files.
+
+2. NEW LEDGERS (each is one self-contained page, data saved in the browser, with Backup / Restore, CSV, Print and "Load sample data" to practise):
+   - Medical Store Ledger  medical-store-ledger.html : medicines with BATCH NO and EXPIRY DATE, buying (purchase bills with free qty, discount, GST, freight),
+     selling bills (earliest-expiry batch first, expired batch cannot be sold, cannot sell more than stock), expiry alerts (expired / 30 days / your chosen days),
+     write-off / return of expired stock, transport & expenses, customers/suppliers dues + payments + statements, GST report (CGST/SGST/IGST by rate, input vs output, month-wise), profit, printable bill with drug licence no.
+   - Book Shop Ledger  book-shop-ledger.html : same engine for books and stationery (publisher, class/subject, ISBN, trade discount on buying, GST 0/5/12/18/28 per item).
+   - Insurance Ledger  insurance-ledger.html : policy register, renewal reminders (overdue + next N days) with one-tap WhatsApp message, premium collection with receipt print,
+     next due date moves forward by itself, deposits to company (collected vs deposited vs pending), commission earned vs received, GST on commission, TDS note, transport/travel expenses, income report.
+   Added to: Receipts & Billing (10 tools), Daily Use Apps on home, search, sitemap, and the right "New Tools" panel (now 9 tools).
+   GST rates are typed per item (not fixed) because rates change; every screen says to confirm with your CA.
+
+3. KIDS CORNER: 7 more games (38 in total). Mix the Colours, Vowel or Consonant, Hindi Digits 0-9, Rhyming Words, Greater or Smaller,
+   Tens and Ones, Skip Counting (plus the 8 added in v28). Fixed an old bug: a cheer / finish screen could pop up on the wrong page if a child pressed Home during the short pause after an answer.
+
+4. Fixes from the deep review (see CHANGES_v28_previous.txt for the earlier ones): re-drawing bill rows while a field loses focus (error), Dashboard crash from a variable name clash (found in testing, fixed before release).
+
+TESTED HERE: all 102 pages (desktop + 390 px phone) with no script errors or sideways scroll; all ledger tabs; GST / stock / profit maths checked by hand;
+expired-batch block, over-selling block, delete-protection, backup/restore, CSV, print text; all 15 new Kids games played to the end in English and Hindi.
+NOT TESTED HERE: real printers, a real phone camera, WhatsApp opening on a phone, AI cut-out model download, your live GitHub site.
