@@ -751,6 +751,7 @@
     }, { passive: true });
   }
 
-  function init() { chrome(); home(); tagline(); pageIcon(); tilt(); }
+  function loadChatbot() { var s = document.createElement('script'); s.src = 'assets/js/chatbot.js?v=1'; s.defer = true; document.body.appendChild(s); }
+  function init() { chrome(); home(); tagline(); pageIcon(); tilt(); loadChatbot(); }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
 })();

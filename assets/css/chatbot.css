@@ -1,0 +1,21 @@
+/* SevaSphere simple help chatbot — v1 */
+#ss-chat-launcher{position:fixed;right:22px;bottom:22px;z-index:9998;border:0;border-radius:999px;padding:13px 19px;background:#087a55;color:#fff;font:700 15px/1.2 inherit;box-shadow:0 8px 24px rgba(0,0,0,.22);cursor:pointer}
+#ss-chat-launcher:hover{background:#066545}
+#ss-chat-panel{position:fixed;right:22px;bottom:84px;z-index:9999;width:min(360px,calc(100vw - 28px));height:min(520px,calc(100vh - 115px));display:none;flex-direction:column;overflow:hidden;background:#fff;color:#18332b;border:1px solid #d8e7df;border-radius:18px;box-shadow:0 16px 48px rgba(0,0,0,.24);font:14px/1.45 Arial,sans-serif}
+#ss-chat-panel.ss-open{display:flex}
+.ss-chat-head{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;background:#087a55;color:#fff}
+.ss-chat-head strong{font-size:15px}
+#ss-chat-close{border:0;background:transparent;color:#fff;font-size:24px;cursor:pointer;line-height:1}
+#ss-chat-messages{flex:1;overflow:auto;padding:14px;background:#f5faf7}
+.ss-chat-msg{max-width:88%;margin:0 0 10px;padding:10px 12px;border-radius:13px;white-space:pre-wrap;overflow-wrap:anywhere}
+.ss-chat-bot{background:#fff;border:1px solid #e0ebe5;border-top-left-radius:4px}
+.ss-chat-user{margin-left:auto;background:#d9f4e7;border-top-right-radius:4px}
+.ss-chat-links{display:flex;flex-wrap:wrap;gap:7px;margin:6px 0 12px}
+.ss-chat-links a,.ss-chat-quick button{display:inline-block;border:1px solid #b8d9c8;border-radius:999px;padding:7px 10px;background:#fff;color:#075d42;text-decoration:none;font-size:12px;font-weight:700;cursor:pointer}
+.ss-chat-quick{display:flex;flex-wrap:wrap;gap:7px;padding:0 12px 10px;background:#fff}
+.ss-chat-form{display:flex;gap:8px;padding:11px;border-top:1px solid #e2ece6;background:#fff}
+#ss-chat-input{min-width:0;flex:1;border:1px solid #cbdcd2;border-radius:10px;padding:10px;font:14px Arial,sans-serif}
+#ss-chat-send{border:0;border-radius:10px;padding:0 14px;background:#087a55;color:#fff;font-weight:700;cursor:pointer}
+#ss-chat-launcher:focus-visible,#ss-chat-panel button:focus-visible,#ss-chat-input:focus-visible{outline:3px solid #f4b942;outline-offset:2px}
+@media(max-width:480px){#ss-chat-launcher{right:14px;bottom:14px}#ss-chat-panel{right:10px;bottom:72px;width:calc(100vw - 20px);height:min(70vh,540px)}}
+@media(prefers-reduced-motion:no-preference){#ss-chat-panel{transition:opacity .15s ease}}
