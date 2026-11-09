@@ -25,3 +25,12 @@ STANDALONE COPIES (folder "standalone", separate zip): every page as ONE .html f
 
 CHANGED: assets/css/csc-system.css, layout3d.css, assets/js/site.js, demo-mode.js, tools_maps_print.html, index.html and all cat-*.html (right panel markup), all html (?v=31)
 NOT TESTED HERE: real printers, a real phone, AI cut-out model download, live camera, PDF/ZIP helper libraries (blocked in my test browser), your live GitHub site.
+
+v31 add-on (9 Nov 2026): MOST DEMAND PROMPTS
+- NEW page my-step-guides.html ("Most Demand Prompts & Step Guides") in the v31 look: header, footer, both sidebars, theme colours.
+  Topics: AI Photography Prompts (restoration, tourist couple, background and portrait), Website SEO & Traffic, Upload to GitHub with VS Code (v31), Fix problems after upload, Link Excel with Arun CSC Center.
+  Each English / Hindi prompt has its own Copy button; terminal commands have Copy buttons; search box; links like my-step-guides.html#photo-2 open a topic and step.
+  "Make my own copy" lets a visitor edit a topic; own topics, backup (.json) and report (.txt) are saved only in that browser.
+- Home page: new "Most Demand Prompts" section (6 cards) under Daily Use Apps. Footer: new link "Most Demand Prompts". Added to sitemap.xml and upload-check.html.
+- From your uploaded guide: Hindi typo fixed (फोटोरियलिस्टिक); in "Link Excel" the folder D:\CSC had lost its backslash (it showed as D:CSC), now correct; the empty placeholder topics (Titan Edge, Morpho L1) were left out; the Claude-only save hook was replaced by normal downloads.
+- UPLOAD_STEPS_VSCODE.json now matches the method that worked (clone to C:\csc-repo, copy with robocopy, git status check, add, commit, push).
