@@ -6,7 +6,7 @@
   <link rel="apple-touch-icon" href="apple-touch-icon.png?v=3">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Mukta:wght@400;600;800&display=swap">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<link rel="stylesheet" href="assets/css/portal.css?v=28"><link rel="stylesheet" href="assets/css/csc-system.css?v=28">
+<link rel="stylesheet" href="assets/css/portal.css?v=31"><link rel="stylesheet" href="assets/css/csc-system.css?v=31">
 <style>@page{size:A4;margin:0}.doc{background:#fff;color:#111;padding:14mm;min-height:120mm;font:11pt/1.5 "Segoe UI",Arial,sans-serif;max-width:100%;overflow-x:auto}.doc table{width:100%;border-collapse:collapse}.doc th{background:#0b6e4f;color:#fff;text-align:left;padding:6px 8px}.doc td{border-bottom:1px solid #ccc;padding:6px 8px;vertical-align:top}.doc h2{margin-bottom:8px;color:#0b6e4f}.doc .rm{border:0;background:#fbe9e7;color:#b3261e;border-radius:6px;padding:3px 8px;cursor:pointer}@media print{.rm,.ed{display:none!important}}</style>  <meta name="description" content="Keep exam admit card details, dates and centres together. Print the list. Free online tool for CSC &amp; VLE centres, cyber cafes and students.">
   <meta name="keywords" content="Admit Card Holder, ID card print, PVC card print, PAN card print, Aadhaar print, passport photo sheet, CSC VLE tools, CSC center tools, VLE tools, free online tool, Rohtak Haryana">
   <meta name="author" content="CSC VLE TOOLS">
@@ -33,7 +33,7 @@
     <h3 style="margin:16px 0 10px;color:var(--brand);font-size:1rem">More in ID Card, Cards &amp; Print</h3><div class="rel"><a href="tools_pvc_id_print.html">PVC ID Card Print</a><a href="tools_pan_aadhaar_print.html">PAN &amp; Aadhaar Print</a><a href="tools_student_id_creator.html">Student ID Card Creator</a><a href="tools_farmer_id_maker.html">Farmer ID Card Maker</a><a href="tools_visiting_card_maker.html">Visiting Card Maker</a><a href="tools_notebook_sticker.html">Notebook Sticker Maker</a></div>
   </div></section>
   <footer id="site-footer"></footer>
-<script src="assets/js/site.js?v=28"></script><script>
+<script src="assets/js/site.js?v=31"></script><script>
 const $=id=>document.getElementById(id);
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const dl=(blob,name)=>{const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),4000);};
@@ -47,5 +47,5 @@ $('add').onclick=()=>{const o={};K.forEach(k=>o[k]=$(k).value.trim());if(!o.en){
 $('sheet').onclick=e=>{const d=e.target.dataset;if(d.d!==undefined&&confirm('Delete this exam?')){L.splice(+d.d,1);save();draw();}if(d.e!==undefined){editing=+d.e;K.forEach(k=>$(k).value=L[editing][k]||'');$('add').innerHTML='<i class="fa-solid fa-check"></i> Update exam';window.scrollTo({top:0,behavior:'smooth'});}};
 $('pr').onclick=()=>window.print();draw();
 </script>
-  <script src="assets/js/demo-mode.js?v=28"></script>
+  <script src="assets/js/demo-mode.js?v=31"></script>
 </body></html>

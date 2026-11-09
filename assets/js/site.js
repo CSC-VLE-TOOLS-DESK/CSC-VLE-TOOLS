@@ -65,6 +65,8 @@
     ['insurance-ledger', 'Insurance Ledger', 'Policies, renewal reminders with WhatsApp, premium collection, deposits, commission and GST for insurance agents.', 'bill', 'fa-shield-halved'],
     ['medical-store-ledger', 'Medical Store Ledger', 'Medicine stock with batch no and expiry alerts, buying, selling bills, transport expense, GST and profit.', 'bill', 'fa-pills'],
     ['book-shop-ledger', 'Book Shop Ledger', 'Books and stationery stock, buying with trade discount, selling bills, transport expense, GST and party dues.', 'bill', 'fa-book'],
+    ['sweet-shop-ledger', 'Sweet Shop Ledger', 'Sweet names dropdown, sell by weight and price, stock, raw material buying, employee salary records and daily to yearly reports.', 'bill', 'fa-cookie-bite'],
+    ['kirana-store-ledger', 'Kirana Store Ledger', 'Items by weight and price, stock, buying, udhaar customers, employee salary records and daily to yearly reports.', 'bill', 'fa-basket-shopping'],
     // Billing
     ['tools_bill_receipt_generator', 'Bill & Receipt Generator', 'Receipts for utility, recharge and other payments.', 'bill', 'fa-receipt'],
     // Calculators
@@ -218,10 +220,15 @@
   function sideCss(c) {
     var s1 = mix(c, '#ffffff', 0.4), s3 = mix(c, '#000000', 0.38), dk = mix(c, '#000000', 0.5), rgb = hex2rgb(c),
         light = (0.299 * rgb[0] + 0.587 * rgb[1] + 0.114 * rgb[2]) / 255 > 0.72, tx = light ? '#1b2430' : '#ffffff', grad = 'linear-gradient(180deg,' + s1 + ' 0%,' + c + ' 45%,' + s3 + ' 100%)';
-    return '.catnav,.n-home .catnav,.upnext{background:' + grad + ' !important;border-color:' + dk + ' !important}' +
-      '.catnav .cn-t,.upnext .cn-t,.n-home .cn-t,.n-home .upnext .cn-t{color:' + tx + ' !important;text-shadow:none !important}' +
-      '.cn-a:not(.on),.n-home .cn-a:not(.on){color:' + tx + ' !important;text-shadow:none !important;box-shadow:0 5px 0 ' + dk + ',0 9px 14px rgba(0,0,0,.25),inset 0 2px 0 rgba(255,255,255,.5) !important}' +
-      '.cn-a:not(.on):hover,.n-home .cn-a:not(.on):hover{box-shadow:0 7px 0 ' + dk + ',0 12px 16px rgba(0,0,0,.28),inset 0 2px 0 rgba(255,255,255,.6) !important}';
+    return '.catnav,.n-home .catnav{background:' + grad + ' !important;border-color:rgba(255,255,255,.45) !important}' +
+      '.catnav .cn-t,.n-home .cn-t{color:' + tx + ' !important;text-shadow:none !important}' +
+      '.catnav .cn-a:not(.on),.n-home .catnav .cn-a:not(.on){color:' + tx + ' !important;text-shadow:none !important;box-shadow:0 5px 0 ' + dk + ',0 9px 14px rgba(0,0,0,.25),inset 0 2px 0 rgba(255,255,255,.5) !important}' +
+      '.catnav .cn-a:not(.on):hover,.n-home .catnav .cn-a:not(.on):hover{box-shadow:0 7px 0 ' + dk + ',0 12px 16px rgba(0,0,0,.28),inset 0 2px 0 rgba(255,255,255,.6) !important}';
+  }
+  function rightCss(c) {
+    var s1 = mix(c, '#ffffff', 0.4), s3 = mix(c, '#000000', 0.38), rgb = hex2rgb(c),
+        light = (0.299 * rgb[0] + 0.587 * rgb[1] + 0.114 * rgb[2]) / 255 > 0.72, tx = light ? '#1b2430' : '#ffffff';
+    return '.upnext{background:linear-gradient(180deg,' + s1 + ' 0%,' + c + ' 42%,' + s3 + ' 100%) !important}.upnext .cn-t{color:' + tx + ' !important;text-shadow:none !important}';
   }
   function applyTheme(t) {
     var st = document.getElementById('csc-theme');
@@ -231,6 +238,7 @@
     st.textContent = ':root{--brand:' + br + ';--brand-strong:' + mix(br, '#000000', 0.35) + ';--soft:' + mix(br, '#ffffff', 0.88) + ';--bg:' + bg + ';--csc-brand:' + br + ';--csc-brand-strong:' + mix(br, '#000000', 0.35) + ';--csc-brand-soft:' + mix(br, '#ffffff', 0.88) + ';--csc-canvas:' + bg + '}' +
       (/^#[0-9a-f]{6}$/i.test(t.card) ? '.tc,.tool-card,.quick-card,.du-card,.qtile{--c:' + t.card + ' !important;--c2:' + mix(t.card, '#000000', 0.4) + ' !important}' : '') +
       (/^#[0-9a-f]{6}$/i.test(t.side) ? sideCss(t.side) : '') +
+      (/^#[0-9a-f]{6}$/i.test(t.side2) ? rightCss(t.side2) : '') +
       'body{background:var(--bg) !important}.t-drop.over{background:' + mix(br, '#ffffff', 0.78) + '}@media print{body{background:#fff !important}}';
     var m = document.querySelector('meta[name=theme-color]');
     if (!m) { m = document.createElement('meta'); m.name = 'theme-color'; document.head.appendChild(m); }
@@ -240,6 +248,7 @@
     var t = CSC.safe.get('cscvle_theme', null) || { brand: THEMES[0][1], bg: CSC.safe.get('cscvle_bg', '') || '' };
     if (!t.card) t.card = '';
     if (!t.side) t.side = '';
+    if (!t.side2) t.side2 = '';
     if (t.bg === '#f4f7f6') t.bg = '';
     applyTheme(t);
     var nav = hdr.querySelector('nav'); if (!nav) return;
@@ -255,9 +264,12 @@
       '<div class="bgttl">Card colour</div>' +
       CARDS.map(function (b) { return '<button type="button" class="sw" data-k="card" data-c="' + b[1] + '" title="' + b[0] + '" aria-label="' + b[0] + ' cards" style="background:' + (b[1] || 'linear-gradient(135deg,#ec4899 25%,#0891b2 25% 50%,#ea580c 50% 75%,#059669 75%)') + '"></button>'; }).join('') +
       '<label class="swc" title="Pick any card colour"><input type="color" data-k="card" value="' + (t.card || '#1a3fa6') + '" aria-label="Custom card colour"></label>' +
-      '<div class="bgttl">Sidebar colour (left and right)</div>' +
+      '<div class="bgttl">Left sidebar colour</div>' +
       SIDES.map(function (b) { return '<button type="button" class="sw" data-k="side" data-c="' + b[1] + '" title="' + b[0] + '" aria-label="' + b[0] + ' sidebars" style="background:' + (b[1] || 'linear-gradient(135deg,#22d3ee 50%,#1a3fa6 50%)') + '"></button>'; }).join('') +
       '<label class="swc" title="Pick any sidebar colour"><input type="color" data-k="side" value="' + (t.side || '#0891b2') + '" aria-label="Custom sidebar colour"></label>' +
+      '<div class="bgttl">Right sidebar colour</div>' +
+      SIDES.map(function (b) { return '<button type="button" class="sw" data-k="side2" data-c="' + b[1] + '" title="' + b[0] + '" aria-label="' + b[0] + ' right sidebar" style="background:' + (b[1] || 'linear-gradient(135deg,#c084fc 50%,#6b21a8 50%)') + '"></button>'; }).join('') +
+      '<label class="swc" title="Pick any right sidebar colour"><input type="color" data-k="side2" value="' + (t.side2 || '#9333ea') + '" aria-label="Custom right sidebar colour"></label>' +
       '<button type="button" class="bgreset">Reset to default</button></div>';
     nav.appendChild(wrap);
     var btn = wrap.querySelector('.bgbtn'), menu = wrap.querySelector('.bgmenu');
@@ -266,7 +278,7 @@
     document.addEventListener('click', function (e) { if (!wrap.contains(e.target)) { menu.hidden = true; btn.setAttribute('aria-expanded', 'false'); } });
     [].forEach.call(menu.querySelectorAll('.sw'), function (b) { b.onclick = function () { set(b.getAttribute('data-k'), b.getAttribute('data-c')); }; });
     [].forEach.call(menu.querySelectorAll('input[type=color]'), function (i) { i.addEventListener('input', function () { set(i.getAttribute('data-k'), i.value); }); });
-    wrap.querySelector('.bgreset').onclick = function () { t = { brand: THEMES[0][1], bg: '', card: '', side: '' }; CSC.safe.set('cscvle_theme', t); applyTheme(t); var dv = { brand: THEMES[0][1], bg: '#f4f7f6', card: '#1a3fa6', side: '#0891b2' }; [].forEach.call(menu.querySelectorAll('input[type=color]'), function (i) { i.value = dv[i.getAttribute('data-k')] || i.value; }); };
+    wrap.querySelector('.bgreset').onclick = function () { t = { brand: THEMES[0][1], bg: '', card: '', side: '', side2: '' }; CSC.safe.set('cscvle_theme', t); applyTheme(t); var dv = { brand: THEMES[0][1], bg: '#f4f7f6', card: '#1a3fa6', side: '#0891b2', side2: '#9333ea' }; [].forEach.call(menu.querySelectorAll('input[type=color]'), function (i) { i.value = dv[i.getAttribute('data-k')] || i.value; }); };
   }
   // keep the sticky sidebar exactly below the sticky header
   function hdrHeight() {

@@ -30,3 +30,6 @@ Colours live in `assets/css/portal.css` (tokens) and `assets/css/csc-system.css`
 
 ## 5. Adding a new tool
 Copy `TEMPLATE_STARTER.html`, give it a unique title and description, register it in the TOOLS list in `assets/js/site.js`, and add it to `sitemap.xml`.
+
+## Upload to GitHub with VS Code (v31)
+The full step list (unzip, open the repo folder in VS Code, `robocopy`, `git add`, `git commit`, `git push`, checks and fixes) is in **UPLOAD_STEPS_VSCODE.json**. Open it in VS Code and follow steps 1 to 9 in order.

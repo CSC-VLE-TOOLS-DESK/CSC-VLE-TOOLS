@@ -1,0 +1,21 @@
+CSC VLE TOOLS v30  (6 Nov 2026)  Sweet Shop Ledger + Kirana Store Ledger
+
+NEW (each is one self-contained page: data saved in the browser, Backup / Restore, CSV, Print, "Load sample data" to practise)
+1. Sweet Shop Ledger  sweet-shop-ledger.html
+   - "Load standard list": adds 63 sweets (Milk sweets, Barfi, Laddu, Halwa, Fried/syrup sweets, Dry sweets, Namkeen) and 33 raw materials (dairy, sugar & flour, oil, dry fruits, packing) in one click. Prices are examples, edit to your rates.
+   - Sell: choose the sweet from a DROPDOWN, enter weight and press 250 g / 500 g / 1 kg (or type grams); price per kg x weight = amount. Pieces, boxes etc. also work.
+   - Sweets & Stock: stock of sweets and raw material; "Made today" adds sweets made; "Use / wastage" removes raw material used or sweets wasted.
+   - Buy Raw Material: purchase bills (milk, sugar, ghee, khoya ...), weights in kg or g, freight, part payment, opening stock.
+2. Kirana Store Ledger  kirana-store-ledger.html
+   - Same engine for a general store: 66 standard grocery items (prices left empty for you), type-to-search items, sell by weight (250 g / 500 g / 1 kg), udhaar customers, buying, damage / own use.
+3. Both ledgers:
+   - Employees & Salary: employee records (role, mobile, joining date, salary, left date), MONTHLY SALARY SHEET (absent days cut automatically, bonus / overtime, advance cut), part payments, salary slip print, advances with balance, full record of each employee month by month.
+   - Expenses (gas, electricity, rent, transport ...), Dues & Payments (udhaar and supplier dues, statements).
+   - REPORTS: Daily, Weekly, Monthly, Yearly (Financial year or calendar year): sales, money received, udhaar given, buying, expenses, salary paid, estimated profit, sales chart, day-wise / month-wise table, item-wise sales, items bought, payment modes, expenses by type. Print and CSV.
+   - Optional GST (Settings): off by default; when on, GST % appears on items and bills (price is GST-inclusive; tax invoice print).
+   - Stock shortage while selling asks "Sell anyway?" instead of blocking (shops often forget to enter stock).
+   Added to: Receipts & Billing (12 tools), Daily Use Apps on home, search, sitemap, right "New Tools" panel.
+
+TESTED HERE: all 104 pages (desktop + 390 px phone) with no script errors or sideways scroll; both ledgers: every tab, all 4 report types, sample data with hand-checked totals (sales, salary, dues),
+sell by weight (chips, grams <-> kg), stock shortage dialog, buying in grams, salary part payment / overpay block / advance limits / delete protection, GST extraction, backup / restore, reload.
+NOT TESTED HERE: real printer output, a real phone. Estimated profit is a guide (cash view for sweets, cost-of-goods view for kirana), not an audited account.

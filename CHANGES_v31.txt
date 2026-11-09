@@ -1,0 +1,27 @@
+CSC VLE TOOLS v31  (8 Nov 2026)  header + both sidebars fixed, right sidebar redesigned, review, standalone copies
+
+REVIEW (v30 as uploaded): all 104 pages opened on a 1366 px laptop and a 390 px phone; every page's buttons clicked after loading demo data (88 tool pages).
+No script errors, no missing files, no broken links. Found and fixed:
+1. HEADER: on 1366 px screens the 10 header buttons were wider than the screen. "Theme" was cut off and 92 pages scrolled sideways.
+   Now: buttons shrink in steps for 1181-1560 px, header may be as wide as the page (1860 px), and between 861 and 1080 px the menu button (hamburger) is used.
+   Checked at 900, 1000, 1181, 1280, 1366, 1440, 1500, 1600, 1920 px: nothing cut, no sideways scroll.
+2. SIDEBARS touching the header, the screen edge and the footer (their bottom was also cut off). Both sidebars are now floating panels:
+   10 px gap under the header, 10 px from the screen edge, rounded corners, same height rule on every page, thin scrollbar. Phones keep the bar under the header.
+3. TRY DEMO round button sat on top of the left sidebar. It is now hidden on the home page and category pages (no forms there) and stays bottom-left on tool pages.
+4. THEME menu was taller than a laptop screen (Reset button unreachable). It now scrolls.
+5. Old cache: all pages now load CSS/JS as ?v=31 so browsers cannot mix old and new files.
+6. Map Print page: finds map data that is already loaded before asking the server for it (needed for the standalone copy).
+
+RIGHT SIDEBAR "New Tools" redesigned to match the left sidebar family:
+   left = cyan 3D bars (follows Theme > Left sidebar colour), right = violet panel with white 3D tiles, coloured icon, NEW badge.
+   Theme menu now has TWO rows: "Left sidebar colour" and "Right sidebar colour" (8 colours + any custom colour, saved on the device, Reset clears both).
+   Shows from 1280 px wide. On phones and tablets below 1280 px it is hidden (the same tools are in the category list on the left).
+
+STANDALONE COPIES (folder "standalone", separate zip): every page as ONE .html file with its CSS and JavaScript inside (no assets folder needed),
+   so each tool can be tested by itself. Keep them in one folder if you want the menu links to work between pages.
+   They still use the internet for the icon font and for PDF / ZIP / OCR helper libraries (same as the main site).
+   Kids Corner needs the assets/kids folder next to it (included).
+   Do NOT upload the standalone folder to GitHub; upload the full version (CSC_VLE_TOOLS_v31.zip).
+
+CHANGED: assets/css/csc-system.css, layout3d.css, assets/js/site.js, demo-mode.js, tools_maps_print.html, index.html and all cat-*.html (right panel markup), all html (?v=31)
+NOT TESTED HERE: real printers, a real phone, AI cut-out model download, live camera, PDF/ZIP helper libraries (blocked in my test browser), your live GitHub site.

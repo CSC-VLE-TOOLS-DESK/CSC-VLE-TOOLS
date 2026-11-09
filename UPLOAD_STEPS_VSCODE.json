@@ -1,0 +1,137 @@
+{
+  "name": "CSC VLE TOOLS - upload to GitHub with VS Code",
+  "version": "v31",
+  "updated": "2026-11-08",
+  "repo_url": "https://github.com/CSC-VLE-TOOLS-DESK/CSC-VLE-TOOLS.git",
+  "branch": "main",
+  "folders": {
+    "unzip_here": "C:\\Users\\askro\\Documents\\CSC_V31",
+    "git_repo_folder": "C:\\Users\\askro\\Documents\\CSC_VLE_TOOLS\\CSC-VLE-TOOLS"
+  },
+  "which_zip_to_upload": "CSC_VLE_TOOLS_v31.zip (full version). Do NOT upload CSC_VLE_TOOLS_v31_standalone.zip; it is only for testing one tool at a time.",
+  "steps": [
+    {
+      "no": 1,
+      "title": "Unzip the full version into a NEW folder",
+      "where": "Windows File Explorer",
+      "do": [
+        "Right-click CSC_VLE_TOOLS_v31.zip, choose Extract All.",
+        "Extract to C:\\Users\\askro\\Documents\\CSC_V31 (a new, empty folder).",
+        "Open that folder: you should see index.html, assets, cat-pdf.html and many tools_*.html files directly inside (no extra folder in between)."
+      ]
+    },
+    {
+      "no": 2,
+      "title": "Open the Git repo folder in VS Code",
+      "where": "VS Code",
+      "do": [
+        "File > Open Folder.",
+        "Choose C:\\Users\\askro\\Documents\\CSC_VLE_TOOLS\\CSC-VLE-TOOLS (the inner folder that contains the hidden .git folder).",
+        "If VS Code asks 'Do you trust the authors', choose Yes."
+      ]
+    },
+    {
+      "no": 3,
+      "title": "Open the terminal and confirm it is the repo",
+      "where": "VS Code, menu Terminal > New Terminal",
+      "commands": [
+        "git status"
+      ],
+      "expect": "It prints 'On branch main' and 'Your branch is up to date with origin/main'. If it says 'not a git repository', you opened the wrong folder: go back to step 2."
+    },
+    {
+      "no": 4,
+      "title": "Copy the new files into the repo (nothing is deleted)",
+      "where": "VS Code terminal",
+      "commands": [
+        "robocopy \"C:\\Users\\askro\\Documents\\CSC_V31\" \"C:\\Users\\askro\\Documents\\CSC_VLE_TOOLS\\CSC-VLE-TOOLS\" /E /XD .git"
+      ],
+      "expect": "A summary table appears. 'FAILED' must be 0. Robocopy shows exit codes 1 to 7 for success, that is normal. Files that exist only in the repo are kept."
+    },
+    {
+      "no": 5,
+      "title": "Check what changed",
+      "where": "VS Code terminal",
+      "commands": [
+        "git status"
+      ],
+      "expect": "A list of modified files (cat-*.html, index.html, assets/css/*.css, assets/js/site.js ...) and new files (CHANGES_v31.txt, UPLOAD_STEPS_VSCODE.json ...). You can also look at the Source Control icon (Ctrl+Shift+G)."
+    },
+    {
+      "no": 6,
+      "title": "Add all changes",
+      "where": "VS Code terminal",
+      "commands": [
+        "git add ."
+      ]
+    },
+    {
+      "no": 7,
+      "title": "Commit with a message",
+      "where": "VS Code terminal",
+      "commands": [
+        "git commit -m \"v31: header and sidebar fixes, new right sidebar, review fixes\""
+      ],
+      "expect": "'N files changed'. If Git asks who you are, run the two lines in 'first_time_setup' below and repeat this step."
+    },
+    {
+      "no": 8,
+      "title": "Push to GitHub",
+      "where": "VS Code terminal",
+      "commands": [
+        "git push"
+      ],
+      "expect": "The last lines look like 'abc1234..def5678  main -> main'. If a sign-in window opens, sign in to GitHub and the push continues."
+    },
+    {
+      "no": 9,
+      "title": "Check the live site",
+      "where": "Browser",
+      "do": [
+        "Open https://github.com/CSC-VLE-TOOLS-DESK/CSC-VLE-TOOLS and check the latest commit time.",
+        "Wait 1 to 2 minutes (see the Actions tab if the site is still building).",
+        "Open your live site and press Ctrl+F5. On a phone, close the tab and open it again.",
+        "Check: the header shows all buttons including Theme; both sidebars float with a gap; the right 'New Tools' panel is violet; open 3 or 4 tools."
+      ]
+    }
+  ],
+  "first_time_setup": [
+    "git config --global user.name \"Your Name\"",
+    "git config --global user.email \"you@example.com\""
+  ],
+  "troubleshooting": [
+    {
+      "problem": "fatal: not a git repository",
+      "fix": "You are in the wrong folder. In the terminal run: cd C:\\Users\\askro\\Documents\\CSC_VLE_TOOLS\\CSC-VLE-TOOLS and then git status."
+    },
+    {
+      "problem": "git push says 'rejected' or 'non-fast-forward'",
+      "fix": "The online copy has newer changes. Run: git pull --rebase   and then: git push"
+    },
+    {
+      "problem": "git push asks for a password",
+      "fix": "GitHub no longer accepts account passwords. Use the sign-in window that opens (Git Credential Manager) or a Personal Access Token."
+    },
+    {
+      "problem": "Site looks old after the push",
+      "fix": "Wait 2 minutes, then Ctrl+F5. All pages now load files as ?v=31, so old files should not be mixed. Check the Actions tab for a failed build."
+    },
+    {
+      "problem": "A tool says 'This tool failed to load'",
+      "fix": "A file was not uploaded. Upload the WHOLE assets folder (js, css, maps, kids) and all .html files, not only some of them. The message names the missing file."
+    },
+    {
+      "problem": "Kids Corner pictures are missing",
+      "fix": "The assets/kids folder was not copied. Run step 4 again."
+    },
+    {
+      "problem": "I pushed by mistake and want to go back",
+      "fix": "Run: git log --oneline   then: git revert HEAD   then: git push"
+    }
+  ],
+  "notes": [
+    "Each version zip contains the WHOLE site, so you can always repeat steps 1 to 8 with a newer zip.",
+    "robocopy without /MIR never deletes files from the repo, so old files stay; delete them by hand in VS Code if you want them gone.",
+    "Back up the repo folder (copy it) before big changes if you like."
+  ]
+}
