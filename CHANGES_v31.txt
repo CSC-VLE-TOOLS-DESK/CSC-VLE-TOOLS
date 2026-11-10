@@ -34,3 +34,13 @@ v31 add-on (9 Nov 2026): MOST DEMAND PROMPTS
 - Home page: new "Most Demand Prompts" section (6 cards) under Daily Use Apps. Footer: new link "Most Demand Prompts". Added to sitemap.xml and upload-check.html.
 - From your uploaded guide: Hindi typo fixed (फोटोरियलिस्टिक); in "Link Excel" the folder D:\CSC had lost its backslash (it showed as D:CSC), now correct; the empty placeholder topics (Titan Edge, Morpho L1) were left out; the Claude-only save hook was replaced by normal downloads.
 - UPLOAD_STEPS_VSCODE.json now matches the method that worked (clone to C:\csc-repo, copy with robocopy, git status check, add, commit, push).
+
+v31 fix-up (9 Nov 2026): PROMPT STUDIO + PORTAL LINK
+- NEW page prompt-studio.html ("Prompt Studio") in the site look: header, footer, theme. 14 ready-made AI photo prompts, each in English and Hindi.
+  English / Hindi switch shows every prompt, category and button in the chosen language. Search, favourites, add / edit / delete your own prompts.
+  Export Backup and Import Backup (.json). Import also reads older single-language backups and skips duplicates. Saved only in this browser.
+  Links: prompt-studio.html#restore, #enhance, #couple, #passport, #portrait open a category directly.
+- Header menu and footer: new link "Prompt Studio". The old page is now called "Step Guides" in the footer (SEO, GitHub and Excel guides stay there).
+- Home page: the prompts section is now "Prompt Studio: Most Demand Prompts"; its first three cards open Prompt Studio.
+- Portal links: "Mobisafar Agent Portal" removed; "Jeevan Pramaan" (https://jeevanpramaan.gov.in/v1.0/ppouser/login) added in the same place.
+- Added prompt-studio.html to sitemap.xml and upload-check.html.

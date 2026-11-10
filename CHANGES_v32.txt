@@ -1,0 +1,25 @@
+CSC VLE TOOLS v32  (10 Nov 2026)  chatbot + SEO clean-up + test checklist
+
+REVIEW (v31_fixed as uploaded): all 105 pages opened on a 1366 px laptop and a 390 px phone, with and without the chatbot open.
+No script errors, no missing files, no sideways scrolling. 74 unique tools counted (80 in the list minus 6 old short-cut pages).
+
+NEW: HELPER CHATBOT (assets/js/chatbot.js)
+- Blue chat button bottom-right. No AI, no API, no server. Greets "Hello Dear Visitor! नमस्ते!" or by name after "my name is ...".
+- Finds a tool ("print Aadhaar card"), explains it in 3 steps, answers photo/PDF size, print and file-format questions,
+  opens pages ("open kids corner"), shows contact info. Understands English and Hinglish (aadhar, kaise, chhota ...).
+- Reads the tool list and the SITE block (phone, email, WhatsApp, hours) from assets/js/site.js, so new tools and contact details
+  appear in the chatbot automatically. Fill in SITE.phone / SITE.email / SITE.whatsappNumber in site.js to show them.
+- Extra search words and FAQ answers: edit SYN and FAQ at the top of chatbot.js.
+- On 94 pages. NOT on the app pages that have their own full-screen layout: 8 ledgers, Pro Studio, Kids Corner, upload-check.
+
+SEO FIXES
+1. 5 ledger pages (Sweet Shop, Kirana, Medical Store, Book Shop, Insurance): added Open Graph, Twitter card and structured data (JSON-LD).
+2. 14 meta descriptions were too long for Google (160+ characters): shortened.
+3. Duplicate title fixed: cat-idprint.html is now "ID Card Print Tools".
+4. sitemap.xml rebuilt: 96 indexable pages (all category pages, About, Contact, Feedback, Prompt Studio, Step Guides, Web Search added),
+   dates set to 10 Nov 2026. Old short-cut pages stay out of Google (noindex + canonical to the main tool).
+5. robots.txt now also blocks upload-check.html and kids-corner-standalone.html. Standalone Kids page points to kids-corner.html.
+6. All CSS/JS links use ?v=32 so browsers load the new files.
+
+ADDED: TEST_CHECKLIST_v32.txt (74 numbered tools), SEO_LAUNCH_GUIDE.md, this file.
+NOT TESTED HERE: real printers, a real phone, AI cut-out model download, camera, PDF/ZIP/OCR helper libraries (blocked in my test browser), your live GitHub site.

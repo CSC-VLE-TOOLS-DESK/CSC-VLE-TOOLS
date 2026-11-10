@@ -128,7 +128,7 @@
   /* ---------- Official portal quick links: add a new link by adding one line here ---------- */
   var LINKS = [
     // [name, short description, url, font-awesome icon]
-    ['Mobisafar Agent Portal', 'AEPS & banking login', 'https://agent.mobisafar.com/MOBISAFAR/Login.aspx', 'fa-wallet'],
+    ['Jeevan Pramaan', 'Pensioner life certificate login', 'https://jeevanpramaan.gov.in/v1.0/ppouser/login', 'fa-user-check'],
     ['CSC DigiPay Lite', 'Micro ATM & merchant banking', 'https://digipaylite.in/', 'fa-mobile-screen-button'],
     ['CSC Digital Seva Connect', 'Official auth & citizen services', 'https://connect.csc.gov.in/account/authorize?response_type=code&client_id=0f8ca686-5a31-46b8-bb51-d9834ba9fa9d&redirect_uri=https%3A%2F%2Fdigitalseva.csc.gov.in%2Fauth%2Fcallback%2F&state=45937', 'fa-id-card-clip'],
     ['CM Window Status', 'Haryana CM grievance status', 'https://cmharyanacell.nic.in/citizen/view-status?TabID=V', 'fa-clipboard-check'],
@@ -335,7 +335,7 @@
       h.innerHTML = '<div class="hdr"><a class="logo" href="index.html"><img src="favicon.svg" alt="" width="36" height="36"><span class="logo-t">CSC VLE <b>TOOLS</b></span></a>' +
         '<button class="nav-toggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="main-nav">&#9776;</button>' +
         '<nav id="main-nav" aria-label="Main"><a href="index.html"' + cur('index.html') + '>Home</a>' +
-        '<a href="index.html#tools">Tools</a><a class="nav-daily" href="index.html#daily-use"><i class="fa-solid fa-star" aria-hidden="true"></i> Daily Use App</a><a class="nav-kids" href="kids-corner.html"' + cur('kids-corner.html') + '><i class="fa-solid fa-child-reaching" aria-hidden="true"></i> Kids Corner</a><a href="web-search.html"' + cur('web-search.html') + '><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i> Web Search</a><a href="index.html#links">Portal Links</a>' +
+        '<a href="index.html#tools">Tools</a><a class="nav-daily" href="index.html#daily-use"><i class="fa-solid fa-star" aria-hidden="true"></i> Daily Use App</a><a href="prompt-studio.html"' + cur('prompt-studio.html') + '><i class="fa-solid fa-wand-magic-sparkles" aria-hidden="true"></i> Prompt Studio</a><a class="nav-kids" href="kids-corner.html"' + cur('kids-corner.html') + '><i class="fa-solid fa-child-reaching" aria-hidden="true"></i> Kids Corner</a><a href="web-search.html"' + cur('web-search.html') + '><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i> Web Search</a><a href="index.html#links">Portal Links</a>' +
         '<a href="feedback.html"' + cur('feedback.html') + '>Feedback</a><a href="contact.html"' + cur('contact.html') + '>Contact</a></nav></div>';
       themePicker(h);
       var tg = h.querySelector('.nav-toggle'), nv = h.querySelector('nav');
@@ -349,7 +349,7 @@
         '<div class="ftr-brand"><a class="logo" href="index.html"><img src="favicon.svg" alt="" width="36" height="36"><span class="logo-t">CSC VLE <b>TOOLS</b></span></a>' +
         '<p>Free, fast online tools for CSC and VLE centres, cyber cafes and students: photo and signature resizer, ID card and passport photo print, PDF tools, resumes, applications and calculators.</p>' +
         '<div class="soc" aria-label="Social links">' + socialHTML() + '</div></div>' +
-        '<div><h4>Explore</h4><a href="index.html">Home</a><a href="index.html#tools">All Tools</a><a href="index.html#links">Portal Links</a><a href="pro-studio.html">Pro Studio</a><a href="shop-ledger.html">Shop Ledger</a><a href="stock-ledger.html">Stock Ledger</a><a href="house-expense.html">House Expense</a><a href="kids-corner.html">Kids Corner</a><a href="my-step-guides.html">Most Demand Prompts</a><a href="web-search.html">Web Search</a><a href="tools_handwriting_converter.html">Handwriting Converter</a></div>' +
+        '<div><h4>Explore</h4><a href="index.html">Home</a><a href="index.html#tools">All Tools</a><a href="index.html#links">Portal Links</a><a href="pro-studio.html">Pro Studio</a><a href="shop-ledger.html">Shop Ledger</a><a href="stock-ledger.html">Stock Ledger</a><a href="house-expense.html">House Expense</a><a href="kids-corner.html">Kids Corner</a><a href="prompt-studio.html">Prompt Studio</a><a href="my-step-guides.html">Step Guides</a><a href="web-search.html">Web Search</a><a href="tools_handwriting_converter.html">Handwriting Converter</a></div>' +
         '<div><h4>Popular Tools</h4><a href="tools_photo_resizer.html">Photo Resizer</a><a href="tools_pdf_merger.html">PDF Merger</a><a href="tools_ai_passport_studio.html">Passport Photo Studio</a><a href="haryana-resume-generator.html">Resume Builder</a><a href="tools_loan_emi_calculator.html">Loan EMI Calculator</a></div>' +
         '<div><h4>Support</h4><a href="feedback.html">Send Feedback</a><a href="contact.html">Contact Us</a><a href="about.html">About Us</a><a href="disclaimer.html">Disclaimer</a><a href="privacy.html">Privacy Policy</a></div>' +
         '</div><div class="ftr-bar"><span>&copy; ' + yr + ' CSC VLE TOOLS. All rights reserved.</span><span>Made with <span class="heart" aria-label="love">&#10084;</span> in Rohtak, Haryana</span></div>' +

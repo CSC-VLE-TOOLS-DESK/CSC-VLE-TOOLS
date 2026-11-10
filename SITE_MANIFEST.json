@@ -1,7 +1,7 @@
 {
   "project": "CSC VLE TOOLS",
   "brandVersion": "1.0",
-  "foundationVersion": "1.2",
+  "foundationVersion": "1.3",
   "visualIdentity": {
     "primary": "#1a3fa6",
     "strong": "#0f2a73",
@@ -41,5 +41,7 @@
     "robots.txt",
     "site.webmanifest",
     "og-image.png"
-  ]
+  ],
+  "chatbot": "assets/js/chatbot.js",
+  "testChecklist": "TEST_CHECKLIST_v32.txt"
 }

@@ -1,0 +1,518 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Prompt Studio | CSC VLE TOOLS</title>
+  <meta name="description" content="Prompt Studio: ready-made AI photo prompts in English and Hindi. Copy, search, save favourites, add your own prompts, and import or export a JSON backup.">
+  <meta name="robots" content="index,follow,max-image-preview:large">
+  <meta name="theme-color" content="#1a3fa6">
+  <link rel="canonical" href="https://csc-vle-tools-desk.github.io/CSC-VLE-TOOLS/prompt-studio.html">
+  <meta property="og:type" content="website"><meta property="og:site_name" content="CSC VLE TOOLS"><meta property="og:title" content="Prompt Studio | CSC VLE TOOLS"><meta property="og:description" content="Prompt Studio: ready-made AI photo prompts in English and Hindi. Copy, search, save favourites, add your own prompts, and import or export a JSON backup."><meta property="og:url" content="https://csc-vle-tools-desk.github.io/CSC-VLE-TOOLS/prompt-studio.html"><meta property="og:image" content="https://csc-vle-tools-desk.github.io/CSC-VLE-TOOLS/og-image.png">
+  <link rel="icon" href="favicon.ico?v=3" sizes="any"><link rel="icon" href="favicon.svg?v=3" type="image/svg+xml"><link rel="apple-touch-icon" href="apple-touch-icon.png?v=3"><link rel="manifest" href="site.webmanifest">
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="assets/css/portal.css?v=32">
+  <link rel="stylesheet" href="assets/css/csc-system.css?v=32">
+  <link rel="stylesheet" href="assets/css/layout3d.css?v=32">
+<style>
+#ps{--green:#087b50;--dark:#075b3d;--bg:#f3f7f5;--line:#dce8e1;color:#18352a;margin:0 0 24px}
+#ps *{box-sizing:border-box}
+#ps .ps-top{background:linear-gradient(120deg,#075b3d,#0c9b66);color:#fff;padding:18px 20px;border-radius:14px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:18px}
+#ps .ps-top p{margin:0;color:#e3fff1}
+#ps .panel{background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px;margin-bottom:18px;box-shadow:0 3px 12px #163d2a0b}
+#ps .panel{background:white;border:1px solid var(--line);border-radius:14px;padding:18px;margin-bottom:18px;box-shadow:0 3px 12px #163d2a0b}
+#ps input,#ps select,#ps textarea{width:100%;padding:12px;border:1px solid #cbdcd2;border-radius:9px;font:inherit;background:white;color:inherit}
+#ps textarea{min-height:130px;resize:vertical;line-height:1.5}
+#ps label{display:block;font-size:13px;font-weight:bold;margin:2px 0 5px;color:#35584a}
+#ps button{border:0;border-radius:9px;padding:11px 15px;background:var(--green);color:white;font-weight:bold;cursor:pointer;font:inherit;font-weight:bold}
+#ps button:hover{background:var(--dark)}
+#ps button.secondary{background:#e7f2ec;color:#075b3d}
+#ps button.secondary:hover{background:#d5eadf}
+#ps button.danger{background:#a83434}
+#ps button.small{padding:8px 11px;font-size:13px}
+#ps button:focus-visible,#ps .category:focus-visible{outline:3px solid #f5c542;outline-offset:2px}
+#ps .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+#ps .category{display:block;width:100%;text-align:left;border:1px solid var(--line);padding:15px;border-radius:12px;background:#fbfefc;color:inherit;cursor:pointer;font-weight:normal}
+#ps .category:hover,#ps .category.active{border-color:var(--green);background:#eaf7f0}
+#ps .category strong{display:block;margin-bottom:5px}
+#ps .category span{font-size:13px;color:#587064}
+#ps .prompt-card{border:1px solid var(--line);padding:15px;border-radius:12px;margin:10px 0}
+#ps .prompt-card h3{margin:0 0 8px}
+#ps .prompt-card p{white-space:pre-wrap;line-height:1.6;font-size:14px;margin:8px 0}
+#ps .prompt-card p.neg{background:#fdf3f2;border-left:3px solid #c25b52;padding:8px 10px;border-radius:6px;color:#6b2d28;font-size:13px}
+#ps .muted{color:#688075;font-size:13px}
+#ps .badge{display:inline-block;background:#fff3d6;color:#7a5200;border-radius:6px;padding:2px 8px;font-size:12px;margin-left:6px}
+#ps .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+#ps .row>*{flex:1}
+#ps .row>.noflex{flex:0 0 auto}
+#ps .hidden{display:none}
+#ps h2{font-size:19px;margin-top:0}
+#ps .lang{display:inline-flex;flex:0 0 auto;background:#ffffff26;border-radius:10px;padding:3px;flex:0 0 auto}
+#ps .lang button{background:transparent;color:#fff;padding:8px 16px;border-radius:8px}
+#ps .lang button.on{background:#fff;color:#075b3d}
+#ps .lang button:hover:not(.on){background:#ffffff33}
+#ps .sub{border:1px dashed var(--line);border-radius:10px;padding:12px;margin:10px 0;background:#fbfefc}
+#ps .sub h4{margin:0 0 8px;font-size:14px;color:#075b3d}
+#toast-ps{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#18352a;color:#fff;padding:12px 18px;border-radius:10px;font-size:14px;max-width:90vw;white-space:pre-line;box-shadow:0 6px 20px #0004;opacity:0;pointer-events:none;transition:opacity .2s;z-index:9}
+#ps #toast.show{opacity:1}
+</style>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://csc-vle-tools-desk.github.io/CSC-VLE-TOOLS/"},{"@type":"ListItem","position":2,"name":"Prompt Studio","item":"https://csc-vle-tools-desk.github.io/CSC-VLE-TOOLS/prompt-studio.html"}]}</script>
+  <script src="assets/js/site.js?v=32" defer></script>
+  <script src="assets/js/chatbot.js?v=32" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header id="site-header"></header>
+  <main id="main">
+    <div class="page-head no-print">
+      <div class="crumbs"><a href="index.html">Home</a> / Prompt Studio</div>
+      <h1>Prompt Studio</h1>
+      <p>Ready-made AI prompts in English and Hindi. Pick a language, copy a prompt, add your own, and keep a JSON backup.</p>
+    </div>
+    <div id="ps" lang="en">
+
+<div class="ps-top">
+ <div>
+  <h2 style="margin:0;font-size:1.3rem;color:#fff">🌿 <span data-i18n="title">Prompt Studio</span></h2>
+  <p data-i18n="tagline">Create, save, search and reuse AI prompts</p>
+ </div>
+ <div class="row" style="flex:0 1 auto;max-width:100%">
+  <div class="lang noflex" role="group" aria-label="Language / भाषा">
+   <button type="button" id="langEn" data-lang="en">English</button>
+   <button type="button" id="langHi" data-lang="hi">हिन्दी</button>
+  </div>
+  <button class="secondary noflex" id="btnExport" data-i18n="export">Export Backup</button>
+  <button class="secondary noflex" id="btnImport" data-i18n="import">Import Backup</button>
+  <input id="importFile" type="file" accept=".json,application/json" class="hidden">
+ </div>
+</div>
+
+
+ <section class="panel">
+  <div class="row">
+   <input id="search" data-i18n-ph="search" placeholder="🔎 Search prompts..." aria-label="Search">
+   <button class="noflex" id="btnCreate" data-i18n="create">+ Create Prompt</button>
+  </div>
+ </section>
+
+ <section class="panel">
+  <h2 data-i18n="browse">Browse Categories</h2>
+  <div class="grid" id="categories"></div>
+ </section>
+
+ <section class="panel hidden" id="editor">
+  <h2 id="editorTitle"></h2>
+  <input id="promptId" type="hidden">
+  <div>
+   <label for="promptCategory" data-i18n="category">Category</label>
+   <select id="promptCategory"></select>
+  </div>
+  <p class="muted" data-i18n="editorHelp">Fill in English, Hindi, or both. In each language, a title and the prompt text go together.</p>
+  <div class="sub">
+   <h4>English</h4>
+   <label for="tEn" data-i18n="ptitle">Prompt title</label><input id="tEn" placeholder="Example: Restore an old family photograph">
+   <label for="pEn" style="margin-top:10px" data-i18n="ptext">Prompt text</label><textarea id="pEn" placeholder="Write your AI prompt here..."></textarea>
+   <label for="nEn" style="margin-top:10px" data-i18n="pneg">Negative prompt (optional)</label><input id="nEn" placeholder="blurry, distorted face, ...">
+  </div>
+  <div class="sub">
+   <h4>हिन्दी</h4>
+   <label for="tHi">प्रॉम्प्ट का शीर्षक</label><input id="tHi" placeholder="उदाहरण: पुरानी पारिवारिक फोटो को बहाल करें">
+   <label for="pHi" style="margin-top:10px">प्रॉम्प्ट का पाठ</label><textarea id="pHi" placeholder="अपना AI प्रॉम्प्ट यहाँ लिखें..."></textarea>
+   <label for="nHi" style="margin-top:10px">नकारात्मक प्रॉम्प्ट (वैकल्पिक)</label><input id="nHi" placeholder="धुंधला, बिगड़ा चेहरा, ...">
+  </div>
+  <div class="row">
+   <button id="btnSave" data-i18n="save">Save Prompt</button>
+   <button class="secondary" id="btnClear" data-i18n="clear">Clear</button>
+   <button class="secondary" id="btnClose" data-i18n="close">Close</button>
+  </div>
+ </section>
+
+ <section class="panel">
+  <div class="row">
+   <h2 id="listTitle" style="margin:0">All Prompts</h2>
+   <button class="secondary noflex" id="btnFav" data-i18n="favs">★ Favourites</button>
+   <button class="secondary noflex" id="btnAll" data-i18n="showAll">Show All</button>
+   <button class="secondary noflex" id="btnRestore" data-i18n="restore">Restore Built-in Prompts</button>
+  </div>
+  <div id="promptList"></div>
+ </section>
+
+<p class="muted" style="text-align:center" data-i18n="footer">Prompt Studio · Your prompts are saved in this browser</p>
+<div id="toast-ps" role="status" aria-live="polite"></div>
+
+
+    </div>
+    <section class="cabout"><h2>About Prompt Studio</h2><p>These are the prompts CSC and VLE centres ask for most: restoring old photos, couple and family photos, passport photos, backgrounds and professional portraits. Every prompt has an English and a Hindi version, and works with any AI image tool. Your own prompts are saved only in this browser, so use Export Backup to keep a copy. Always check the result before you give it to a customer, and keep the customer’s permission for using their photo.</p><p><a href="index.html#tools">&larr; Back to all categories</a></p></section>
+  </main>
+  <footer id="site-footer"></footer>
+<script>
+(function(){
+"use strict";
+
+/* ---------- Static data ---------- */
+var OTHER="Other / My Category";
+var CATS=[
+ ["Old Photo Restoration","पुरानी फोटो बहाली"],
+ ["Photo Enhancement","फोटो सुधार"],
+ ["Photo Editing & Retouching","फोटो एडिटिंग और रीटचिंग"],
+ ["Background & Passport Photo","बैकग्राउंड और पासपोर्ट फोटो"],
+ ["Travel & Couple Photography","ट्रैवल और कपल फोटोग्राफी"],
+ ["Portrait & Studio","पोर्ट्रेट और स्टूडियो"],
+ ["Product & Business","प्रोडक्ट और बिज़नेस"],
+ ["Document & Design","दस्तावेज़ और डिज़ाइन"],
+ ["Creative Images & Art","क्रिएटिव इमेज और आर्ट"],
+ ["Writing & Social Media","लेखन और सोशल मीडिया"],
+ [OTHER,"अन्य / मेरी श्रेणी"]
+];
+var CAT_NAMES=CATS.map(function(c){return c[0]});
+
+var UI={
+ en:{title:"Prompt Studio",tagline:"Create, save, search and reuse AI prompts",export:"Export Backup",import:"Import Backup",
+  search:"🔎 Search prompts...",create:"+ Create Prompt",browse:"Browse Categories",category:"Category",
+  editorHelp:"Fill in English, Hindi, or both. In each language, a title and the prompt text go together.",
+  ptitle:"Prompt title",ptext:"Prompt text",pneg:"Negative prompt (optional)",save:"Save Prompt",clear:"Clear",close:"Close",
+  favs:"★ Favourites",showAll:"Show All",restore:"Restore Built-in Prompts",
+  footer:"Prompt Studio · Your prompts are saved in this browser",
+  all:"All",allPrompts:"All Prompts",favPrompts:"Favourite Prompts",saved:"saved prompts",
+  none:"No prompts found. Create a new prompt to get started.",fav:"☆ Favourite",faved:"★ Saved",
+  copy:"Copy Prompt",edit:"Edit",del:"Delete",createTitle:"Create Your Prompt",editTitle:"Edit Prompt",
+  negLabel:"Negative prompt",noHindi:"Hindi version not added",noEnglish:"English version not added",
+  needText:"Please add a title and prompt text in at least one language (English or Hindi).",
+  copied:"Prompt copied!",copyFail:"Copy was blocked by the browser. Select and copy the prompt text manually.",
+  confirmDel:"Delete this prompt?",saveFail:"Could not save in this browser (storage blocked). Use Export Backup to keep your prompts.",
+  badFile:"Invalid JSON file. Please select a valid prompt backup.",
+  importDone:"Import completed!\n\nNew prompts added: {a}\nDuplicates skipped: {s}\nTotal prompts: {t}",
+  restored:"Built-in prompts restored: {n} added.",restoredNone:"All built-in prompts are already here.",
+  exported:"Backup saved ({n} prompts)."},
+ hi:{title:"प्रॉम्प्ट स्टूडियो",tagline:"AI प्रॉम्प्ट बनाएं, सहेजें, खोजें और दोबारा इस्तेमाल करें",export:"बैकअप निर्यात करें",import:"बैकअप आयात करें",
+  search:"🔎 प्रॉम्प्ट खोजें...",create:"+ प्रॉम्प्ट बनाएं",browse:"श्रेणियां देखें",category:"श्रेणी",
+  editorHelp:"अंग्रेज़ी, हिन्दी या दोनों भरें। हर भाषा में शीर्षक और प्रॉम्प्ट का पाठ साथ-साथ चाहिए।",
+  ptitle:"प्रॉम्प्ट का शीर्षक",ptext:"प्रॉम्प्ट का पाठ",pneg:"नकारात्मक प्रॉम्प्ट (वैकल्पिक)",save:"प्रॉम्प्ट सहेजें",clear:"साफ़ करें",close:"बंद करें",
+  favs:"★ पसंदीदा",showAll:"सभी दिखाएं",restore:"बिल्ट-इन प्रॉम्प्ट वापस लाएं",
+  footer:"प्रॉम्प्ट स्टूडियो · आपके प्रॉम्प्ट इसी ब्राउज़र में सहेजे जाते हैं",
+  all:"सभी",allPrompts:"सभी प्रॉम्प्ट",favPrompts:"पसंदीदा प्रॉम्प्ट",saved:"सहेजे गए प्रॉम्प्ट",
+  none:"कोई प्रॉम्प्ट नहीं मिला। शुरू करने के लिए नया प्रॉम्प्ट बनाएं।",fav:"☆ पसंदीदा",faved:"★ सहेजा गया",
+  copy:"प्रॉम्प्ट कॉपी करें",edit:"संपादित करें",del:"हटाएं",createTitle:"अपना प्रॉम्प्ट बनाएं",editTitle:"प्रॉम्प्ट संपादित करें",
+  negLabel:"नकारात्मक प्रॉम्प्ट",noHindi:"हिन्दी संस्करण नहीं जोड़ा गया",noEnglish:"अंग्रेज़ी संस्करण नहीं जोड़ा गया",
+  needText:"कृपया कम से कम एक भाषा (अंग्रेज़ी या हिन्दी) में शीर्षक और प्रॉम्प्ट का पाठ भरें।",
+  copied:"प्रॉम्प्ट कॉपी हो गया!",copyFail:"ब्राउज़र ने कॉपी रोक दी। प्रॉम्प्ट का पाठ चुनकर खुद कॉपी करें।",
+  confirmDel:"क्या यह प्रॉम्प्ट हटाना है?",saveFail:"इस ब्राउज़र में सहेजा नहीं जा सका (स्टोरेज बंद है)। प्रॉम्प्ट बचाने के लिए बैकअप निर्यात करें।",
+  badFile:"अमान्य JSON फ़ाइल। कृपया सही प्रॉम्प्ट बैकअप चुनें।",
+  importDone:"आयात पूरा हुआ!\n\nनए प्रॉम्प्ट जुड़े: {a}\nदोहराए गए छोड़े गए: {s}\nकुल प्रॉम्प्ट: {t}",
+  restored:"बिल्ट-इन प्रॉम्प्ट वापस आए: {n} जोड़े गए।",restoredNone:"सभी बिल्ट-इन प्रॉम्प्ट पहले से मौजूद हैं।",
+  exported:"बैकअप सहेजा गया ({n} प्रॉम्प्ट)।"}
+};
+
+/* Negative prompts shared by several prompts */
+var NEG_TRAVEL={en:"morphed faces, bad anatomy, deformed hands, artificial lighting, cartoonish, low quality.",
+ hi:"बिगड़े हुए चेहरे, ग़लत शारीरिक बनावट, बिगड़े हाथ, कृत्रिम रोशनी, कार्टून जैसा, कम गुणवत्ता।"};
+var NEG_PORTRAIT={en:"overexposed, harsh shadows, unnatural skin texture, blurry background edges.",
+ hi:"ज़्यादा एक्सपोज़र, कठोर परछाइयां, अप्राकृतिक त्वचा की बनावट, बैकग्राउंड के धुंधले किनारे।"};
+
+function P(id,cat,tEn,tHi,pEn,pHi,neg){
+ return {id:id,category:cat,title:{en:tEn,hi:tHi},text:{en:pEn,hi:pHi},negative:neg||{en:"",hi:""},favorite:false};
+}
+
+var BUILTIN=[
+ P("b01","Old Photo Restoration","Restore an Old Family Photo","पुरानी पारिवारिक फोटो को बहाल करें",
+  "Restore this old photograph while preserving the original person's identity, facial features, expression, age and natural appearance. Repair scratches, fading, dust and damage. Improve clarity and tonal balance. Keep the result realistic and historically faithful. Do not change clothing, hairstyle or background unless requested.",
+  "इस पुरानी तस्वीर को बहाल करें, लेकिन व्यक्ति की पहचान, चेहरे की बनावट, भाव, उम्र और प्राकृतिक रूप को जस का तस रखें। खरोंच, फीकापन, धूल और क्षति को ठीक करें। स्पष्टता और रंग-संतुलन सुधारें। नतीजा यथार्थवादी और मूल तस्वीर के प्रति सच्चा रहे। कहे बिना कपड़े, हेयरस्टाइल या बैकग्राउंड न बदलें।"),
+ P("b02","Old Photo Restoration","AI Photo Restoration & Enhancement","AI फोटो बहाली और सुधार",
+  "Restore this old damaged family photograph. Fix scratches, dust spots, and tears. Enhance clarity, sharpness, and high-frequency facial details. Improve studio lighting naturally while preserving the exact facial identity and expression of the person. Grade colors realistically, 8k resolution, photorealistic.",
+  "इस पुरानी क्षतिग्रस्त पारिवारिक तस्वीर को पुनर्स्थापित करें। खरोंच, धूल के धब्बे और फटे हुए हिस्सों को ठीक करें। स्पष्टता, तीखापन और चेहरे के विवरणों को बढ़ाएं। व्यक्ति की सटीक पहचान और भाव को बदले बिना प्राकृतिक रूप से लाइटिंग सुधारें। यथार्थवादी रंग, 8k रिज़ॉल्यूशन, फोटोरियलिस्टिक।",
+  {en:"blurry, distorted face, oversaturated, plastic skin, painting effect, cartoon, noise, artifacts.",
+   hi:"धुंधला, बिगड़ा चेहरा, ज़्यादा सैचुरेटेड रंग, प्लास्टिक जैसी त्वचा, पेंटिंग जैसा असर, कार्टून, नॉइज़, आर्टिफ़ैक्ट।"}),
+ P("b03","Photo Enhancement","Natural Photo Enhancement","प्राकृतिक फोटो सुधार",
+  "Enhance this photograph with natural lighting, balanced exposure, realistic colours, improved sharpness and clear details. Reduce noise while preserving the original subject, face, expression and proportions. Avoid artificial skin smoothing or exaggerated effects.",
+  "इस फोटो को प्राकृतिक रोशनी, संतुलित एक्सपोज़र, यथार्थवादी रंग, बेहतर शार्पनेस और साफ़ विवरण के साथ सुधारें। मूल व्यक्ति, चेहरे, भाव और अनुपात को सुरक्षित रखते हुए नॉइज़ कम करें। त्वचा को कृत्रिम रूप से चिकना न करें और ज़रूरत से ज़्यादा इफ़ेक्ट से बचें।"),
+ P("b04","Photo Enhancement","Clean & Improve an Old Photo","पुरानी फोटो को साफ और बेहतर बनाएं",
+  "Naturally clean up and improve this old photo. Fully preserve the face identity, age, expression and original look. Reduce blurriness, dust and old marks. Improve colour and lighting. Do not make unnecessary changes to the face or clothing.",
+  "इस पुरानी फोटो को प्राकृतिक तरीके से साफ और बेहतर बनाएं। चेहरे की पहचान, उम्र, भाव और मूल रूप बिल्कुल सुरक्षित रखें। धुंधलापन, धूल और पुराने निशान कम करें। रंग और रोशनी सुधारें। चेहरे या कपड़ों में अनावश्यक बदलाव न करें।"),
+ P("b05","Travel & Couple Photography","Couple at Leh Ladakh","लेह लद्दाख में जोड़ा",
+  "Create a realistic travel photograph using the provided couple as identity references. Show them enjoying a trip in Leh Ladakh, with a beautiful Himalayan mountain landscape in the background. Preserve both people's facial identities and natural features. Use realistic travel clothing, natural daylight and professional travel photography.",
+  "दिए गए जोड़े की फोटो को पहचान-संदर्भ मानकर एक यथार्थवादी ट्रैवल फोटो बनाएं। उन्हें लेह लद्दाख की यात्रा का आनंद लेते हुए दिखाएं, पीछे हिमालय के सुंदर पहाड़ी नज़ारे हों। दोनों के चेहरे की पहचान और प्राकृतिक विशेषताएं सुरक्षित रखें। यात्रा के लिए यथार्थवादी कपड़े, प्राकृतिक दिन की रोशनी और पेशेवर ट्रैवल फोटोग्राफी की शैली रखें।"),
+ P("b06","Travel & Couple Photography","Couple at a Beautiful Lake","सुंदर झील के किनारे जोड़ा",
+  "Create a realistic travel photograph of the provided couple beside a beautiful peaceful lake. Preserve their facial identities and natural expressions. Use a scenic background, natural light, realistic colours and professional photography. Do not alter their identity.",
+  "दिए गए जोड़े की एक सुंदर, शांत झील के किनारे यथार्थवादी ट्रैवल फोटो बनाएं। उनके चेहरे की पहचान और स्वाभाविक भाव सुरक्षित रखें। सुंदर पृष्ठभूमि, प्राकृतिक रोशनी, यथार्थवादी रंग और पेशेवर फोटोग्राफी का उपयोग करें। उनकी पहचान में कोई बदलाव न करें।"),
+ P("b07","Travel & Couple Photography","Couple Visiting America","अमेरिका की सैर करता जोड़ा",
+  "Create a realistic tourist photograph of the provided couple at a famous American landmark. Preserve their original facial identities, expressions and natural appearance. Use believable travel clothing, realistic surroundings and natural daylight.",
+  "दिए गए जोड़े की अमेरिका के किसी प्रसिद्ध स्थल पर यथार्थवादी पर्यटक फोटो बनाएं। उनके मूल चेहरे की पहचान, भाव और प्राकृतिक रूप सुरक्षित रखें। विश्वसनीय यात्रा-परिधान, यथार्थवादी परिवेश और प्राकृतिक दिन की रोशनी का उपयोग करें।"),
+ P("b08","Travel & Couple Photography","Tourist Couple: Leh & Kashmir","पर्यटक जोड़ा: लेह और कश्मीर",
+  "Photorealistic portrait of the same couple as tourists exploring breathtaking landscapes of Leh Ladakh and snow-capped mountains of Kashmir. Natural bright daylight, crystal clear blue lake reflection, happy candid expressions, wearing winter travel jackets, cinematic composition, 8k.",
+  "उसी जोड़े की यथार्थवादी तस्वीर, जो पर्यटक के रूप में लेह लद्दाख की लुभावनी वादियों और कश्मीर के बर्फ़ से ढके पहाड़ों की सैर कर रहे हैं। प्राकृतिक उज्ज्वल दिन की रोशनी, साफ़ नीली झील में प्रतिबिंब, खुशनुमा स्वाभाविक भाव, सर्दियों की ट्रैवल जैकेट, सिनेमाई रचना, 8k।",
+  NEG_TRAVEL),
+ P("b09","Travel & Couple Photography","Tourist Couple: Mountains & Lakes","पर्यटक जोड़ा: पहाड़ और झीलें",
+  "Same couple hiking through lush green pine forests and alpine mountain trails next to a serene turquoise lake under a bright sunny sky, highly detailed, photorealistic.",
+  "उसी जोड़े को हरे-भरे चीड़ के जंगलों और ऊंचे पहाड़ी रास्तों पर, तेज़ धूप वाले आसमान के नीचे एक शांत फ़िरोज़ी झील के किनारे ट्रैकिंग करते हुए दिखाएं। अत्यंत बारीक विवरण, फोटोरियलिस्टिक।",
+  NEG_TRAVEL),
+ P("b10","Travel & Couple Photography","Tourist Couple: Deserts & Beaches","पर्यटक जोड़ा: रेगिस्तान और समुद्र तट",
+  "Same couple riding camels across golden sand dunes of Thar Desert during sunset, or walking along a pristine tropical white-sand beach with turquoise ocean waves.",
+  "उसी जोड़े को सूर्यास्त के समय थार रेगिस्तान के सुनहरे रेतीले टीलों पर ऊंट की सवारी करते हुए दिखाएं, या फ़िरोज़ी लहरों वाले साफ़ सफ़ेद रेत के उष्णकटिबंधीय समुद्र तट पर टहलते हुए।",
+  NEG_TRAVEL),
+ P("b11","Travel & Couple Photography","Tourist Couple: Cities","पर्यटक जोड़ा: शहर",
+  "Same couple exploring a vibrant historic European city street with classic architecture, casual stylish travel outfits, natural street lighting, 8k.",
+  "उसी जोड़े को शास्त्रीय वास्तुकला वाली एक जीवंत ऐतिहासिक यूरोपीय शहर की गली में घूमते हुए दिखाएं। स्टाइलिश कैज़ुअल ट्रैवल कपड़े, प्राकृतिक स्ट्रीट लाइटिंग, 8k।",
+  NEG_TRAVEL),
+ P("b12","Background & Passport Photo","Professional Passport Photo","पेशेवर पासपोर्ट फोटो",
+  "Create a clean, professional passport-style photograph from the provided image. Preserve the person's identity and natural facial features. Use a plain white background, even lighting, front-facing composition and a neat crop. Follow the required official photo dimensions separately.",
+  "दी गई फोटो से एक साफ़, पेशेवर पासपोर्ट-शैली की फोटो बनाएं। व्यक्ति की पहचान और चेहरे की प्राकृतिक विशेषताएं सुरक्षित रखें। सादा सफ़ेद बैकग्राउंड, समान रोशनी, सामने की ओर देखता चेहरा और साफ़ क्रॉप रखें। आधिकारिक फोटो के आकार का पालन अलग से करें।"),
+ P("b13","Background & Passport Photo","Background Change: Corporate Office","बैकग्राउंड बदलें: कॉर्पोरेट ऑफ़िस",
+  "Seamless background replacement: Place the subject into a modern corporate office interior with soft out-of-focus background bokeh, professional softbox studio rim lighting, photorealistic integration, matching color grading.",
+  "बिना जोड़ दिखे बैकग्राउंड बदलें: व्यक्ति को आधुनिक कॉर्पोरेट ऑफ़िस के इंटीरियर में रखें, जिसकी पृष्ठभूमि हल्की धुंधली बोकेह वाली हो। पेशेवर सॉफ़्टबॉक्स स्टूडियो रिम लाइटिंग, यथार्थवादी एकीकरण और मेल खाती कलर ग्रेडिंग।",
+  NEG_PORTRAIT),
+ P("b14","Portrait & Studio","Professional Executive Portrait","पेशेवर एग्ज़ीक्यूटिव पोर्ट्रेट",
+  "Professional executive headshot portrait, studio lighting, crisp focus on eyes, subtle neutral grey backdrop, wearing formal business attire, high-end commercial photography style, 8k.",
+  "पेशेवर एग्ज़ीक्यूटिव हेडशॉट पोर्ट्रेट, स्टूडियो लाइटिंग, आंखों पर तेज़ फ़ोकस, हल्का न्यूट्रल ग्रे बैकड्रॉप, औपचारिक बिज़नेस पोशाक, उच्च-स्तरीय कमर्शियल फोटोग्राफी शैली, 8k।",
+  NEG_PORTRAIT)
+];
+
+/* ---------- State ---------- */
+var KEY="ps_prompts_v2", LKEY="ps_lang", OLDKEY="ss_prompts";
+var lang="en", activeCategory="All", favouritesOnly=false, prompts=[];
+
+function lsGet(k){try{return localStorage.getItem(k)}catch(e){return null}}
+function lsSet(k,v){try{localStorage.setItem(k,v);return true}catch(e){return false}}
+function clone(o){return JSON.parse(JSON.stringify(o))}
+function $(id){return document.getElementById(id)}
+function t(k){return UI[lang][k]}
+function esc(s){return String(s).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})}
+function s(v){return typeof v==="string"?v.trim():""}
+function other(l){return l==="en"?"hi":"en"}
+
+/* Accepts the new bilingual format and the old single-language format */
+function norm(p,idx){
+ if(!p||typeof p!=="object")return null;
+ var o={id:String(p.id||("import-"+Date.now()+"-"+idx)),
+  category:CAT_NAMES.indexOf(p.category)>-1?p.category:OTHER,
+  title:{en:"",hi:""},text:{en:"",hi:""},negative:{en:"",hi:""},favorite:!!p.favorite};
+ if(p.title&&typeof p.title==="object"){
+  ["en","hi"].forEach(function(l){o.title[l]=s(p.title[l]);o.text[l]=s(p.text&&p.text[l]);o.negative[l]=s(p.negative&&p.negative[l])});
+ }else{
+  var l=/^hi/i.test(String(p.language||""))?"hi":"en";
+  o.title[l]=s(p.title);o.text[l]=s(p.text);o.negative[l]=s(p.negative);
+ }
+ var ok=["en","hi"].some(function(l){return o.title[l]&&o.text[l]});
+ return ok?o:null;
+}
+function fingerprint(p){return (p.text.en||p.text.hi).replace(/\s+/g," ").toLowerCase()}
+
+/* Merge list into prompts; returns {added,skipped} */
+function mergeIn(list){
+ var ids={},prints={},added=0,skipped=0;
+ prompts.forEach(function(p){ids[p.id]=1;prints[fingerprint(p)]=1});
+ list.forEach(function(p){
+  if(!p){skipped++;return}
+  var f=fingerprint(p);
+  if(ids[p.id]||prints[f]){skipped++;return}
+  prompts.push(p);ids[p.id]=1;prints[f]=1;added++;
+ });
+ return {added:added,skipped:skipped};
+}
+
+function init(){
+ var l=lsGet(LKEY);if(l==="hi"||l==="en")lang=l;
+ var saved=null;try{saved=JSON.parse(lsGet(KEY)||"null")}catch(e){}
+ if(Array.isArray(saved)){
+  prompts=saved.map(norm).filter(Boolean);
+ }else{
+  prompts=clone(BUILTIN);
+  /* bring over prompts from the older single-language version, if any */
+  var old=null;try{old=JSON.parse(lsGet(OLDKEY)||"null")}catch(e){}
+  if(Array.isArray(old)){
+   var legacy=old.filter(function(p){return p&&!/^s\d$/.test(String(p.id))}).map(norm).filter(Boolean);
+   mergeIn(legacy);
+  }
+  saveData();
+ }
+}
+var storageWarned=false;
+function saveData(){
+ if(!lsSet(KEY,JSON.stringify(prompts))&&!storageWarned){storageWarned=true;toast(t("saveFail"))}
+}
+
+/* ---------- UI helpers ---------- */
+var toastTimer;
+function toast(msg){
+ var el=$("toast-ps");el.textContent=msg;el.classList.add("show");
+ clearTimeout(toastTimer);toastTimer=setTimeout(function(){el.classList.remove("show")},3500);
+}
+function catLabel(c){var f=CATS.filter(function(x){return x[0]===c})[0];return f?f[lang==="hi"?1:0]:c}
+function pick(p,field){return p[field][lang]||p[field][other(lang)]||""}
+
+function applyLang(){
+ $("ps").lang=lang==="hi"?"hi":"en";
+ 
+ document.querySelectorAll("[data-i18n]").forEach(function(e){e.textContent=t(e.getAttribute("data-i18n"))});
+ document.querySelectorAll("[data-i18n-ph]").forEach(function(e){e.placeholder=t(e.getAttribute("data-i18n-ph"))});
+ $("langEn").classList.toggle("on",lang==="en");$("langHi").classList.toggle("on",lang==="hi");
+ $("langEn").setAttribute("aria-pressed",lang==="en");$("langHi").setAttribute("aria-pressed",lang==="hi");
+ fillCategories();
+ $("editorTitle").textContent=$("promptId").value?t("editTitle"):t("createTitle");
+ renderCategories();renderPrompts();
+}
+function setLang(l){lang=l;lsSet(LKEY,l);applyLang()}
+
+function fillCategories(){
+ var sel=$("promptCategory"),cur=sel.value;
+ sel.innerHTML=CATS.map(function(c){return '<option value="'+esc(c[0])+'">'+esc(c[lang==="hi"?1:0])+'</option>'}).join("");
+ if(cur)sel.value=cur;
+}
+
+function renderCategories(){
+ var el=$("categories");el.innerHTML="";
+ ["All"].concat(CAT_NAMES).forEach(function(c){
+  var n=c==="All"?prompts.length:prompts.filter(function(p){return p.category===c}).length;
+  var b=document.createElement("button");b.type="button";
+  b.className="category"+(activeCategory===c&&!favouritesOnly?" active":"");
+  b.innerHTML="<strong>"+esc(c==="All"?t("all"):catLabel(c))+"</strong><span>"+n+" "+esc(t("saved"))+"</span>";
+  b.onclick=function(){activeCategory=c;favouritesOnly=false;renderCategories();renderPrompts()};
+  el.appendChild(b);
+ });
+}
+
+function renderPrompts(){
+ var q=$("search").value.toLowerCase().trim();
+ var items=prompts.filter(function(p){
+  if(activeCategory!=="All"&&p.category!==activeCategory)return false;
+  if(favouritesOnly&&!p.favorite)return false;
+  if(!q)return true;
+  var hay=[p.title.en,p.title.hi,p.text.en,p.text.hi,p.negative.en,p.negative.hi,p.category,catLabel(p.category)].join(" ").toLowerCase();
+  return q.split(/\s+/).every(function(w){return hay.indexOf(w)>-1});
+ });
+ $("listTitle").textContent=favouritesOnly?t("favPrompts"):activeCategory==="All"?t("allPrompts"):catLabel(activeCategory);
+ var list=$("promptList");
+ if(!items.length){list.innerHTML='<p class="muted">'+esc(t("none"))+'</p>';return}
+ list.innerHTML=items.map(function(p){
+  var missing=!p.text[lang];
+  var neg=pick(p,"negative");
+  return '<article class="prompt-card" data-id="'+esc(p.id)+'">'+
+   '<div class="row"><div><h3>'+esc(pick(p,"title"))+'</h3><span class="muted">'+esc(catLabel(p.category))+' · '+(lang==="hi"?"हिन्दी":"English")+'</span>'+
+   (missing?'<span class="badge">'+esc(t(lang==="hi"?"noHindi":"noEnglish"))+'</span>':'')+'</div>'+
+   '<button class="secondary small noflex" data-act="fav">'+esc(p.favorite?t("faved"):t("fav"))+'</button></div>'+
+   '<p>'+esc(pick(p,"text"))+'</p>'+
+   (neg?'<p class="neg"><strong>'+esc(t("negLabel"))+':</strong> '+esc(neg)+'</p>':'')+
+   '<div class="row"><button class="small" data-act="copy">'+esc(t("copy"))+'</button>'+
+   '<button class="secondary small" data-act="edit">'+esc(t("edit"))+'</button>'+
+   '<button class="danger small" data-act="del">'+esc(t("del"))+'</button></div></article>';
+ }).join("");
+}
+
+/* ---------- Editor ---------- */
+var FIELDS={tEn:["title","en"],tHi:["title","hi"],pEn:["text","en"],pHi:["text","hi"],nEn:["negative","en"],nHi:["negative","hi"]};
+function showEditor(){$("editor").classList.remove("hidden");$("editor").scrollIntoView({behavior:"smooth"})}
+function hideEditor(){$("editor").classList.add("hidden")}
+function clearEditor(){
+ $("promptId").value="";
+ Object.keys(FIELDS).forEach(function(id){$(id).value=""});
+ $("editorTitle").textContent=t("createTitle");
+}
+function savePrompt(){
+ var id=$("promptId").value;
+ var item={id:id||"p"+Date.now(),category:$("promptCategory").value,title:{},text:{},negative:{},favorite:false};
+ Object.keys(FIELDS).forEach(function(k){var f=FIELDS[k];item[f[0]][f[1]]=$(k).value.trim()});
+ var ok=["en","hi"].some(function(l){return item.title[l]&&item.text[l]});
+ if(!ok){toast(t("needText"));return}
+ if(id){var old=prompts.filter(function(p){return p.id===id})[0];item.favorite=!!(old&&old.favorite);
+  prompts=prompts.map(function(p){return p.id===id?item:p})}
+ else prompts.unshift(item);
+ saveData();clearEditor();hideEditor();renderCategories();renderPrompts();
+}
+function editPrompt(id){
+ var p=prompts.filter(function(x){return x.id===id})[0];if(!p)return;
+ $("promptId").value=p.id;
+ Object.keys(FIELDS).forEach(function(k){var f=FIELDS[k];$(k).value=p[f[0]][f[1]]||""});
+ $("promptCategory").value=p.category;
+ $("editorTitle").textContent=t("editTitle");
+ showEditor();
+}
+function deletePrompt(id){
+ if(!confirm(t("confirmDel")))return;
+ prompts=prompts.filter(function(p){return p.id!==id});saveData();renderCategories();renderPrompts();
+}
+function toggleFav(id){
+ prompts.forEach(function(p){if(p.id===id)p.favorite=!p.favorite});
+ saveData();renderCategories();renderPrompts();
+}
+function copyPrompt(id){
+ var p=prompts.filter(function(x){return x.id===id})[0];if(!p)return;
+ var text=pick(p,"text"),neg=pick(p,"negative");
+ if(neg)text+="\n["+t("negLabel")+"]: "+neg;
+ function fallback(){
+  var ta=document.createElement("textarea");ta.value=text;ta.style.cssText="position:fixed;opacity:0";
+  document.body.appendChild(ta);ta.select();
+  var ok=false;try{ok=document.execCommand("copy")}catch(e){}
+  document.body.removeChild(ta);toast(ok?t("copied"):t("copyFail"));
+ }
+ if(navigator.clipboard&&window.isSecureContext)navigator.clipboard.writeText(text).then(function(){toast(t("copied"))},fallback);
+ else fallback();
+}
+
+/* ---------- Export / Import ---------- */
+function exportData(){
+ var data={app:"Prompt Studio",version:2,exported:new Date().toISOString(),prompts:prompts};
+ var blob=new Blob([JSON.stringify(data,null,2)],{type:"application/json"});
+ var a=document.createElement("a");a.href=URL.createObjectURL(blob);
+ a.download="Prompt-Studio-Backup-"+new Date().toISOString().slice(0,10)+".json";
+ document.body.appendChild(a);a.click();
+ setTimeout(function(){URL.revokeObjectURL(a.href);a.remove()},500);
+ toast(t("exported").replace("{n}",prompts.length));
+}
+function importData(ev){
+ var file=ev.target.files[0];if(!file)return;
+ var reader=new FileReader();
+ reader.onload=function(){
+  try{
+   var data=JSON.parse(String(reader.result).replace(/^﻿/,""));
+   var list=Array.isArray(data)?data:(data&&Array.isArray(data.prompts)?data.prompts:null);
+   if(!list)throw new Error("format");
+   var cleaned=list.map(norm);
+   if(!cleaned.some(Boolean))throw new Error("empty");
+   var r=mergeIn(cleaned);
+   saveData();renderCategories();renderPrompts();
+   toast(t("importDone").replace("{a}",r.added).replace("{s}",r.skipped).replace("{t}",prompts.length));
+  }catch(e){toast(t("badFile"))}
+  ev.target.value="";
+ };
+ reader.onerror=function(){toast(t("badFile"));ev.target.value=""};
+ reader.readAsText(file);
+}
+function restoreBuiltins(){
+ var r=mergeIn(clone(BUILTIN));
+ if(r.added){saveData();renderCategories();renderPrompts()}
+ toast(r.added?t("restored").replace("{n}",r.added):t("restoredNone"));
+}
+
+/* ---------- Wiring ---------- */
+$("langEn").onclick=function(){setLang("en")};
+$("langHi").onclick=function(){setLang("hi")};
+$("btnExport").onclick=exportData;
+$("btnImport").onclick=function(){$("importFile").click()};
+$("importFile").onchange=importData;
+$("search").oninput=renderPrompts;
+$("btnCreate").onclick=function(){clearEditor();showEditor()};
+$("btnSave").onclick=savePrompt;
+$("btnClear").onclick=clearEditor;
+$("btnClose").onclick=hideEditor;
+$("btnFav").onclick=function(){favouritesOnly=true;activeCategory="All";renderCategories();renderPrompts()};
+$("btnAll").onclick=function(){favouritesOnly=false;activeCategory="All";renderCategories();renderPrompts()};
+$("btnRestore").onclick=restoreBuiltins;
+$("promptList").addEventListener("click",function(e){
+ var b=e.target.closest("button[data-act]");if(!b)return;
+ var card=b.closest(".prompt-card");if(!card)return;
+ var id=card.getAttribute("data-id"),a=b.getAttribute("data-act");
+ if(a==="fav")toggleFav(id);else if(a==="copy")copyPrompt(id);
+ else if(a==="edit")editPrompt(id);else if(a==="del")deletePrompt(id);
+});
+
+init();
+var HASH={restore:"Old Photo Restoration",enhance:"Photo Enhancement",couple:"Travel & Couple Photography",passport:"Background & Passport Photo",portrait:"Portrait & Studio"};
+function fromHash(){var h=(location.hash||"").slice(1);if(HASH[h]){activeCategory=HASH[h];favouritesOnly=false;renderCategories();renderPrompts()}}
+window.addEventListener("hashchange",fromHash);
+applyLang();fromHash();
+
+})();
+</script>
+  <script src="assets/js/demo-mode.js?v=32"></script>
+</body>
+</html>
