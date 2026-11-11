@@ -1,0 +1,124 @@
+CSC VLE TOOLS - TEST CHECKLIST (v33)  -  74 tools
+==========================================
+Send your report in this format, one tool per line (Hindi / English / Hinglish all fine):
+  12. Passport & Stamp Photo Studio - FAIL - print button does nothing on mobile
+  13. PVC ID Card Print - OK
+  14. PDF Compressor - PARTIAL - 'Small' keeps the same size | Wanted: show size before/after
+OK = works.  FAIL = broken.  PARTIAL = works but something is wrong or missing.
+For FAIL/PARTIAL add the device (mobile/laptop) and browser. You can write '1-10 all OK' for a range.
+Page address = your site address + the file name in [brackets].
+
+## Resize & Compress  -  how to test: upload a photo/image, set size and KB, download; check the file size and preview
+ 1. Photo Resizer   [tools_photo_resizer.html]
+ 2. Signature Resizer   [tools_sign_resizer.html]
+ 3. Thumb Impression Resizer   [tools_thumb_resizer.html]
+ 4. Image Compressor   [tools_image_compressor.html]
+ 5. Image Converter   [tools_image_converter_pro.html]
+ 6. Image Crop Tool   [tools_image_crop.html]
+ 7. JPG / PNG Converter & Compressor   [tools_jpg_png_converter.html]
+
+## Background & Photo Edit  -  how to test: upload a photo, remove/replace background, download; check the edges
+ 8. Background Remover   [tools_bg_remover.html]
+ 9. Background Remover Pro   [tools_bg_remover_pro.html]
+10. AI Background Remover   [tools_ai_bg_remover.html]
+11. Image Merger   [tools_image_merger.html]
+12. Name & Date on Photo   [tools_name_date_photo.html]
+13. Photo & Signature Joiner   [tools_photo_sign_joiner.html]
+
+## Photo Sheets & Print  -  how to test: upload photo, choose count/size, preview, print to PDF
+14. Passport & Stamp Photo Studio   [tools_ai_passport_studio.html]
+15. WhatsApp Image Print   [tools_whatsapp_image_print.html]
+16. Pro Studio   [pro-studio.html]
+
+## PDF Tools  -  how to test: add files, run, download; open the result and check the pages
+17. JPG to PDF   [tools_jpg_to_pdf.html]
+18. PDF Merger   [tools_pdf_merger.html]
+19. PDF Splitter   [tools_pdf_splitter.html]
+20. PDF Watermark   [tools_pdf_watermark.html]
+21. PDF Compressor   [tools_pdf_compressor.html]
+22. Word to PDF   [tools_word_to_pdf.html]
+
+## ID Card Print  -  how to test: upload front/back, place on A4, print preview; check size and corners
+23. Admit Card Holder   [tools_admit_card_holder.html]
+24. PVC ID Card Print   [tools_pvc_id_print.html]
+25. PAN & Aadhaar Print   [tools_pan_aadhaar_print.html]
+26. ID Card Print   [tools_id_card_print.html]
+27. Multiple ID Card Print   [tools_multiple_id_card_print.html]
+
+## ID Card Makers  -  how to test: fill details + photo, check card front/back, print/download
+28. Student ID Card Creator   [tools_student_id_creator.html]
+29. Farmer ID Card Maker   [tools_farmer_id_maker.html]
+30. Student ID Card   [tools_student_id_card.html]
+
+## Cards, Stamps & Stickers  -  how to test: fill details, check the design, print/download
+31. Visiting Card Maker   [tools_visiting_card_maker.html]
+32. Notebook Sticker Maker   [tools_notebook_sticker.html]
+33. Stamp Maker   [tools_csc_stamp_maker.html]
+
+## Govt Applications & Affidavits  -  how to test: fill the form, Hindi/English, preview, print/save PDF
+34. Application Generator   [haryana-application-generator.html]
+35. Affidavit Formats   [tools_affidavit_format.html]
+36. Bank Applications   [tools_bank_application.html]
+37. Agreement Generator   [tools_agreement_format_generator.html]
+38. MPPEB Document Editor   [tools_mppeb_template.html]
+
+## Resume, Documents & Text  -  how to test: fill details, change template/colour, print/save PDF
+39. Image Text Extractor (OCR)   [tools_image_text_extractor.html]
+40. Handwriting to Word, PDF & Text   [tools_handwriting_converter.html]
+41. Resume Builder   [haryana-resume-generator.html]
+42. Marriage Biodata Maker   [tools_biodata_maker.html]
+43. Cover Letter Generator   [tools_cover_letter_generator.html]
+
+## Receipts & Billing  -  how to test: add items, check totals, print/save, test reports
+44. Shop Ledger   [shop-ledger.html]
+45. Stock Ledger   [stock-ledger.html]
+46. House Expense   [house-expense.html]
+47. Insurance Ledger   [insurance-ledger.html]
+48. Medical Store Ledger   [medical-store-ledger.html]
+49. Book Shop Ledger   [book-shop-ledger.html]
+50. Sweet Shop Ledger   [sweet-shop-ledger.html]
+51. Kirana Store Ledger   [kirana-store-ledger.html] v33: NEW ledger (Home + Back + Theme added, old data imports automatically). Test with your real old data.
+52. Bill & Receipt Generator   [tools_bill_receipt_generator.html]
+53. Invoice Generator   [tools_invoice_generator.html]
+54. Salary Slip Generator   [tools_salary_slip_generator.html]
+55. Service Rate List   [tools_service_rate_list.html]
+
+## Calculators  -  how to test: enter values, check the answer is correct
+56. Age Calculator   [tools_age_calculator.html]
+57. Date Calculator   [tools_date_calculator.html]
+58. Percentage Calculator   [tools_percentage_calculator.html]
+59. Loan EMI Calculator   [tools_loan_emi_calculator.html]
+60. CGPA Calculator   [tools_cgpa_calculator.html]
+61. Gold & Silver Value Calculator   [tools_gold_silver_rate.html]
+
+## Exam & Education  -  how to test: use the main function, check result/print
+62. Typing Test & Lessons   [tools_typing_test.html]
+63. Map Download & Print   [tools_maps_print.html]
+64. Question Paper Maker   [tools_question_paper_maker.html]
+
+## Scanner, Album & Wedding Studio  -  how to test: upload images, pick style/border, download/print
+65. AI Couple Photo Creator   [tools_ai_couple_photo.html]
+66. AI Family Photo Creator   [tools_ai_family_photo.html]
+67. Document Album Creator   [tools_document_album.html]
+68. ID Card Album Cover Creator   [tools_idcard_album_cover.html]
+69. Mobile Cam Scanner   [tools_mobile_cam_scanner.html]
+70. AI Marriage Biodata Creator   [tools_ai_marriage_biodata.html]
+
+## Quick Utilities  -  how to test: use the main function, check the output
+71. Web Search   [web-search.html]
+72. QR Code Generator   [tools_qr_code_generator.html]
+73. WhatsApp Direct Message   [tools_whatsapp_ultimate.html]
+
+## Kids Corner  -  how to test: open, play a few games, check pictures and sound
+74. Kids Corner   [kids-corner.html]
+
+## EXTRA PAGES (not counted in the 74 tools)
+  A. Prompt Studio [prompt-studio.html]: copy buttons, English/Hindi, add/edit/delete, backup
+  B. Step Guides [my-step-guides.html]: topics open, copy buttons, search
+  C. Home page [index.html]: menus, both sidebars, theme, search, footer links
+  D. Category pages [cat-*.html]: each opens and lists its tools
+  E. About, Contact, Feedback, Privacy, Disclaimer, 404
+  F. NEW Chatbot (blue chat button, bottom-right): try 'print Aadhaar card', 'compress PDF', 'contact', 'open kids corner'
+
+Old short-cut pages (hidden from Google; they point to the main tool). Only check that they still open:
+  tools_pdf_merge, tools_pdf_split, tools_photo_name_joiner, tools_photo_signature_joiner, tools_passport_photo_sheet, tools_resume_builder

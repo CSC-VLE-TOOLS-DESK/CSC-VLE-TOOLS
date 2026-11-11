@@ -1,0 +1,28 @@
+CSC VLE TOOLS v33  (11 Nov 2026)  3 tools replaced + Home/Back buttons on them
+
+REPLACED (reviewed, refined, then delivered)
+1. pro-studio.html  (#16)  <- Pro_Studio_v8_Arun_Chauhan.html
+   - NEW: "Home" button (index.html) and "Back" button (cat-sheets.html = Photo Sheets & Print) at top-left.
+   - REMOVED: old "Exit" button. It used window.close(), which does nothing when a page is opened from a link.
+   - Asks "Leave Pro Studio?" only if a photo is loaded, so work is not lost by a mis-tap.
+   - Branding: removed leftover "DocFix" from print titles, pop-up message and export file name (now prostudio-pane1.png).
+     The saved-backgrounds storage key is unchanged, so saved backgrounds are kept.
+   - Added canonical, description, Open Graph and structured data. Theme/BG menu, Undo/Redo, crop pins, print sheet (5,10,15..35 copies) kept as supplied.
+2. kirana-store-ledger.html  (#51)  <- Kirana_Store_Ledger.html
+   - FIXED (important): the supplied file could NOT read the data of the ledger already on the site (different storage key and format),
+     so a shop owner would have opened an empty ledger. Added a migration from csc_kirana_ledger_v1: items + stock, bills, udhaar
+     customers, purchases + suppliers, expenses, stock write-offs, payments, staff, advances, salary payments.
+     Tested with the old sample data: 70 bills = Rs 5,00,730, purchases Rs 4,87,410, expenses Rs 18,900, 2 staff - all equal old vs new.
+     The old data is only read, never deleted. If new-ledger data already exists, nothing is imported again.
+   - NEW: Home (index.html) and Back (cat-bill.html = Receipts & Billing) buttons.
+   - NEW: "Theme" button: 7 background colours (light), 5 (dark), your own colour, 7 header colours, Dark/Light switch, Reset. Remembered per device.
+   - Phone: header no longer overlaps the tab bar.
+3. tools_mobile_cam_scanner.html  (#69)  <- doc-scan-crop-clean.html
+   - Replaces the old Mobile Cam Scanner (same file name, so every link, the sitemap and the chatbot keep working).
+   - NEW: Home and Back (cat-studio.html = Scanner, Album & Wedding Studio) in the header; header and title now say CSC VLE TOOLS / Mobile Cam Scanner.
+   - Its own Theme/Background button and feedback button (bottom-right) kept.
+   - Added canonical, Open Graph and structured data.
+
+NOT TESTED HERE: a real phone camera, real printers, the AI background model download (needs internet), Safari/iPhone.
+KNOWN LIMIT: scanner Auto-detect can miss a card edge when the card colour is almost the same as the table. Drag the pins or press "Whole image".
+NOTE: these 3 pages are full-screen apps, so (like the other ledgers) they do not show the helper chatbot.

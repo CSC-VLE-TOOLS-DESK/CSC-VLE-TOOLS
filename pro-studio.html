@@ -3,344 +3,249 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CSC VLE TOOLS Pro Studio — Document &amp; Photo Tools</title>
+<title>Pro Studio — Photo, Crop, Background &amp; Print | CSC VLE TOOLS</title>
+<link rel="canonical" href="https://csc-vle-tools-desk.github.io/CSC-VLE-TOOLS/pro-studio.html">
+<meta name="description" content="Pro Studio: crop with 4 corner pins, remove background, adjust photos, and print passport or ID sheets on A4. Free for CSC and VLE centres.">
+<link rel="icon" href="favicon.svg?v=3" type="image/svg+xml">
+<link rel="manifest" href="site.webmanifest">
 <!--
-  DocFix Pro Studio v3.12 (Complete Edition)
-  - Four-corner document crop/dewarp (TL, TR, BR, BL)
-  - Complete Undo/Redo state serialization & restoration
-  - Robust pointer event lifecycle & listener cleanup
-  - File reader & image decoding error handling
-  - Crop geometry & quadrilateral validation
-  - Transparent signature and advanced background rendering
+  Pro Studio v8
+  - Theme button (light / dark, header colour, button colour, background)
+  - Background remover: AI answer is checked; colour cut-out never deletes the subject; Erase + Restore brushes
+  - Signature remover rebuilt (shadows, ruled paper, table edges, pencil); ink colour: Original / Black / Blue / any; PNG trimmed to the signature
+  - Print panel: Photo sheet (sizes list, A4 plain / glossy, separate counts for Pane 1 and Pane 2, frame colour, more sheets),
+    ID card (Aadhaar both panes, PAN Pane 1 only)
+  - Frame default colour is black
 -->
+<script>
+/* Pro Studio theme: runs in <head> so the saved look is applied before the first paint. */
+(function(){
+  var KEY='ps_theme';
+  var HEADS=[['Navy','#11296c','#1a3fa6'],['Purple','#3b0f8f','#6d28d9'],['Green','#0b3d2e','#16794f'],['Teal','#0b3a46','#0e7490'],['Maroon','#5a0f24','#9f1239'],['Slate','#1f2937','#475569'],['Orange','#7c2d12','#c2410c']];
+  var ACCENTS=[['Orange','#ff9800','#fb923c','#ea580c','#9a3412','rgba(234,88,12,.4)'],['Blue','#2563eb','#60a5fa','#2563eb','#1e3a8a','rgba(37,99,235,.4)'],['Green','#16a34a','#4ade80','#16a34a','#14532d','rgba(22,163,74,.4)'],['Pink','#e11d48','#f472b6','#e11d48','#881337','rgba(225,29,72,.4)'],['Purple','#9333ea','#c084fc','#9333ea','#581c87','rgba(147,51,234,.4)'],['Cyan','#0891b2','#22d3ee','#0891b2','#155e75','rgba(8,145,178,.45)']];
+  var BGL=[['Soft blue','#f1f3fa'],['White','#ffffff'],['Cream','#fbf4e6'],['Mint','#e8f5ee'],['Grey','#e9ecf1']];
+  var BGD=[['Midnight','#0e1320'],['Black','#05070c'],['Charcoal','#1a1d24'],['Deep blue','#0b1730'],['Plum','#1a1024']];
+  var DEF={mode:'light',head:0,accent:0,bgL:'#f1f3fa',bgD:'#0e1320'};
+  function load(){try{var t=JSON.parse(localStorage.getItem(KEY)||'null');if(t&&typeof t==='object')return Object.assign({},DEF,t)}catch(e){}return Object.assign({},DEF)}
+  function save(t){try{localStorage.setItem(KEY,JSON.stringify(t))}catch(e){}}
+  function apply(t){
+    var r=document.documentElement,h=HEADS[t.head]||HEADS[0],a=ACCENTS[t.accent]||ACCENTS[0],s=r.style;
+    r.setAttribute('data-theme',t.mode==='dark'?'dark':'light');
+    s.setProperty('--head1',h[1]);s.setProperty('--head2',h[2]);
+    s.setProperty('--accent',a[1]);s.setProperty('--pri1',a[2]);s.setProperty('--pri2',a[3]);s.setProperty('--priedge',a[4]);s.setProperty('--priglow',a[5]);
+    s.setProperty('--bg',t.mode==='dark'?t.bgD:t.bgL);
+  }
+  var cur=load();apply(cur);
+  window.PSTheme={KEY:KEY,HEADS:HEADS,ACCENTS:ACCENTS,BGL:BGL,BGD:BGD,DEF:DEF,get:function(){return cur},set:function(p){cur=Object.assign({},cur,p);apply(cur);save(cur);return cur},reset:function(){cur=Object.assign({},DEF);apply(cur);save(cur);return cur}};
+})();
 
+</script>
 <style>
-:root {
-  --bg: #0b0f19;
-  --panel: #131c2e;
-  --panel-hover: #1e293b;
-  --border: #1e293b;
-  --border-focus: #334155;
-  --accent: #10b981;
-  --accent-hover: #059669;
-  --accent-glow: rgba(16, 185, 129, 0.25);
-  --blue: #2563eb;
-  --blue-hover: #1d4ed8;
-  --danger: #ef4444;
-  --danger-bg: rgba(239, 68, 68, 0.15);
-  --text: #f1f5f9;
-  --muted: #64748b;
-  --pin: #00e5ff;
+/* ===== Pro Studio v7: colours, 3D buttons and cards taken from CSC VLE TOOLS v29 (csc-system.css / layout3d.css) ===== */
+:root{
+  --brand:#1a3fa6; --brand-strong:#11296c; --accent:#ff9800; --accent-strong:#e68600; --accent-soft:#fff3df;
+  --bg:#f1f3fa; --soft:#e4e8f4; --soft-2:#f6f8fd; --line:#d5dce4; --line-2:#c3cde6; --ink:#1b2430; --muted:#5a6a85;
+  --pin:#00e5ff; --tabc:#0891b2;
+  --title:#11296c; --btnink:#1a3fa6; --head1:#11296c; --head2:#1a3fa6;
+  --pri1:#fb923c; --pri2:#ea580c; --priedge:#9a3412; --priglow:rgba(234,88,12,.4);
+  --cv-bg:#e9edf7; --cv1:#dfe5f3; --cv2:#eef1f9; --track:#cdd6ec; --status-bg:rgba(255,255,255,.94); --loading-bg:rgba(241,243,250,.86); --shadow:rgba(20,40,110,.12);
+  /* names used by the unchanged canvas rules */
+  --panel:#fff; --border:var(--line); --border-focus:var(--brand); --text:var(--ink); --accent-hover:var(--accent-strong);
 }
+*{box-sizing:border-box;margin:0;padding:0;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;scrollbar-width:thin;scrollbar-color:#aab6d6 transparent}
+html,body{height:100%}
+body{background:var(--bg);color:var(--ink);font-size:13px;display:flex;flex-direction:column;overflow:hidden}
+svg.ic{width:16px;height:16px;flex:0 0 16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-  scrollbar-width: thin;
-  scrollbar-color: var(--border) transparent;
+/* ---------- Site colour sets (same gradients and edges as the v29 header buttons) ---------- */
+.c-orange{--g1:#fb923c;--g2:#ea580c;--edge:#9a3412;--glow:rgba(234,88,12,.45);--tint:#fff1e6;--txt:#c2410c}
+.c-cyan{--g1:#22d3ee;--g2:#0891b2;--edge:#155e75;--glow:rgba(8,145,178,.45);--tint:#e3f8fc;--txt:#0e7490}
+.c-pink{--g1:#f472b6;--g2:#e11d48;--edge:#881337;--glow:rgba(225,29,72,.4);--tint:#fde8ef;--txt:#be123c}
+.c-green{--g1:#4ade80;--g2:#16a34a;--edge:#14532d;--glow:rgba(22,163,74,.4);--tint:#e5f8ec;--txt:#15803d}
+.c-purple{--g1:#c084fc;--g2:#9333ea;--edge:#581c87;--glow:rgba(147,51,234,.4);--tint:#f2e8fe;--txt:#7e22ce}
+.c-blue{--g1:#60a5fa;--g2:#2563eb;--edge:#1e3a8a;--glow:rgba(37,99,235,.4);--tint:#e6efff;--txt:#1d4ed8}
+.c-violet{--g1:#a78bfa;--g2:#7c3aed;--edge:#3b0f8f;--glow:rgba(124,58,237,.5)}
+
+/* ---------- Buttons ---------- */
+.btn,select,input[type=number]{font:inherit}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;height:34px;padding:0 13px;border-radius:11px;border:1.5px solid var(--line-2);background:var(--panel);color:var(--btnink);font-size:12.5px;font-weight:800;cursor:pointer;white-space:nowrap;box-shadow:0 3px 0 var(--line-2);transition:transform .12s,box-shadow .12s,background .12s}
+.btn:hover{background:var(--soft-2);transform:translateY(-1px);box-shadow:0 4px 0 var(--line-2)}
+.btn:active{transform:translateY(2px);box-shadow:0 1px 0 var(--line-2)}
+.btn.icon{width:36px;padding:0}
+/* solid 3D buttons: orange = main action, like Home / Explore on the site */
+.btn.pri,.btn.b3,.btn.tgl[aria-pressed=true],.btn.tgl.on,.btn.eraser-on,.btn.danger{border:0;color:#fff;background:linear-gradient(160deg,var(--g1),var(--g2));box-shadow:0 4px 0 var(--edge),0 8px 12px var(--glow),inset 0 2px 0 rgba(255,255,255,.5),inset 0 -3px 6px rgba(0,0,0,.15);text-shadow:0 1px 0 rgba(0,0,0,.18)}
+.btn.pri{--g1:var(--pri1);--g2:var(--pri2);--edge:var(--priedge);--glow:var(--priglow)}
+.btn.tgl[aria-pressed=true],.btn.tgl.on,.btn.eraser-on{--g1:#60a5fa;--g2:#2563eb;--edge:#1e3a8a;--glow:rgba(37,99,235,.35)}
+.btn.danger{--g1:#f472b6;--g2:#e11d48;--edge:#881337;--glow:rgba(225,29,72,.35)}
+.btn.pri:hover,.btn.b3:hover,.btn.tgl[aria-pressed=true]:hover,.btn.danger:hover{filter:brightness(1.07);transform:translateY(-2px);background:linear-gradient(160deg,var(--g1),var(--g2));box-shadow:0 6px 0 var(--edge),0 12px 16px var(--glow),inset 0 2px 0 rgba(255,255,255,.5),inset 0 -3px 6px rgba(0,0,0,.15)}
+.btn.pri:active,.btn.b3:active,.btn.tgl[aria-pressed=true]:active,.btn.danger:active{transform:translateY(3px);box-shadow:0 1px 0 var(--edge)}
+.btn.quiet{background:transparent;border-color:transparent;box-shadow:none;color:var(--muted)}
+.btn.quiet:hover{background:var(--soft);transform:none;box-shadow:none;color:var(--btnink)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn:focus-visible,select:focus-visible,input:focus-visible,.tab:focus-visible,.swatch:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+select,input[type=number]{height:34px;background:var(--panel);color:var(--ink);border:1.5px solid var(--line-2);border-radius:10px;padding:0 10px;font-size:12.5px;font-weight:600}
+input[type=range]{accent-color:var(--accent);cursor:pointer;min-width:0}
+input[type=color]{width:34px;height:34px;padding:3px;border:1.5px solid var(--line-2);border-radius:10px;background:var(--panel);cursor:pointer}
+
+/* ---------- App bar: same navy gradient and orange edge as the site header ---------- */
+.navbtn{text-decoration:none;display:inline-flex;align-items:center;gap:6px}
+.appbar{flex:0 0 62px;height:62px;display:flex;align-items:center;gap:16px;padding:0 16px;background:linear-gradient(100deg,var(--head1) 0%,var(--head2) 100%);border-bottom:3px solid var(--accent);box-shadow:0 8px 24px rgba(10,30,90,.2);position:relative;z-index:60}
+.brand{display:flex;align-items:center;gap:9px;padding:6px 16px 6px 8px;border-radius:16px;border:2px solid rgba(255,255,255,.55);color:#fff;background:linear-gradient(160deg,#a78bfa 0%,#7c3aed 55%,#5b21b6 100%);box-shadow:0 4px 0 #3b0f8f,0 10px 16px rgba(124,58,237,.45),inset 0 2px 0 rgba(255,255,255,.55),inset 0 -4px 8px rgba(0,0,0,.2);white-space:nowrap}
+.mark{width:30px;height:30px;border-radius:10px;background:#fff;color:#7c3aed;display:grid;place-items:center;box-shadow:0 2px 0 rgba(0,0,0,.2)}
+.mark svg{width:19px;height:19px;stroke-width:2.2}
+.brand b{display:block;font-size:16.5px;font-weight:800;line-height:1.1}
+.brand small{display:block;font-size:10.5px;opacity:.85;font-weight:600;margin-top:1px}
+.bar-group{display:flex;align-items:center;gap:8px;padding-left:16px;border-left:1px solid rgba(255,255,255,.22)}
+.appbar .btn.b3{height:36px;border-radius:13px;font-size:13px}
+.editing{display:inline-flex;align-items:center;gap:7px;height:30px;padding:0 12px;border-radius:999px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.28);color:rgba(255,255,255,.85);font-size:12px;font-weight:600;white-space:nowrap}
+.editing i{width:8px;height:8px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 3px rgba(255,152,0,.3)}
+.editing b{color:#fff;font-weight:800}
+.spacer{flex:1}
+.bar-right{display:flex;align-items:center;gap:10px}
+
+/* ---------- Workspace: white cards, 18px radius, soft blue shadow (like the site's tool cards) ---------- */
+.main{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px;flex:1 1 auto;min-height:0;min-width:0;overflow:hidden;padding:14px}
+.pane{container-type:inline-size;min-width:0;min-height:0;width:100%;height:100%;background:var(--panel);border-radius:18px;border-bottom:5px solid var(--tabc);box-shadow:0 8px 20px var(--shadow);display:flex;flex-direction:column;overflow:hidden;position:relative;transition:box-shadow .15s}
+.pane.is-active{box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 65%,transparent),0 8px 20px var(--shadow)}
+.pane-top{flex:0 0 50px;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:0 12px 0 14px;border-bottom:1px solid var(--line)}
+.pane-title{display:flex;align-items:center;gap:9px;font-size:14.5px;font-weight:800;color:var(--title);min-width:0}
+.pane-no{width:26px;height:26px;border-radius:9px;display:grid;place-items:center;background:var(--soft);color:var(--btnink);font-size:13px;font-weight:800}
+.pane.is-active .pane-no{background:linear-gradient(160deg,var(--pri1),var(--pri2));color:#fff;box-shadow:0 2px 0 var(--priedge)}
+.pane-title span.sub{color:var(--muted);font-weight:600;font-size:12.5px}
+.header-actions{display:flex;gap:8px}
+
+/* ---------- Tool tabs: one site colour per category, tray picks up the active colour ---------- */
+.tabs{flex:0 0 auto;display:flex;align-items:center;gap:7px;padding:9px 12px 9px;background:var(--panel)}
+.tab{display:inline-flex;align-items:center;gap:7px;height:34px;padding:0 13px;border:0;border-radius:11px;background:var(--tint);color:var(--txt);font-size:12.5px;font-weight:800;cursor:pointer;white-space:nowrap;box-shadow:0 3px 0 rgba(0,0,0,.09);transition:transform .12s,box-shadow .12s}
+.tab:hover{transform:translateY(-2px);box-shadow:0 5px 0 rgba(0,0,0,.1)}
+.tab[aria-selected=true]{color:#fff;background:linear-gradient(160deg,var(--g1),var(--g2));box-shadow:0 4px 0 var(--edge),0 8px 12px var(--glow),inset 0 2px 0 rgba(255,255,255,.5),inset 0 -3px 6px rgba(0,0,0,.15);text-shadow:0 1px 0 rgba(0,0,0,.18)}
+.pane.collapsed .tab[aria-selected=true]{background:var(--tint);color:var(--txt);box-shadow:0 3px 0 rgba(0,0,0,.09);text-shadow:none}
+.tab-end{margin-left:auto;display:flex;align-items:center}
+.tray{flex:0 0 auto;height:134px;padding:11px 14px;background:var(--soft-2);border-top:3px solid var(--tabc);border-bottom:1px solid var(--line);overflow:auto;position:relative}
+.pane.collapsed .tray{display:none}
+.panel[hidden]{display:none}
+.panel{display:flex;flex-direction:column;gap:10px}
+.row{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.cl{color:var(--muted);font-size:12px;font-weight:700;margin-right:2px}
+.fld{display:inline-flex;align-items:center;gap:7px;color:var(--muted);font-size:12px;font-weight:700}
+.seg{display:inline-flex;align-items:center}
+.seg .seg-l{color:var(--muted);font-size:12px;font-weight:700;margin:0 8px 0 4px}
+.seg .btn{border-radius:0;box-shadow:none;border-width:1.5px}
+.seg .btn:nth-of-type(1){border-radius:11px 0 0 11px}
+.seg .btn:last-child{border-radius:0 11px 11px 0;margin-left:-1.5px}
+.seg .btn.tgl[aria-pressed=true],.seg .btn.tgl.on{box-shadow:inset 0 2px 0 rgba(255,255,255,.4)}
+.sliders{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px 18px}
+.sl{display:grid;grid-template-columns:auto minmax(40px,1fr) 34px;align-items:center;gap:8px;min-width:0;height:26px}
+.sl .sl-l{color:var(--muted);font-size:12px;font-weight:700;white-space:nowrap}
+.sl output{font-variant-numeric:tabular-nums;color:var(--title);font-size:11.5px;font-weight:800;text-align:right}
+.sl.dim{opacity:.45}
+.swatches{display:inline-flex;align-items:center;gap:8px}
+.swatch{width:28px;height:28px;border-radius:9px;border:2px solid var(--panel);outline:1.5px solid var(--line-2);cursor:pointer;padding:0;transition:transform .1s}
+.swatch:hover{transform:scale(1.12) translateY(-1px)}
+.swatch.none{background:repeating-conic-gradient(#c9d1e6 0 25%,#fff 0 50%) 0 0/10px 10px}
+.hint{color:var(--muted);font-size:12px;font-weight:600}
+.steps{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.step-n{display:inline-grid;place-items:center;width:19px;height:19px;border-radius:50%;background:var(--soft);color:var(--btnink);font-size:11px;font-weight:800;text-shadow:none}
+.pri .step-n{background:rgba(255,255,255,.28);color:#fff}
+.pane:not(.has-image) .tray .panel{opacity:.5;pointer-events:none}
+.empty-note{display:none;position:absolute;right:14px;bottom:8px;color:var(--muted);font-size:11.5px;font-weight:600}
+.pane:not(.has-image) .empty-note{display:block}
+
+/* ---------- Print drawer ---------- */
+.scrim{position:fixed;inset:0;background:rgba(17,41,108,.4);z-index:90;opacity:0;pointer-events:none;transition:opacity .18s}
+.scrim.on{opacity:1;pointer-events:auto}
+.drawer{position:fixed;top:0;right:0;bottom:0;width:min(420px,100vw);background:var(--bg);border-left:4px solid var(--accent);z-index:95;transform:translateX(102%);transition:transform .2s ease;display:flex;flex-direction:column;box-shadow:-18px 0 40px rgba(10,30,90,.3)}
+.drawer.on{transform:none}
+.drawer-head{flex:0 0 62px;display:flex;align-items:center;justify-content:space-between;padding:0 14px 0 18px;background:linear-gradient(100deg,var(--head1),var(--head2));color:#fff;font-size:17px;font-weight:800}
+.drawer-head .btn.quiet{color:#fff}.drawer-head .btn.quiet:hover{background:rgba(255,255,255,.18);color:#fff}
+.drawer-body{flex:1;overflow:auto;padding:16px;display:flex;flex-direction:column;gap:16px}
+.sheet{background:var(--panel);border-radius:18px;padding:16px;box-shadow:0 8px 20px var(--shadow);border-bottom:5px solid var(--tabc)}
+.sheet h3{display:flex;align-items:center;gap:9px;font-size:15px;font-weight:800;color:var(--title);margin-bottom:2px}
+.sheet h3 .ic{color:var(--txt)}
+.sheet p{color:var(--muted);font-size:12px;font-weight:600;margin-bottom:12px}
+.fields{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.fields label{display:flex;flex-direction:column;gap:5px;color:var(--muted);font-size:12px;font-weight:700}
+.fields label.wide{grid-column:1/-1}
+.fields select,.fields input{width:100%}
+.sheet .btn.pri{width:100%;height:42px;font-size:14px;border-radius:13px}
+.btn-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.drawer-foot{padding:11px 18px;background:var(--panel);border-top:1px solid var(--line);color:var(--muted);font-size:11.5px;font-weight:600}
+
+/* ---------- Responsive ---------- */
+@container (max-width:640px){.tab span{display:none}.tab{padding:0 14px}}
+@media(max-width:1180px){.appbar .btn span.lbl{display:none}.appbar .btn:not(.icon){padding:0 12px}.brand small{display:none}}
+@media(max-width:900px){
+  body{overflow:auto}
+  .main{grid-template-columns:1fr;overflow:visible;flex:0 0 auto}
+  .pane{height:auto;min-height:560px}
+  .canvas-area{min-height:300px}
+  .bar-group .editing{display:none}
+  .sliders{grid-template-columns:1fr 1fr}
+  .tray{height:auto;min-height:134px}
 }
-
-body {
-  background-color: var(--bg);
-  color: var(--text);
-  min-height: 100vh;
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
+@media(max-width:600px){
+  .appbar{gap:8px;padding:0 8px}
+  .brand{padding:6px 8px}.brand div{display:none}
+  .bar-group{padding-left:0;border-left:0;gap:6px}
+  .bar-right{gap:6px}
 }
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+@media print{.appbar,.main,.drawer,.scrim{display:none}}
 
-header {
-  height: 56px;
-  min-height: 56px;
-  flex: 0 0 56px;
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  background: #0f172a;
-  border-bottom: 1px solid var(--border);
-  padding: 0 16px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+/* ---------- Theme menu ---------- */
+.bar-right{position:relative}
+.menu{position:absolute;right:0;top:calc(100% + 12px);width:320px;max-width:92vw;background:var(--panel);color:var(--ink);border:1px solid var(--line);border-radius:18px;box-shadow:0 20px 44px rgba(8,20,70,.4);padding:14px 16px 16px;z-index:80}
+.menu[hidden]{display:none}
+.menu h4{font-size:12px;font-weight:800;color:var(--muted);margin:12px 0 7px}
+.menu h4:first-child{margin-top:0}
+.opt-row{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.opt{width:30px;height:30px;border-radius:10px;border:2px solid var(--panel);outline:1.5px solid var(--line-2);cursor:pointer;padding:0;transition:transform .1s}
+.opt:hover{transform:scale(1.1)}
+.opt.on{outline:3px solid var(--accent)}
+.opt-seg{display:flex;gap:8px}
+.opt-seg .btn{flex:1}
+.menu .reset{margin-top:14px;width:100%}
+/* ---------- Photo sheet panel ---------- */
+.fitnote{font-size:12px;font-weight:700;margin:-2px 0 12px;padding:9px 11px;border-radius:11px;background:var(--soft-2);color:var(--muted);line-height:1.45}
+.fitnote.ok{color:#15803d;background:rgba(22,163,74,.1)}
+.fitnote.bad{color:#be123c;background:rgba(225,29,72,.1)}
+.sheetprev{position:relative;width:126px;height:178px;background:#fff;border:1px solid var(--line-2);border-radius:4px;margin:0 auto 12px;box-shadow:0 6px 14px var(--shadow)}
+.sheetprev i{position:absolute;display:block;border:1px solid rgba(0,0,0,.4);box-sizing:border-box}
+.fields .chk{flex-direction:row;align-items:center;gap:8px;color:var(--ink)}
+.fields .chk input{width:auto}
+.fields .inline{display:flex;gap:8px;align-items:flex-end}
+.btn-row.two{grid-template-columns:1fr 1fr}
+.savebtn{margin-bottom:12px}
+/* ---------- Dark theme ---------- */
+html[data-theme=dark]{
+  --bg:#0e1320; --panel:#161d2e; --soft:#222b42; --soft-2:#1b2338; --line:#2a3550; --line-2:#3a476a; --ink:#e7ecf6; --muted:#9aa8c4;
+  --title:#dbe5ff; --btnink:#aac3ff; --accent-soft:rgba(255,152,0,.14);
+  --cv-bg:#141b2c; --cv1:#1a2236; --cv2:#212a42; --track:#33415f; --status-bg:rgba(22,29,46,.94); --loading-bg:rgba(14,19,32,.82); --shadow:rgba(0,0,0,.45);
+  color-scheme:dark;
 }
+html[data-theme=dark] .c-orange{--tint:rgba(251,146,60,.16);--txt:#fdba74}
+html[data-theme=dark] .c-cyan{--tint:rgba(34,211,238,.14);--txt:#67e8f9}
+html[data-theme=dark] .c-pink{--tint:rgba(244,114,182,.15);--txt:#f9a8d4}
+html[data-theme=dark] .c-green{--tint:rgba(74,222,128,.14);--txt:#86efac}
+html[data-theme=dark] .c-purple{--tint:rgba(192,132,252,.16);--txt:#d8b4fe}
+html[data-theme=dark] .c-blue{--tint:rgba(96,165,250,.16);--txt:#93c5fd}
+html[data-theme=dark] .swatch.none{background:repeating-conic-gradient(#3b4764 0 25%,#1b2338 0 50%) 0 0/10px 10px}
+html[data-theme=dark] .scrim{background:rgba(0,0,0,.6)}
 
-h1 {
-  font-size: 17px;
-  font-weight: 700;
-  letter-spacing: 0.3px;
-  display: flex;
-  gap: 10px;
-  align-items: center;
+.fields .inline[hidden]{display:none}
+@media(max-width:600px){
+  .appbar{gap:6px;padding:0 6px}
+  .appbar .btn.b3{padding:0 9px;height:34px}
+  .appbar .btn.b3>.ic:last-child:not(:first-child){display:none}
+  .bar-group{gap:4px}
+  .bar-right{gap:5px}
+  .menu{position:fixed;left:8px;right:8px;top:70px;width:auto;max-width:none}
 }
+@media(max-width:380px){.bar-group .btn:nth-child(3){display:none}}
 
-h1 span {
-  color: var(--accent);
-  border: 1px solid rgba(16, 185, 129, 0.3);
-  background: rgba(16, 185, 129, 0.1);
-  padding: 3px 8px;
-  border-radius: 6px;
-  font-size: 12px;
-}
-
-.action-bar {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-  max-width: 100%;
-}
-
-button, select {
-  background: #1e293b;
-  color: var(--text);
-  border: 1px solid #334155;
-  border-radius: 6px;
-  padding: 6px 12px;
-  font-size: 12px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-button:hover {
-  background: #334155;
-  border-color: #475569;
-}
-
-button.primary {
-  background: var(--accent);
-  color: #022c22;
-  border-color: var(--accent);
-}
-
-button.primary:hover {
-  background: var(--accent-hover);
-}
-
-button.blue {
-  background: var(--blue);
-  border-color: #3b82f6;
-}
-
-button.blue:hover {
-  background: var(--blue-hover);
-}
-
-button.danger {
-  background: var(--danger-bg);
-  color: #fca5a5;
-  border-color: rgba(239, 68, 68, 0.3);
-}
-
-button.danger:hover {
-  background: rgba(239, 68, 68, 0.25);
-}
-
-button.small, select.small {
-  padding: 4px 8px;
-  font-size: 11px;
-}
-
-button:focus-visible, select:focus-visible, input:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 1px;
-}
-
-.main {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  gap: 12px;
-  flex: 1 1 auto;
-  min-height: 0;
-  min-width: 0;
-  overflow: hidden;
-  padding: 10px;
-  align-items: stretch;
-}
-
-.pane {
-  min-width: 0;
-  min-height: 0;
-  width: 100%;
-  height: 100%;
-  background: var(--panel);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2);
-}
-
-.pane-header {
-  height: 36px;
-  min-height: 36px;
-  padding: 0 12px;
-  background: rgba(0, 0, 0, 0.2);
-  border-bottom: 1px solid var(--border);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.5px;
-  color: var(--muted);
-}
-
-.header-actions {
-  display: flex;
-  gap: 6px;
-}
-
-.controls {
-  position: relative;
-  z-index: 30;
-  isolation: isolate;
-  flex: 0 0 132px;
-  height: 132px;
-  min-height: 132px;
-  max-height: 132px;
-  width: 100%;
-  min-width: 0;
-  padding: 4px 7px;
-  background: #101827;
-  border-bottom: 1px solid var(--border);
-  display: grid;
-  grid-template-rows: repeat(4, 29px);
-  gap: 3px;
-  overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0,0,0,.18);
-}
-
-
-/* Systematic four-row tool layout. Each row is a single horizontal lane.
-   When a pane is narrow, the lane scrolls horizontally instead of creating
-   accidental fourth/fifth rows. */
-.control-row {
-  position: relative;
-  z-index: 31;
-  min-width: 0;
-  width: 100%;
-  min-height: 0;
-  height: auto;
-  min-height: 29px;
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  flex-wrap: nowrap;
-  overflow-x: auto;
-  overflow-y: hidden;
-  scrollbar-width: thin;
-  scrollbar-color: #334155 transparent;
-  padding: 1px 0;
-}
-
-
-.control-row > * {
-  flex: 0 0 auto;
-}
-
-.control-row::-webkit-scrollbar { height: 4px; }
-.control-row::-webkit-scrollbar-track { background: transparent; }
-.control-row::-webkit-scrollbar-thumb { background: #334155; border-radius: 8px; }
-
-.control-row .tool-sep {
-  flex: 0 0 1px;
-  margin: 0 1px;
-}
-
-.control-row .group {
-  flex: 0 0 auto;
-}
-
-.control-row .preset {
-  flex: 0 0 auto;
-}
-
-.control-row .swatch-group {
-  flex: 0 0 auto;
-  white-space: nowrap;
-}
-
-/* v5.2 layout: four compact rows — basic image, output/crop, background, signature/refine. */
-.control-row-1 { background: rgba(0,229,255,.018); }
-.control-row-2 { background: rgba(34,197,94,.018); }
-.control-row-3 { background: rgba(59,130,246,.018); }
-.control-row-4 { background: rgba(168,85,247,.045); }
-
-/* More breathing room and distinct button identities in each toolbar. */
-.controls .control-row { gap: 6px; padding: 4px 6px; border-radius: 7px; }
-.controls button.small { padding: 6px 9px; min-height: 29px; }
-.controls .control-row button:nth-of-type(4n+1) { background:#164e63; border-color:#0891b2; color:#cffafe; }
-.controls .control-row button:nth-of-type(4n+2) { background:#14532d; border-color:#16a34a; color:#dcfce7; }
-.controls .control-row button:nth-of-type(4n+3) { background:#713f12; border-color:#ca8a04; color:#fef3c7; }
-.controls .control-row button:nth-of-type(4n) { background:#4c1d95; border-color:#8b5cf6; color:#ede9fe; }
-/* Keep compact controls predictable across both panes. */
-.controls button.small,
-.controls select.small {
-  min-height: 26px;
-  white-space: nowrap;
-}
-
-.controls .group {
-  min-height: 28px;
-}
-
-.controls .group input[type=range] {
-  width: 46px;
-}
-
-.controls .preset select {
-  min-width: 92px;
-  max-width: 112px;
-}
-
-/* Keep four toolbar lanes stable. Background and signature tools are split
-   across rows 3 and 4 so every control remains comfortably usable. */
-.background-tools { overflow-x: auto !important; overflow-y: hidden !important; flex-wrap: nowrap !important; }
-.background-tools .swatch-group { flex-wrap: nowrap; white-space: nowrap; gap: 5px; padding: 2px 5px; }
-.background-tools .swatch { width: 21px; height: 21px; flex: 0 0 21px; }
-.background-tools .bg-label { color:#e9d5ff; font-size:10px; font-weight:700; white-space:nowrap; }
-.background-tools .bg-color-input { width:28px !important; height:26px !important; flex:0 0 28px; }
-.background-tools .bg-action { min-width: 82px; }
-.eraser-on { background:#b91c1c !important; border-color:#f87171 !important; color:#fff !important; }
+/* ---- canvas workspace (from v5.2) ---- */
 .eraser-mode { cursor:crosshair; }
 .eraser-cursor { position:absolute; display:none; pointer-events:none; z-index:45; border:2px solid #fbbf24; border-radius:50%; box-shadow:0 0 0 1px rgba(0,0,0,.55), 0 0 10px rgba(251,191,36,.45); transform:translate(-50%,-50%); }
-
-
-.group {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  background: rgba(255, 255, 255, 0.03);
-  padding: 3px 6px;
-  border-radius: 6px;
-  border: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-.group label {
-  color: var(--muted);
-  font-size: 10px;
-  font-weight: 600;
-  white-space: nowrap;
-}
-
-input[type=range] {
-  width: 52px;
-  accent-color: var(--accent);
-  cursor: pointer;
-}
-
-.tool-sep {
-  height: 20px;
-  width: 1px;
-  background: var(--border);
-  margin: 0 2px;
-}
-
 .canvas-area {
   position: relative;
   z-index: 1;
@@ -361,7 +266,6 @@ input[type=range] {
   background-size: 20px 20px;
   background-position: 0 0, 0 10px, 10px -10px, -10px 0;
 }
-
 .canvas-container {
   position: relative;
   z-index: 2;
@@ -374,7 +278,6 @@ input[type=range] {
   box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.4);
   border-radius: 4px;
 }
-
 .canvas-container canvas {
   max-width: calc(100% - 12px) !important;
   max-height: calc(100% - 12px) !important;
@@ -384,29 +287,21 @@ input[type=range] {
   display: block;
   border-radius: 4px;
 }
-
-/* Transparent output is intentionally shown over the pane checkerboard. */
-/* v5.2 Canvas Workspace: maximize usable crop area while keeping the full image visible. */
 .canvas-area .canvas-container {
   max-width: 100%;
   max-height: 100%;
 }
-
 .canvas-area .canvas-container canvas {
   max-width: 100% !important;
   max-height: 100% !important;
 }
-
 .canvas-container.signature-transparent canvas { background: transparent; }
-
 .canvas-container.crop-only {
   box-shadow: 0 20px 30px rgba(0,0,0,0.5);
 }
-
 .canvas-container.drag-image {
   cursor: move;
 }
-
 .crop-frame {
   position: absolute;
   inset: 0;
@@ -416,11 +311,9 @@ input[type=range] {
   display: none;
   border-radius: 4px;
 }
-
 .crop-frame.active {
   display: block;
 }
-
 .polygon {
   position: absolute;
   inset: 0;
@@ -430,7 +323,6 @@ input[type=range] {
   z-index: 10;
   overflow: visible;
 }
-
 .pin {
   position: absolute;
   width: 22px;
@@ -446,16 +338,13 @@ input[type=range] {
   z-index: 40;
   transition: background-color 0.1s ease;
 }
-
 .pin:hover {
   transform: translate(-50%, -50%) scale(1.15);
 }
-
 .pin:active {
   cursor: grabbing;
   background: #f43f5e;
 }
-
 .upload {
   border: 2px dashed #334155;
   padding: 36px;
@@ -467,12 +356,10 @@ input[type=range] {
   background: rgba(15, 23, 42, 0.4);
   transition: all 0.2s ease;
 }
-
 .upload:hover {
   border-color: var(--accent);
   background: rgba(16, 185, 129, 0.05);
 }
-
 .status {
   position: absolute;
   left: 12px;
@@ -486,7 +373,6 @@ input[type=range] {
   border: 1px solid var(--border);
   z-index: 30;
 }
-
 .loading {
   position: absolute;
   inset: 0;
@@ -502,7 +388,6 @@ input[type=range] {
   font-size: 13px;
   font-weight: 600;
 }
-
 .spinner {
   width: 36px;
   height: 36px;
@@ -511,382 +396,272 @@ input[type=range] {
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
 }
-
 @keyframes spin {
   to { transform: rotate(360deg); }
 }
+/* ---- light workspace: the unchanged canvas rules above were dark-theme; these re-colour them to the v29 look ---- */
+.canvas-area{background-color:var(--cv-bg);background-image:repeating-conic-gradient(var(--cv1) 0 25%,var(--cv2) 0 50%);background-size:20px 20px;border-radius:0}
+.canvas-container{box-shadow:0 10px 24px rgba(20,40,110,.28);border-radius:6px}
+.canvas-container.crop-only{box-shadow:0 12px 28px rgba(20,40,110,.34)}
+.upload{background:var(--panel);border:2.5px dashed #9fb0dc;color:var(--ink);box-shadow:0 8px 20px rgba(20,40,110,.1)}
+.upload:hover{border-color:var(--accent);background:var(--accent-soft)}
+.upload strong{color:var(--title)}
+.status{background:var(--status-bg);color:var(--title);border:1px solid var(--line);font-weight:700;box-shadow:0 3px 8px rgba(20,40,110,.12)}
+.loading{background:var(--loading-bg);color:var(--btnink)}
+.spinner{border-color:rgba(26,63,166,.18);border-top-color:var(--accent)}
+.eraser-cursor{border-color:var(--accent);box-shadow:0 0 0 1px #fff,0 0 10px rgba(255,152,0,.55)}
+/* sliders: light track, orange thumb (site accent) */
+input[type=range]{-webkit-appearance:none;appearance:none;height:20px;background:transparent}
+input[type=range]::-webkit-slider-runnable-track{height:6px;border-radius:99px;background:var(--track)}
+input[type=range]::-moz-range-track{height:6px;border-radius:99px;background:var(--track)}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;margin-top:-5px;border-radius:50%;background:linear-gradient(160deg,var(--pri1),var(--pri2));border:2px solid var(--panel);box-shadow:0 2px 0 var(--priedge),0 2px 6px rgba(0,0,0,.25)}
+input[type=range]::-moz-range-thumb{width:13px;height:13px;border-radius:50%;background:linear-gradient(160deg,var(--pri1),var(--pri2));border:2px solid var(--panel);box-shadow:0 2px 0 var(--priedge)}
 
-.swatch-group {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  padding: 3px 6px;
-  background: rgba(0, 0, 0, 0.2);
-  border: 1px solid var(--border);
-  border-radius: 6px;
-}
-
-.swatch {
-  width: 15px;
-  height: 15px;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  border-radius: 50%;
-  cursor: pointer;
-  transition: transform 0.1s ease;
-}
-
-.swatch:hover {
-  transform: scale(1.2);
-}
-
-.print-settings {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  margin: 0 10px 8px;
-  padding: 7px 12px;
-  background: var(--panel);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  font-size: 11px;
-  color: var(--text);
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-}
-
-.print-settings > div:first-child {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-}
-
-.print-setting-grid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  align-items: flex-end;
-}
-
-.print-setting-grid label {
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-  color: var(--muted);
-  font-size: 10px;
-  font-weight: 600;
-}
-
-.print-setting-grid select, .print-setting-grid input {
-  min-width: 140px;
-  background: #1e293b;
-  color: #fff;
-  border: 1px solid #334155;
-  border-radius: 6px;
-  padding: 6px 10px;
-}
-
-.print-setting-grid input {
-  width: 80px;
-  min-width: 80px;
-}
-
-.note {
-  font-size: 10px;
-  color: var(--muted);
-}
-
-.workspace-note {
-  padding-top: 2px;
-}
-
-@media print {
-  .print-settings { display: none; }
-}
-
-#bg-library-1, #bg-library-2 {
-  max-width: 110px;
-  padding: 4px;
-}
-
-@media(max-width: 900px) {
-  .main { flex-direction: column; overflow: auto; }
-  .pane { min-height: 380px; }
-  .canvas-area { min-height: 260px; }
-}
-
-/* v4.9: dedicated background toolbar row with visible, labeled controls */
-.control-row-4 { background: rgba(168,85,247,.075); border: 1px solid rgba(168,85,247,.28); }
-.bg-tools-title { color: #e9d5ff; font-size: 12px; letter-spacing: .3px; margin-right: 4px; }
-.background-tools .swatch-group { display:flex; align-items:center; flex-wrap:wrap; gap:7px; white-space:normal; }
-.background-tools .swatch { display:inline-flex; align-items:center; justify-content:center; width:23px; height:23px; border:1px solid #94a3b8; border-radius:5px; cursor:pointer; box-shadow:0 1px 3px #0005; }
-.background-tools .bg-save { background:#854d0e !important; border-color:#eab308 !important; color:#fef9c3 !important; }
-.background-tools .bg-image { background:#075985 !important; border-color:#38bdf8 !important; color:#e0f2fe !important; }
-/* v8: bigger panes, Home button, scrollable page */
-html{height:auto}
-body{height:auto;min-height:100vh;overflow-y:auto;overflow-x:hidden}
-.main{flex:0 0 auto;overflow:visible;align-items:start}
-.pane{height:clamp(560px,calc(100vh - 96px),720px)}
-.main.stacked{grid-template-columns:minmax(0,1fr)}
-.main.stacked .pane{height:clamp(560px,calc(100vh - 96px),760px)}
-.home-link{color:inherit;text-decoration:none}
-.home-btn{display:inline-flex;align-items:center;gap:4px;background:#2563eb;color:#fff;font-weight:700;font-size:13px;text-decoration:none;border-radius:8px;padding:7px 12px;border:1px solid #3b82f6;white-space:nowrap}
-.home-btn:hover{background:#1d4ed8}
-@media(max-width:900px){.pane{height:clamp(520px,80vh,700px)}}
-
-/* v9: numeric steppers replace sliders */
-.numctl{display:inline-flex;align-items:center;border:1px solid #334155;border-radius:6px;overflow:hidden;background:#0f172a}
-.numctl button{padding:0 7px!important;min-height:24px!important;border:0!important;border-radius:0!important;background:#1e293b!important;color:#e2e8f0!important;font-size:13px;line-height:1}
-.numctl button:hover{background:#334155!important}
-.numctl input[type=number]{width:46px;text-align:center;background:transparent;color:#fff;border:0;font-size:12px;font-weight:700;padding:3px 0;-moz-appearance:textfield}
-.numctl input[type=number]::-webkit-outer-spin-button,.numctl input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
-.bg-mode-sel{max-width:118px}
-.eraser-restore{background:#166534!important;border-color:#22c55e!important;color:#fff!important}
 </style>
-<meta name="application-name" content="CSC VLE TOOLS Pro Studio">  <meta name="description" content="Prepare documents, crop images, refine photos and print ID cards with CSC VLE TOOLS Pro Studio.">
-  <meta name="keywords" content="Pro Studio, photo resizer, passport photo, signature resize, image compress, KB size, job form photo, CSC VLE tools, CSC center tools, VLE tools, free online tool, Rohtak Haryana">
-  <meta name="author" content="CSC VLE TOOLS">
-  <meta name="robots" content="index,follow,max-image-preview:large">
-  <link rel="canonical" href="https://csc-vle-tools-desk.github.io/CSC-VLE-TOOLS/pro-studio.html">
-  <meta property="og:type" content="website"><meta property="og:site_name" content="CSC VLE TOOLS"><meta property="og:locale" content="en_IN">
-  <meta property="og:title" content="CSC VLE TOOLS Pro Studio — Document &amp; Photo Tools"><meta property="og:description" content="Prepare documents, crop images, refine photos and print ID cards with CSC VLE TOOLS Pro Studio."><meta property="og:url" content="https://csc-vle-tools-desk.github.io/CSC-VLE-TOOLS/pro-studio.html"><meta property="og:image" content="https://csc-vle-tools-desk.github.io/CSC-VLE-TOOLS/og-image.png">
-  <meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="CSC VLE TOOLS Pro Studio — Document &amp; Photo Tools"><meta name="twitter:description" content="Prepare documents, crop images, refine photos and print ID cards with CSC VLE TOOLS Pro Studio."><meta name="twitter:image" content="https://csc-vle-tools-desk.github.io/CSC-VLE-TOOLS/og-image.png">
-  <meta name="geo.region" content="IN-HR"><meta name="geo.placename" content="Rohtak, Haryana">
-  <meta name="theme-color" content="#1a3fa6">
-  <link rel="manifest" href="site.webmanifest">
-  <link rel="icon" href="favicon.ico?v=3" sizes="any">
-  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebApplication", "name": "Pro Studio", "url": "https://csc-vle-tools-desk.github.io/CSC-VLE-TOOLS/pro-studio.html", "description": "Prepare documents, crop images, refine photos and print ID cards with CSC VLE TOOLS Pro Studio.", "applicationCategory": "UtilitiesApplication", "operatingSystem": "Any (web browser)", "browserRequirements": "Requires JavaScript", "inLanguage": "en-IN", "isAccessibleForFree": true, "offers": {"@type": "Offer", "price": "0", "priceCurrency": "INR"}, "publisher": {"@type": "Organization", "name": "CSC VLE TOOLS", "url": "https://csc-vle-tools-desk.github.io/CSC-VLE-TOOLS/"}}</script>
-  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://csc-vle-tools-desk.github.io/CSC-VLE-TOOLS/"}, {"@type": "ListItem", "position": 2, "name": "Pro Studio", "item": "https://csc-vle-tools-desk.github.io/CSC-VLE-TOOLS/pro-studio.html"}]}</script>
+<meta property="og:type" content="website"><meta property="og:site_name" content="CSC VLE TOOLS"><meta property="og:title" content="Pro Studio | CSC VLE TOOLS"><meta property="og:description" content="Crop with 4 corner pins, remove background, adjust photos and print passport or ID sheets on A4."><meta property="og:url" content="https://csc-vle-tools-desk.github.io/CSC-VLE-TOOLS/pro-studio.html"><meta property="og:image" content="https://csc-vle-tools-desk.github.io/CSC-VLE-TOOLS/og-image.png">
+<meta name="twitter:card" content="summary_large_image"><meta name="theme-color" content="#1a3fa6">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebApplication", "name": "Pro Studio", "url": "https://csc-vle-tools-desk.github.io/CSC-VLE-TOOLS/pro-studio.html", "description": "Crop with 4 corner pins, remove background, adjust photos and print passport or ID sheets on A4.", "applicationCategory": "UtilitiesApplication", "operatingSystem": "Any (web browser)", "inLanguage": "en-IN", "isAccessibleForFree": true, "offers": {"@type": "Offer", "price": "0", "priceCurrency": "INR"}, "publisher": {"@type": "Organization", "name": "CSC VLE TOOLS", "url": "https://csc-vle-tools-desk.github.io/CSC-VLE-TOOLS/"}}</script>
 </head>
 <body>
-<header>
-  <a href="index.html" class="home-link" title="Back to CSC VLE TOOLS home" aria-label="CSC VLE TOOLS home"><h1>CSC VLE TOOLS <span>PRO STUDIO</span></h1></a>
-  <div class="action-bar">
-    <a class="home-btn" href="index.html" title="Back to CSC VLE TOOLS home">🏠 Home</a>
-    <button class="small" id="layout-toggle" type="button" onclick="toggleStudioLayout()" title="Switch between side-by-side and stacked panes">⬍ Layout</button>
-    <button class="small" onclick="undoAction(activePane)">↶ Undo</button>
-    <button class="small" onclick="redoAction(activePane)">↷ Redo</button>
-    <button class="small" onclick="showHistoryInfo(activePane)">🕘 History</button>
-    <button class="primary" onclick="printIDCardFrontBack()">🪪 Print ID</button>
-    <button class="primary" onclick="printPhotoSheet5x5()">📸 Photo 5+5</button>
-    <button onclick="triggerSafePrint()">🖨️ Print Doc (Both)</button>
-    <button class="blue" onclick="printSinglePaneA4(1)">📄 Pane 1 • A4 Full Page</button>
-    <button class="blue" onclick="printSinglePaneA4(2)">📄 Pane 2 • A4 Full Page</button>
-    <button class="primary" onclick="saveAllImages()">💾 Export</button>
-    <button class="danger" onclick="exitStudio()">🚪 Exit</button>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+ <defs>
+  <symbol id="i-aperture" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m14.3 3.6-5.4 9.4M19.9 9.5H9M18.2 17.2l-5.3-9.5M9.7 20.3l5.4-9.4M4.1 14.5H15M5.8 6.8l5.3 9.5"/></symbol>
+  <symbol id="i-undo" viewBox="0 0 24 24"><path d="M9 14 4 9l5-5"/><path d="M4 9h10a6 6 0 0 1 0 12h-3"/></symbol>
+  <symbol id="i-redo" viewBox="0 0 24 24"><path d="m15 14 5-5-5-5"/><path d="M20 9H10a6 6 0 0 0 0 12h3"/></symbol>
+  <symbol id="i-history" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+  <symbol id="i-print" viewBox="0 0 24 24"><path d="M7 9V3h10v6"/><rect x="4" y="9" width="16" height="8" rx="2"/><path d="M7 14h10v7H7z"/></symbol>
+  <symbol id="i-export" viewBox="0 0 24 24"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M4 20h16"/></symbol>
+  <symbol id="i-home" viewBox="0 0 24 24"><path d="M3 11 12 3l9 8"/><path d="M5 10v10h14V10"/><path d="M10 20v-6h4v6"/></symbol>
+  <symbol id="i-back" viewBox="0 0 24 24"><path d="m11 6-6 6 6 6"/><path d="M5 12h14"/></symbol>
+  <symbol id="i-exit" viewBox="0 0 24 24"><path d="M10 4H5v16h5"/><path d="m15 8 4 4-4 4"/><path d="M9 12h10"/></symbol>
+  <symbol id="i-upload" viewBox="0 0 24 24"><path d="M12 16V4"/><path d="m7 9 5-5 5 5"/><path d="M4 20h16"/></symbol>
+  <symbol id="i-swap" viewBox="0 0 24 24"><path d="M4 8h13l-3-3"/><path d="M20 16H7l3 3"/></symbol>
+  <symbol id="i-trash" viewBox="0 0 24 24"><path d="M4 7h16"/><path d="M9 7V4h6v3"/><path d="m6 7 1 13h10l1-13"/></symbol>
+  <symbol id="i-rot-l" viewBox="0 0 24 24"><path d="M4 4v6h6"/><path d="M4.6 14a8 8 0 1 0 2-8.4L4 10"/></symbol>
+  <symbol id="i-rot-r" viewBox="0 0 24 24"><path d="M20 4v6h-6"/><path d="M19.4 14a8 8 0 1 1-2-8.4L20 10"/></symbol>
+  <symbol id="i-sliders" viewBox="0 0 24 24"><path d="M4 6h8M16 6h4M4 12h3M11 12h9M4 18h10M18 18h2"/><circle cx="14" cy="6" r="2"/><circle cx="9" cy="12" r="2"/><circle cx="16" cy="18" r="2"/></symbol>
+  <symbol id="i-crop" viewBox="0 0 24 24"><path d="M6 2v14a2 2 0 0 0 2 2h14"/><path d="M2 6h14a2 2 0 0 1 2 2v14"/></symbol>
+  <symbol id="i-spark" viewBox="0 0 24 24"><path d="m12 3 1.8 4.7L18.5 9.5l-4.7 1.8L12 16l-1.8-4.7L5.5 9.5l4.7-1.8z"/><path d="m19 15 .8 2 2 .8-2 .8-.8 2-.8-2-2-.8 2-.8z"/></symbol>
+  <symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 21s-6-5.2-6-10a6 6 0 0 1 12 0c0 4.8-6 10-6 10z"/><circle cx="12" cy="11" r="2"/></symbol>
+  <symbol id="i-move" viewBox="0 0 24 24"><path d="M12 3v18M3 12h18"/><path d="m9 6 3-3 3 3M9 18l3 3 3-3M6 9l-3 3 3 3M18 9l3 3-3 3"/></symbol>
+  <symbol id="i-reset" viewBox="0 0 24 24"><path d="M4 12a8 8 0 1 0 3-6.2"/><path d="M4 4v5h5"/></symbol>
+  <symbol id="i-frame" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><rect x="8" y="8" width="8" height="8"/></symbol>
+  <symbol id="i-palette" viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 0 18c1.2 0 2-.8 2-1.8 0-1.4-1.2-1.4-1.2-2.7 0-1 .8-1.6 1.8-1.6H17a4 4 0 0 0 4-4C21 6.6 17 3 12 3z"/><circle cx="7.5" cy="11" r="1"/><circle cx="10" cy="7" r="1"/><circle cx="15" cy="7" r="1"/></symbol>
+  <symbol id="i-image" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="1.6"/><path d="m21 16-5-5-8 8"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="i-eraser" viewBox="0 0 24 24"><path d="m7 21-4-4a2 2 0 0 1 0-2.8L14 3.2a2 2 0 0 1 2.8 0l4 4a2 2 0 0 1 0 2.8L11 20"/><path d="M9 21h12"/><path d="m8 9 7 7"/></symbol>
+  <symbol id="i-cut" viewBox="0 0 24 24"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M20 4 8.1 15.9M14.5 14.5 20 20M8.1 8.1 12 12"/></symbol>
+  <symbol id="i-pen" viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></symbol>
+  <symbol id="i-save" viewBox="0 0 24 24"><path d="M5 3h11l3 3v15H5z"/><path d="M8 3v5h7V3"/><path d="M8 21v-7h8v7"/></symbol>
+  <symbol id="i-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h8"/></symbol>
+  <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></symbol>
+  <symbol id="i-chev-d" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
+  <symbol id="i-chev-u" viewBox="0 0 24 24"><path d="m6 15 6-6 6 6"/></symbol>
+  <symbol id="i-id" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="11" r="2"/><path d="M6 16c.5-1.5 1.8-2 3-2s2.5.5 3 2M14 10h4M14 14h3"/></symbol>
+  <symbol id="i-grid" viewBox="0 0 24 24"><rect x="3" y="3" width="8" height="8" rx="1"/><rect x="13" y="3" width="8" height="8" rx="1"/><rect x="3" y="13" width="8" height="8" rx="1"/><rect x="13" y="13" width="8" height="8" rx="1"/></symbol>
+  <symbol id="i-page" viewBox="0 0 24 24"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4"/></symbol>
+  <symbol id="i-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></symbol>
+ </defs>
+</svg>
+
+<header class="appbar">
+  <div class="brand">
+    <span class="mark"><svg class="ic"><use href="#i-aperture"/></svg></span>
+    <div><b>Pro Studio</b><small>Arun Chauhan</small></div>
+  </div>
+  <div class="bar-group nav-group" role="group" aria-label="Site navigation">
+    <a class="btn b3 c-orange navbtn" href="index.html" onclick="return leaveStudio(this.href)" title="Home: CSC VLE TOOLS main home page"><svg class="ic"><use href="#i-home"/></svg><span class="lbl">Home</span></a>
+    <a class="btn b3 c-green navbtn" href="cat-sheets.html" onclick="return leaveStudio(this.href)" title="Back to Photo Sheets &amp; Print"><svg class="ic"><use href="#i-back"/></svg><span class="lbl">Back</span></a>
+  </div>
+  <div class="bar-group" role="group" aria-label="Undo and history">
+    <button class="btn b3 c-cyan" type="button" onclick="undoAction(activePane)" title="Undo last change in the active pane"><svg class="ic"><use href="#i-undo"/></svg><span class="lbl">Undo</span></button>
+    <button class="btn b3 c-cyan" type="button" onclick="redoAction(activePane)" title="Redo in the active pane"><svg class="ic"><use href="#i-redo"/></svg><span class="lbl">Redo</span></button>
+    <button class="btn b3 c-cyan" type="button" onclick="showHistoryInfo(activePane)" title="Show history of the active pane"><svg class="ic"><use href="#i-history"/></svg><span class="lbl">History</span></button>
+    <span class="editing" title="Undo, Redo and History work on the pane you touched last"><i></i>Editing <b id="editing-name">Pane 1 · Front</b></span>
+  </div>
+  <div class="spacer"></div>
+  <div class="bar-right">
+    <button class="btn b3 c-purple" type="button" id="theme-open" aria-haspopup="true" aria-expanded="false" aria-controls="themeMenu" title="Change theme: light, dark and colours"><svg class="ic"><use href="#i-palette"/></svg><span class="lbl">Theme</span><svg class="ic"><use href="#i-chev-d"/></svg></button>
+    <div class="menu" id="themeMenu" role="dialog" aria-label="Theme" hidden></div>
+    <button class="btn b3 c-blue" type="button" id="print-open" aria-haspopup="dialog" aria-expanded="false" aria-controls="printDrawer"><svg class="ic"><use href="#i-print"/></svg><span class="lbl">Print</span><svg class="ic"><use href="#i-chev-d"/></svg></button>
+    <button class="btn pri" type="button" onclick="saveAllImages()" title="Save both panes as images"><svg class="ic"><use href="#i-export"/></svg><span class="lbl">Export</span></button>
   </div>
 </header>
 
 <div class="main">
-  <!-- PANE 1 -->
-  <section class="pane" id="pane-1">
-    <div class="pane-header">
-      <span>PANE 1 • FRONT</span>
-      <div class="header-actions">
-        <button id="btn-change-1" class="small" style="display:none" onclick="document.getElementById('file-1').click()">🔄 Change</button>
-        <button id="btn-delete-1" class="danger small" style="display:none" onclick="deleteImage(1)">🗑️ Clear</button>
-        <button id="btn-upload-1" class="small" onclick="document.getElementById('file-1').click()">📁 Upload</button>
-      </div>
-      <input id="file-1" type="file" accept="image/*" hidden onchange="loadFile(event,1)">
-    </div>
-    <div class="controls" id="controls-1">
-      <div class="control-row control-row-1" role="toolbar" aria-label="Basic image tools pane 1">
-
-      <div class="group"><button class="small" onclick="rotateImage(1,-90)">↺ 90°</button><button class="small" onclick="rotateImage(1,90)">↻ 90°</button></div>
-      <div class="group"><label>Fine:</label><input type="range" id="fine-angle-1" min="-15" max="15" value="0" step=".5" oninput="processImage(1)"></div>
-      <button class="small" onclick="setMode(1,'doc')">📄 Doc</button><button class="small" onclick="setMode(1,'sig')">✍️ Sign</button>
-      <div class="group"><label>Contrast:</label><input type="range" id="contrast-1" min="50" max="250" value="100" oninput="processImage(1)"></div>
-      <div class="group"><label>Bright:</label><input type="range" id="bright-1" min="50" max="180" value="100" oninput="processImage(1)"></div>
-      <div class="group"><label>Shadow:</label><input type="range" id="shadow-1" min="0" max="100" value="0" oninput="processImage(1)"></div>
-      <button class="small" onclick="removeShadow(1)">☀ Shadow</button>
-      </div>
-      <div class="control-row control-row-2" role="toolbar" aria-label="Output and crop tools pane 1">
-      <div class="preset"><label class="note">Mode:</label>
-        <select id="preset-1" onchange="applyPresetPreview(1)">
-          <option value="auto">Auto Doc</option>
-          <option value="passport">Passport 35×45 mm</option>
-          <option value="idcard">ID Card 85.6×54 mm</option>
-          <option value="square">Square 51×51 mm</option>
-          <option value="a4">A4 Ratio</option>
-        </select>
-      </div>
-      <div class="group"><label>Frame:</label><select id="frame-1" class="small" onchange="updateFrame(1)"><option value="2">2</option><option value="3" selected>3</option><option value="4">4</option><option value="5">5</option></select><input type="color" id="frame-color-1" value="#00e5ff" title="Frame color" aria-label="Frame color" onchange="updateFrame(1)" style="width:22px;height:22px;padding:0;border:1px solid #64748b;border-radius:4px;background:none;cursor:pointer"><button class="small" type="button" onclick="toggleFrame(1)">🖼 Frame</button></div>
-      <button class="primary small" onclick="applySmartCropDewarp(1)">✂️ Crop</button>
-      <button class="small" onclick="autoCorners(1)">✨ Auto Crop</button>
-      <button class="small" onclick="togglePins(1)">📌 Pins</button>
-      <button class="small" onclick="toggleImageDrag(1)">🖱️ Move</button>
-      <button class="small" onclick="resetCrop(1)">Reset</button>
-      <div class="tool-sep"></div>
-      <div class="group"><label>Sh.Fix:</label><input type="range" id="shadowfix-1" min="0" max="100" value="55" oninput="if(state[1].shadowRemoved) applyShadowFix(1)"></div>
-      <div class="group"><label>Detail:</label><input type="range" id="shadowdetail-1" min="0" max="100" value="55" oninput="if(state[1].shadowRemoved) applyShadowFix(1)"></div>
-      </div>
-      <div class="control-row control-row-3 background-tools" role="toolbar" aria-label="Background, eraser and signature tools pane 1">
-        <strong class="bg-tools-title">🎨 BG</strong>
-        <div class="swatch-group">
-          <span class="bg-label">Fill:</span>
-          <span class="swatch" style="background:transparent" title="Transparent background" aria-label="Transparent background" onclick="setBGColor(1,'transparent')">◫</span>
-          <span class="swatch" style="background:#fff" title="White background" aria-label="White background" onclick="setBGColor(1,'#fff')"></span>
-          <span class="swatch" style="background:#0066cc" title="Blue background" aria-label="Blue background" onclick="setBGColor(1,'#0066cc')"></span>
-          <span class="swatch" style="background:#87ceeb" title="Sky blue background" aria-label="Sky blue background" onclick="setBGColor(1,'#87ceeb')"></span>
-          <span class="swatch" style="background:#ef4444" title="Red background" aria-label="Red background" onclick="setBGColor(1,'#ef4444')"></span>
-          <span class="swatch" style="background:#64748b" title="Gray background" aria-label="Gray background" onclick="setBGColor(1,'#64748b')"></span>
-          <input type="color" id="picker-1" class="bg-color-input" title="Choose custom background fill" aria-label="Choose custom background fill" value="#ffffff" onchange="setBGColor(1,this.value)">
-          <button class="small bg-save bg-action" onclick="saveBGColor(1)">＋ Save</button>
-          <button class="small bg-image bg-action" onclick="chooseBGImage(1)">🖼 BG Image</button>
-          <input id="bg-file-1" type="file" accept="image/*" hidden onchange="loadBGImage(event,1)">
-          <select id="bg-library-1" class="small" aria-label="Saved backgrounds" onchange="applySavedBG(1,this.value)"><option value="">Saved BG</option></select>
-        </div>
-        <button class="small" id="eraser-btn-1" onclick="toggleEraser(1)" title="Manually erase unwanted AI background or foreground pixels">🧽 Eraser</button>
-        <div class="group" title="Manual eraser brush size"><label>Size:</label><input type="range" id="eraser-size-1" min="4" max="120" value="28" step="2" oninput="updateEraserCursor(1)"></div>
-      </div>
-      <div class="control-row control-row-4" role="toolbar" aria-label="Signature and refinement tools pane 1">
-        <button class="small" onclick="setMode(1,'sig')">✍️ Sign</button><button class="blue small" onclick="removeBackgroundAI(1)">✂️ Remove BG</button><button class="small" onclick="saveSignaturePNG(1)">✍️ Save PNG</button><div class="group"><label for="signature-color-1">Ink:</label><input type="color" id="signature-color-1" value="#123b9c" title="Signature ink color" aria-label="Signature ink color" onchange="setSignatureColor(1,this.value)" style="width:28px;height:26px;padding:1px;border:1px solid #64748b;border-radius:4px;background:none;cursor:pointer"></div><button class="small" onclick="copySignaturePNG(1)">📋 Copy</button>
-        <div class="group bg-refine"><label>Edge:</label><input type="range" id="bg-edge-1" min="0" max="100" value="55" step="1" oninput="if(state[1].foregroundImg) refineForeground(1)"></div>
-        <div class="group bg-refine"><label>Clean:</label><input type="range" id="bg-clean-1" min="0" max="100" value="25" step="1" oninput="if(state[1].foregroundImg) refineForeground(1)"></div>
-        <div class="group bg-refine"><label>Feather:</label><input type="range" id="bg-feather-1" min="0" max="100" value="35" step="1" oninput="if(state[1].foregroundImg) refineForeground(1)"></div>
-        <div class="group bg-refine"><label>Tol:</label><input type="range" id="bg-tol-1" min="5" max="100" value="38" step="1" title="Colour tolerance for background (higher = removes more)" oninput="if(state[1].foregroundImg&&state[1].bgSrc)rerunBG(1)"></div><select id="bg-mode-1" class="small bg-mode-sel" title="Background removal method"><option value="auto">Auto (Smart)</option><option value="color">Solid colour BG</option><option value="multi">Multi-colour BG</option><option value="person">Person AI only</option></select><button class="small" id="restore-btn-1" onclick="toggleRestore(1)" title="Paint back parts that were wrongly cut">🖌 Restore</button><button class="small" onclick="enhanceImage(1)">🪄 Enh.Pic.</button>
-      </div>
-    </div>
-    <div class="canvas-area" id="box-1">
-      <div class="upload" id="drop-1"><strong>Drag & Drop Image Here</strong><br><span class="note">or click to select file</span></div>
-      <div class="canvas-container" id="container-1" style="display:none">
-        <canvas id="canvas-1"></canvas><div class="crop-frame" id="framebox-1"></div><div class="eraser-cursor" id="eraser-cursor-1"></div>
-        <svg class="polygon" id="svg-1"><polygon id="poly-1" points="" fill="#00e5ff26" stroke="#00e5ff" stroke-width="2" stroke-dasharray="5 3"/></svg>
-        <div class="pin" id="p1-0"></div><div class="pin" id="p1-1"></div><div class="pin" id="p1-2"></div><div class="pin" id="p1-3"></div>
-      </div>
-      <div class="status" id="status-1">Ready</div>
-      <div class="loading" id="loading-1"><div class="spinner"></div><span id="load-msg-1">Processing...</span></div>
-    </div>
-  </section>
-
-  <!-- PANE 2 -->
-  <section class="pane" id="pane-2">
-    <div class="pane-header">
-      <span>PANE 2 • BACK</span>
-      <div class="header-actions">
-        <button id="btn-change-2" class="small" style="display:none" onclick="document.getElementById('file-2').click()">🔄 Change</button>
-        <button id="btn-delete-2" class="danger small" style="display:none" onclick="deleteImage(2)">🗑️ Clear</button>
-        <button id="btn-upload-2" class="small" onclick="document.getElementById('file-2').click()">📁 Upload</button>
-      </div>
-      <input id="file-2" type="file" accept="image/*" hidden onchange="loadFile(event,2)">
-    </div>
-    <div class="controls" id="controls-2">
-      <div class="control-row control-row-1" role="toolbar" aria-label="Basic image tools pane 2">
-
-      <div class="group"><button class="small" onclick="rotateImage(2,-90)">↺ 90°</button><button class="small" onclick="rotateImage(2,90)">↻ 90°</button></div>
-      <div class="group"><label>Fine:</label><input type="range" id="fine-angle-2" min="-15" max="15" value="0" step=".5" oninput="processImage(2)"></div>
-      <button class="small" onclick="setMode(2,'doc')">📄 Doc</button><button class="small" onclick="setMode(2,'sig')">✍️ Sign</button>
-      <div class="group"><label>Contrast:</label><input type="range" id="contrast-2" min="50" max="250" value="100" oninput="processImage(2)"></div>
-      <div class="group"><label>Bright:</label><input type="range" id="bright-2" min="50" max="180" value="100" oninput="processImage(2)"></div>
-      <div class="group"><label>Shadow:</label><input type="range" id="shadow-2" min="0" max="100" value="0" oninput="processImage(2)"></div>
-      <button class="small" onclick="removeShadow(2)">☀ Shadow</button>
-      </div>
-      <div class="control-row control-row-2" role="toolbar" aria-label="Output and crop tools pane 2">
-      <div class="preset"><label class="note">Mode:</label>
-        <select id="preset-2" onchange="applyPresetPreview(2)">
-          <option value="auto">Auto Doc</option>
-          <option value="passport">Passport 35×45 mm</option>
-          <option value="idcard">ID Card 85.6×54 mm</option>
-          <option value="square">Square 51×51 mm</option>
-          <option value="a4">A4 Ratio</option>
-        </select>
-      </div>
-      <div class="group"><label>Frame:</label><select id="frame-2" class="small" onchange="updateFrame(2)"><option value="2">2</option><option value="3" selected>3</option><option value="4">4</option><option value="5">5</option></select><input type="color" id="frame-color-2" value="#00e5ff" title="Frame color" aria-label="Frame color" onchange="updateFrame(2)" style="width:22px;height:22px;padding:0;border:1px solid #64748b;border-radius:4px;background:none;cursor:pointer"><button class="small" type="button" onclick="toggleFrame(2)">🖼 Frame</button></div>
-      <button class="primary small" onclick="applySmartCropDewarp(2)">✂️ Crop</button>
-      <button class="small" onclick="autoCorners(2)">✨ Auto Crop</button>
-      <button class="small" onclick="togglePins(2)">📌 Pins</button>
-      <button class="small" onclick="toggleImageDrag(2)">🖱️ Move</button>
-      <button class="small" onclick="resetCrop(2)">Reset</button>
-      <div class="tool-sep"></div>
-      <div class="group"><label>Sh.Fix:</label><input type="range" id="shadowfix-2" min="0" max="100" value="55" oninput="if(state[2].shadowRemoved) applyShadowFix(2)"></div>
-      <div class="group"><label>Detail:</label><input type="range" id="shadowdetail-2" min="0" max="100" value="55" oninput="if(state[2].shadowRemoved) applyShadowFix(2)"></div>
-      </div>
-      <div class="control-row control-row-3 background-tools" role="toolbar" aria-label="Background, eraser and signature tools pane 2">
-        <strong class="bg-tools-title">🎨 BG</strong>
-        <div class="swatch-group">
-          <span class="bg-label">Fill:</span>
-          <span class="swatch" style="background:transparent" title="Transparent background" aria-label="Transparent background" onclick="setBGColor(2,'transparent')">◫</span>
-          <span class="swatch" style="background:#fff" title="White background" aria-label="White background" onclick="setBGColor(2,'#fff')"></span>
-          <span class="swatch" style="background:#0066cc" title="Blue background" aria-label="Blue background" onclick="setBGColor(2,'#0066cc')"></span>
-          <span class="swatch" style="background:#87ceeb" title="Sky blue background" aria-label="Sky blue background" onclick="setBGColor(2,'#87ceeb')"></span>
-          <span class="swatch" style="background:#ef4444" title="Red background" aria-label="Red background" onclick="setBGColor(2,'#ef4444')"></span>
-          <span class="swatch" style="background:#64748b" title="Gray background" aria-label="Gray background" onclick="setBGColor(2,'#64748b')"></span>
-          <input type="color" id="picker-2" class="bg-color-input" title="Choose custom background fill" aria-label="Choose custom background fill" value="#ffffff" onchange="setBGColor(2,this.value)">
-          <button class="small bg-save bg-action" onclick="saveBGColor(2)">＋ Save</button>
-          <button class="small bg-image bg-action" onclick="chooseBGImage(2)">🖼 BG Image</button>
-          <input id="bg-file-2" type="file" accept="image/*" hidden onchange="loadBGImage(event,2)">
-          <select id="bg-library-2" class="small" aria-label="Saved backgrounds" onchange="applySavedBG(2,this.value)"><option value="">Saved BG</option></select>
-        </div>
-        <button class="small" id="eraser-btn-2" onclick="toggleEraser(2)" title="Manually erase unwanted AI background or foreground pixels">🧽 Eraser</button>
-        <div class="group" title="Manual eraser brush size"><label>Size:</label><input type="range" id="eraser-size-2" min="4" max="120" value="28" step="2" oninput="updateEraserCursor(2)"></div>
-      </div>
-      <div class="control-row control-row-4" role="toolbar" aria-label="Signature and refinement tools pane 2">
-        <button class="small" onclick="setMode(2,'sig')">✍️ Sign</button><button class="blue small" onclick="removeBackgroundAI(2)">✂️ Remove BG</button><button class="small" onclick="saveSignaturePNG(2)">✍️ Save PNG</button><div class="group"><label for="signature-color-2">Ink:</label><input type="color" id="signature-color-2" value="#123b9c" title="Signature ink color" aria-label="Signature ink color" onchange="setSignatureColor(2,this.value)" style="width:28px;height:26px;padding:1px;border:1px solid #64748b;border-radius:4px;background:none;cursor:pointer"></div><button class="small" onclick="copySignaturePNG(2)">📋 Copy</button>
-        <div class="group bg-refine"><label>Edge:</label><input type="range" id="bg-edge-2" min="0" max="100" value="55" step="1" oninput="if(state[2].foregroundImg) refineForeground(2)"></div>
-        <div class="group bg-refine"><label>Clean:</label><input type="range" id="bg-clean-2" min="0" max="100" value="25" step="1" oninput="if(state[2].foregroundImg) refineForeground(2)"></div>
-        <div class="group bg-refine"><label>Feather:</label><input type="range" id="bg-feather-2" min="0" max="100" value="35" step="1" oninput="if(state[2].foregroundImg) refineForeground(2)"></div>
-        <div class="group bg-refine"><label>Tol:</label><input type="range" id="bg-tol-2" min="5" max="100" value="38" step="1" title="Colour tolerance for background (higher = removes more)" oninput="if(state[2].foregroundImg&&state[2].bgSrc)rerunBG(2)"></div><select id="bg-mode-2" class="small bg-mode-sel" title="Background removal method"><option value="auto">Auto (Smart)</option><option value="color">Solid colour BG</option><option value="multi">Multi-colour BG</option><option value="person">Person AI only</option></select><button class="small" id="restore-btn-2" onclick="toggleRestore(2)" title="Paint back parts that were wrongly cut">🖌 Restore</button><button class="small" onclick="enhanceImage(2)">🪄 Enh.Pic.</button>
-      </div>    </div>
-    <div class="canvas-area" id="box-2">
-      <div class="upload" id="drop-2"><strong>Drag & Drop Image Here</strong><br><span class="note">or click to select file</span></div>
-      <div class="canvas-container" id="container-2" style="display:none">
-        <canvas id="canvas-2"></canvas><div class="crop-frame" id="framebox-2"></div><div class="eraser-cursor" id="eraser-cursor-2"></div>
-        <svg class="polygon" id="svg-2"><polygon id="poly-2" points="" fill="#00e5ff26" stroke="#00e5ff" stroke-width="2" stroke-dasharray="5 3"/></svg>
-        <div class="pin" id="p2-0"></div><div class="pin" id="p2-1"></div><div class="pin" id="p2-2"></div><div class="pin" id="p2-3"></div>
-      </div>
-      <div class="status" id="status-2">Ready</div>
-      <div class="loading" id="loading-2"><div class="spinner"></div><span id="load-msg-2">Processing...</span></div>
-    </div>
-  </section>
+  <section class="pane is-active" id="pane-1" aria-label="Pane 1, front"></section>
+  <section class="pane" id="pane-2" aria-label="Pane 2, back"></section>
 </div>
 
-<div id="printSettings" class="print-settings" aria-label="ID card print settings">
-  <div><strong>🪪 ID Card Print</strong><span class="note">Generic ID-card mode • Aadhaar, Voter, Ayushman, e-Shram, PAN, etc.</span></div>
-  <div class="print-setting-grid">
-    <label>Card type<select id="idCardType"><option>Aadhaar Card</option><option>Voter ID</option><option>Ayushman Card</option><option>e-Shram Card</option><option>PAN Card</option><option>Driving Licence</option><option>Other ID Card</option></select></label>
-    <label>Layout<select id="idCardLayout"><option value="frontback">Front + Back • 1 A4 Portrait</option><option value="front">Front Only • 1 A4 Portrait</option><option value="back">Back Only • 1 A4 Portrait</option></select></label>
-    <label>Gap (mm)<input id="idCardGap" type="number" min="0" max="50" step="1" value="8"></label>
-    <label>Front ↓ from top (mm)<input id="idCardFrontTop" type="number" min="0" max="100" step="1" value="25"></label>
-    <label>Back ↑ from bottom (mm)<input id="idCardBackBottom" type="number" min="0" max="100" step="1" value="50"></label>
-    <label>Copies<input id="idCardCopies" type="number" min="1" max="20" step="1" value="1"></label>
-  </div>
+<div class="scrim" id="printScrim"></div>
+<aside class="drawer" id="printDrawer" role="dialog" aria-modal="true" aria-label="Print" aria-hidden="true">
+  <div class="drawer-head"><span>Print</span><button class="btn icon quiet" type="button" id="print-close" aria-label="Close print panel"><svg class="ic"><use href="#i-close"/></svg></button></div>
+  <div class="drawer-body">
+    <section class="sheet c-green" style="--tabc:#16a34a">
+      <h3><svg class="ic"><use href="#i-grid"/></svg>Photo sheet</h3>
+      <p>Passport, stamp and sticker photos on A4. Choose how many from each pane.</p>
+      <div class="sheetprev" id="psPrev" aria-hidden="true"></div>
+      <div class="fields">
+        <label class="wide">Photo size<select id="psSize"></select></label>
+        <label>Width (mm)<input id="psW" type="number" min="10" max="150" step="0.5" value="35"></label>
+        <label>Height (mm)<input id="psH" type="number" min="10" max="200" step="0.5" value="45"></label>
+        <div class="wide inline" id="psSaveRow" hidden><label style="flex:1">Name for this size<input id="psName" placeholder="e.g. Book sticker"></label><button type="button" class="btn" id="psSave">Save to list</button></div>
+        <label>Paper<select id="psPaper"><option value="plain">A4 Plain paper</option><option value="glossy">A4 Glossy photo paper</option></select></label>
+        <label>Gap between photos (mm)<input id="psGap" type="number" min="0" max="20" step="0.5" value="2"></label>
+        <label>Pane 1 photos<select id="psC1"></select></label>
+        <label>Pane 2 photos<select id="psC2"></select></label>
+        <label class="chk wide"><input type="checkbox" id="psFrame" checked> Draw a frame around each photo (helps cutting)</label>
+        <label>Frame thickness<select id="psFt"><option value="0.15">Thin</option><option value="0.25" selected>Medium</option><option value="0.4">Thick</option><option value="0.6">Extra thick</option></select></label>
+        <label>Frame colour<input id="psFc" type="color" value="#000000"></label>
+        <label class="chk wide"><input type="checkbox" id="psMulti"> Allow more than one A4 sheet</label>
+      </div>
+      <div class="fitnote" id="psInfo"></div>
+      <button class="btn pri" type="button" id="psPrint" data-print="printPhotoSheetV2"><svg class="ic"><use href="#i-print"/></svg>Print photo sheet</button>
+    </section>
 
-  <div class="print-setting-grid photo-print-grid">
-    <label>Photo sheet<select id="photoSheetMode"><option value="5x5">Pane 1 × 5 • Row 1 + Pane 2 × 5 • Row 2</option><option value="5x0">Pane 1 × 5 only</option><option value="0x5">Pane 2 × 5 only</option></select></label>
-    <label>Photo width (mm)<input id="photoWidthMm" type="number" min="20" max="42" step="0.5" value="35"></label>
-    <label>Photo height (mm)<input id="photoHeightMm" type="number" min="25" max="60" step="0.5" value="45"></label>
-    <label>Row gap (mm)<input id="photoRowGapMm" type="number" min="0" max="30" step="1" value="8"></label>
-  </div>
+    <section class="sheet c-blue" style="--tabc:#2563eb">
+      <h3><svg class="ic"><use href="#i-id"/></svg>ID card</h3>
+      <p>Actual card size (85.6 × 54 mm) on A4. Aadhaar needs both panes; PAN needs only Pane 1.</p>
+      <div class="fields">
+        <label>Card type<select id="idCardType"><option>Aadhaar Card</option><option>PAN Card</option><option>Voter ID</option><option>Ayushman Card</option><option>e-Shram Card</option><option>Driving Licence</option><option>Other ID Card</option></select></label>
+        <label>Copies<input id="idCardCopies" type="number" min="1" max="20" step="1" value="1"></label>
+        <label class="wide">Print which panes<select id="idCardLayout"><option value="frontback">Both panes: Pane 1 (front) + Pane 2 (back)</option><option value="front">Pane 1 only (front)</option><option value="back">Pane 2 only (back)</option></select></label>
+        <label id="idGapRow">Gap between cards (mm)<input id="idCardGap" type="number" min="0" max="50" step="1" value="8"></label>
+        <label id="idTopRow">Front card from top (mm)<input id="idCardFrontTop" type="number" min="0" max="100" step="1" value="25"></label>
+        <label id="idBotRow">Back card from bottom (mm)<input id="idCardBackBottom" type="number" min="0" max="100" step="1" value="50"></label>
+      </div>
+      <div class="fitnote" id="idInfo"></div>
+      <button class="btn pri" type="button" data-print="printIDCardSmart"><svg class="ic"><use href="#i-print"/></svg>Print ID card</button>
+    </section>
 
-  <div class="note workspace-note">Tip: click a pane to make it active for Undo/Redo/History.</div>
-</div>
+    <section class="sheet c-orange" style="--tabc:#ea580c">
+      <h3><svg class="ic"><use href="#i-page"/></svg>Full A4 page</h3>
+      <p>Print a pane as it is, filling the page.</p>
+      <div class="btn-row">
+        <button class="btn" type="button" data-print="printSinglePaneA4" data-arg="1">Pane 1</button>
+        <button class="btn" type="button" data-print="printSinglePaneA4" data-arg="2">Pane 2</button>
+        <button class="btn" type="button" data-print="triggerSafePrint">Both panes</button>
+      </div>
+    </section>
+  </div>
+  <div class="drawer-foot">Printing opens in a new window. If nothing opens, allow pop-ups for this page.</div>
+</aside>
 <iframe id="printFrame" style="display:none"></iframe>
 
 <script>
-/* Convert every range slider into a numeric stepper (type, or use − / +; hold to repeat). Same id/oninput so old code works. Saved values are remembered. */
+/* v6 UI: builds the tool tabs of both panes from ONE template. Element ids are unchanged, so the studio engine below needs no edits. */
 (function(){
-  const REMEMBER=/^(bg-edge|bg-clean|bg-feather|bg-tol|eraser-size)-/;
-  document.querySelectorAll('input[type=range]').forEach(r=>{
-    const wrap=document.createElement('span');wrap.className='numctl';
-    const n=document.createElement('input');n.type='number';
-    ['id','min','max','step','value','title'].forEach(a=>{if(r.hasAttribute(a))n.setAttribute(a,r.getAttribute(a));});
-    if(r.getAttribute('oninput'))n.setAttribute('oninput',r.getAttribute('oninput'));
-    n.dataset.def=r.value;
-    const mn=Number(r.min||0),mx=Number(r.max||100),st=Number(r.step||1);
-    const fire=()=>n.dispatchEvent(new Event('input',{bubbles:true}));
-    const clampv=()=>{let v=parseFloat(n.value);if(isNaN(v))v=Number(n.dataset.def);v=Math.min(mx,Math.max(mn,v));n.value=String(Math.round(v/st*1e6)/1e6*st);};
-    const bump=d=>{clampv();n.value=String(+(Number(n.value)+d*st).toFixed(4));clampv();save();fire();};
-    const save=()=>{if(REMEMBER.test(n.id||'')){try{localStorage.setItem('ps_'+n.id,n.value)}catch(e){}}};
-    const mk=(t,d)=>{const b=document.createElement('button');b.type='button';b.textContent=t;b.setAttribute('aria-label',d>0?'increase':'decrease');
-      let timer,rep;const stop=()=>{clearTimeout(timer);clearInterval(rep);};
-      b.addEventListener('pointerdown',e=>{e.preventDefault();bump(d);timer=setTimeout(()=>{rep=setInterval(()=>bump(d),70)},350);});
-      ['pointerup','pointerleave','pointercancel'].forEach(ev=>b.addEventListener(ev,stop));return b;};
-    n.addEventListener('change',()=>{clampv();save();fire();});
-    n.addEventListener('dblclick',()=>{n.value=n.dataset.def;save();fire();});
-    n.addEventListener('wheel',e=>{if(document.activeElement===n){e.preventDefault();bump(e.deltaY<0?1:-1);}},{passive:false});
-    if(REMEMBER.test(n.id||'')){try{const v=localStorage.getItem('ps_'+n.id);if(v!==null)n.value=v;}catch(e){}}
-    wrap.append(mk('−',-1),n,mk('+',1));
-    r.replaceWith(wrap);
-  });
+  "use strict";
+  const ic=n=>`<svg class="ic" aria-hidden="true"><use href="#i-${n}"/></svg>`;
+  const sl=(n,id,label,min,max,val,step,on,title)=>`<label class="sl" id="sl-${id}-${n}"${title?` title="${title}"`:''}><span class="sl-l">${label}</span><input type="range" id="${id}-${n}" min="${min}" max="${max}" value="${val}" step="${step}" oninput="${on}"><output data-for="${id}-${n}"></output></label>`;
+  const sw=(n,col,name)=>`<button type="button" class="swatch" style="background:${col}" title="${name}" aria-label="${name} background" onclick="setBGColor(${n},'${col}')"></button>`;
+  const TABS=[['adjust','sliders','Adjust','cyan'],['crop','crop','Crop','green'],['bg','palette','Background','pink'],['cut','cut','Cut-out','purple'],['sign','pen','Signature','blue']];
+  const PANELS={
+    adjust:n=>`
+      <div class="row">
+        <button type="button" class="btn icon" title="Rotate left 90°" aria-label="Rotate left 90 degrees" onclick="rotateImage(${n},-90)">${ic('rot-l')}</button>
+        <button type="button" class="btn icon" title="Rotate right 90°" aria-label="Rotate right 90 degrees" onclick="rotateImage(${n},90)">${ic('rot-r')}</button>
+        <button type="button" class="btn" title="Lighten shadows on a photographed document" onclick="removeShadow(${n})">${ic('sun')}Remove shadow</button>
+        <button type="button" class="btn" title="Sharpen and improve the picture" onclick="enhanceImage(${n})">${ic('spark')}Enhance photo</button>
+        <div class="seg" role="group" aria-label="Look preset"><span class="seg-l">Look</span><button type="button" class="btn tgl" id="m-doc-${n}" onclick="setMode(${n},'doc')">Document</button><button type="button" class="btn tgl" id="m-sig-${n}" onclick="setMode(${n},'sig')">Signature</button></div>
+      </div>
+      <div class="sliders">
+        ${sl(n,'fine-angle','Straighten',-15,15,0,.5,`processImage(${n})`)}
+        ${sl(n,'bright','Brightness',50,180,100,1,`processImage(${n})`)}
+        ${sl(n,'contrast','Contrast',50,250,100,1,`processImage(${n})`)}
+        ${sl(n,'shadow','Shadow clean',0,100,0,1,`processImage(${n})`)}
+        ${sl(n,'shadowfix','Fix strength',0,100,55,1,`if(state[${n}].shadowRemoved) applyShadowFix(${n})`,'Works after Remove shadow')}
+        ${sl(n,'shadowdetail','Fix detail',0,100,55,1,`if(state[${n}].shadowRemoved) applyShadowFix(${n})`,'Works after Remove shadow')}
+      </div>`,
+    crop:n=>`
+      <div class="row">
+        <label class="fld">Output size<select id="preset-${n}" onchange="applyPresetPreview(${n})"><option value="auto">Auto document</option><option value="passport">Passport 35×45 mm</option><option value="idcard">ID card 85.6×54 mm</option><option value="square">Square 51×51 mm</option><option value="a4">A4 ratio</option></select></label>
+        <button type="button" class="btn pri" title="Cut the picture to the four corner pins" onclick="applySmartCropDewarp(${n})">${ic('crop')}Crop</button>
+        <button type="button" class="btn" title="Find the document corners automatically" onclick="autoCorners(${n})">${ic('spark')}Auto-detect corners</button>
+        <button type="button" class="btn" onclick="resetCrop(${n})">${ic('reset')}Reset</button>
+      </div>
+      <div class="row">
+        <button type="button" class="btn tgl" id="t-pins-${n}" aria-pressed="true" onclick="togglePins(${n})">${ic('pin')}Corner pins</button>
+        <button type="button" class="btn tgl" id="t-move-${n}" aria-pressed="false" title="Drag the picture inside the pane" onclick="toggleImageDrag(${n})">${ic('move')}Move picture</button>
+        <span class="cl" style="margin-left:6px">Frame</span>
+        <select id="frame-${n}" aria-label="Frame thickness in pixels" onchange="updateFrame(${n})"><option value="2">2 px</option><option value="3" selected>3 px</option><option value="4">4 px</option><option value="5">5 px</option></select>
+        <input type="color" id="frame-color-${n}" value="#000000" title="Frame colour (default black)" aria-label="Frame colour" onchange="updateFrame(${n})">
+        <button type="button" class="btn tgl" id="t-frame-${n}" aria-pressed="false" onclick="toggleFrame(${n})">${ic('frame')}Show frame</button>
+      </div>`,
+    bg:n=>`
+      <div class="row">
+        <span class="cl">Fill</span>
+        <span class="swatches">
+          <button type="button" class="swatch none" title="Transparent" aria-label="Transparent background" onclick="setBGColor(${n},'transparent')"></button>
+          ${sw(n,'#ffffff','White')}${sw(n,'#0066cc','Blue')}${sw(n,'#87ceeb','Sky blue')}${sw(n,'#ef4444','Red')}${sw(n,'#64748b','Grey')}
+          <input type="color" id="picker-${n}" value="#ffffff" title="Pick any colour" aria-label="Choose custom background colour" onchange="setBGColor(${n},this.value)">
+        </span>
+        <button type="button" class="btn" title="Keep this colour in the Saved list" onclick="saveBGColor(${n})">${ic('plus')}Save colour</button>
+      </div>
+      <div class="row">
+        <button type="button" class="btn" onclick="chooseBGImage(${n})">${ic('image')}Background picture</button>
+        <input id="bg-file-${n}" type="file" accept="image/*" hidden onchange="loadBGImage(event,${n})">
+        <select id="bg-library-${n}" title="Your saved background colours" aria-label="Saved backgrounds" onchange="applySavedBG(${n},this.value)" style="max-width:160px"><option value="">Saved</option></select>
+      </div>`,
+    cut:n=>`
+      <div class="row">
+        <button type="button" class="btn pri" title="Removes the background. Signatures are detected automatically and keep their ink. Photos use AI (needs internet the first time)." onclick="smartRemoveBG(${n})">${ic('cut')}Remove background</button>
+        <div class="seg" role="group" aria-label="Touch-up brush"><button type="button" class="btn tgl" id="eraser-btn-${n}" aria-pressed="false" title="Rub out leftover background. Run Remove background first." onclick="setBrush(${n},'erase')">${ic('eraser')}Erase</button><button type="button" class="btn tgl" id="restore-btn-${n}" aria-pressed="false" title="Paint back parts that were removed by mistake" onclick="setBrush(${n},'restore')">${ic('reset')}Restore</button></div>
+        <label class="sl" style="width:190px" title="Brush size for Erase and Restore"><span class="sl-l">Brush</span><input type="range" id="eraser-size-${n}" min="4" max="120" value="28" step="2" oninput="updateEraserCursor(${n})"><output data-for="eraser-size-${n}"></output></label>
+      </div>
+      <div class="sliders">
+        ${sl(n,'bg-edge','Edge',0,100,55,1,`liveRefine(${n})`,'Higher = cut closer to the subject (and, for signatures, keep fainter strokes)')}
+        ${sl(n,'bg-clean','Clean',0,100,25,1,`liveRefine(${n})`,'Higher = remove more specks and fringe')}
+        ${sl(n,'bg-feather','Feather',0,100,35,1,`liveRefine(${n})`,'Higher = softer edge')}
+      </div>`,
+    sign:n=>`
+      <div class="steps">
+        <button type="button" class="btn" title="Boost contrast so thin strokes show clearly" onclick="setMode(${n},'sig')"><span class="step-n">1</span>Signature look</button>
+        <button type="button" class="btn" title="Makes the paper transparent and keeps only the ink" onclick="sigRemove(${n})"><span class="step-n">2</span>Remove paper</button>
+        <span class="cl" style="margin-left:6px">Ink</span>
+        <div class="seg" role="group" aria-label="Ink colour"><button type="button" class="btn tgl" id="ink-orig-${n}" aria-pressed="true" onclick="setInk(${n},'orig')">Original</button><button type="button" class="btn tgl" id="ink-black-${n}" aria-pressed="false" onclick="setInk(${n},'black')">Black</button><button type="button" class="btn tgl" id="ink-blue-${n}" aria-pressed="false" onclick="setInk(${n},'blue')">Blue</button></div>
+        <input type="color" id="signature-color-${n}" value="#123b9c" title="Pick any ink colour" aria-label="Signature ink colour" onchange="setSignatureColor(${n},this.value)">
+      </div>
+      <div class="row">
+        <button type="button" class="btn pri" onclick="saveSignaturePNG(${n})"><span class="step-n">3</span>Save PNG</button>
+        <button type="button" class="btn" onclick="copySignaturePNG(${n})">${ic('copy')}Copy PNG</button>
+        <span class="hint">Saved image is trimmed to the signature.</span>
+      </div>`
+  };
+  function paneHTML(n){
+    const label=n===1?'Front':'Back';
+    return `
+    <div class="pane-top">
+      <div class="pane-title"><span class="pane-no">${n}</span>${label}<span class="sub">Pane ${n}</span></div>
+      <div class="header-actions">
+        <button id="btn-change-${n}" type="button" class="btn" style="display:none" onclick="document.getElementById('file-${n}').click()">${ic('swap')}Change</button>
+        <button id="btn-delete-${n}" type="button" class="btn danger" style="display:none" onclick="deleteImage(${n})">${ic('trash')}Clear</button>
+        <button id="btn-upload-${n}" type="button" class="btn pri" onclick="document.getElementById('file-${n}').click()">${ic('upload')}Upload</button>
+      </div>
+      <input id="file-${n}" type="file" accept="image/*" hidden onchange="loadFile(event,${n})">
+    </div>
+    <div class="tabs" role="tablist" aria-label="Tools for pane ${n}">
+      ${TABS.map(([k,i,l,c],x)=>`<button type="button" class="tab c-${c}" role="tab" id="tab-${n}-${k}" aria-controls="panel-${n}-${k}" aria-selected="${x===0}" tabindex="${x===0?0:-1}" data-pane="${n}" data-tab="${k}" title="${l}">${ic(i)}<span>${l}</span></button>`).join('')}
+      <span class="tab-end"><button type="button" class="btn icon quiet" data-collapse="${n}" aria-expanded="true" title="Hide or show the tool tray" aria-label="Hide or show the tool tray">${ic('chev-u')}</button></span>
+    </div>
+    <div class="tray" id="tray-${n}">
+      ${TABS.map(([k],x)=>`<div class="panel" role="tabpanel" id="panel-${n}-${k}" aria-labelledby="tab-${n}-${k}"${x===0?'':' hidden'}>${PANELS[k](n)}</div>`).join('')}
+      <span class="empty-note">Upload a picture to use these tools</span>
+    </div>
+    <div class="canvas-area" id="box-${n}">
+      <div class="upload" id="drop-${n}"><strong>Drag and drop a picture here</strong><br><span class="note" style="color:var(--muted)">or click to choose a file</span></div>
+      <div class="canvas-container" id="container-${n}" style="display:none">
+        <canvas id="canvas-${n}"></canvas><div class="crop-frame" id="framebox-${n}"></div><div class="eraser-cursor" id="eraser-cursor-${n}"></div>
+        <svg class="polygon" id="svg-${n}"><polygon id="poly-${n}" points="" fill="#00e5ff26" stroke="#00e5ff" stroke-width="2" stroke-dasharray="5 3"/></svg>
+        <div class="pin" id="p${n}-0"></div><div class="pin" id="p${n}-1"></div><div class="pin" id="p${n}-2"></div><div class="pin" id="p${n}-3"></div>
+      </div>
+      <div class="status" id="status-${n}">Ready</div>
+      <div class="loading" id="loading-${n}"><div class="spinner"></div><span id="load-msg-${n}">Processing...</span></div>
+    </div>`;
+  }
+  [1,2].forEach(n=>{document.getElementById('pane-'+n).innerHTML=paneHTML(n)});
 })();
+
 </script>
 <script>
 "use strict";
@@ -930,7 +705,6 @@ const PRESETS = {
 });
 
 window.addEventListener('resize',()=>{fitPreviewToPane(1);fitPreviewToPane(2);});
-[1,2].forEach(id=>document.getElementById(`bg-mode-${id}`)?.addEventListener('change',()=>{if(state[id].foregroundImg&&state[id].mode!=='sig')removeBackgroundAI(id);}));
 
 function setStatus(id,msg){document.getElementById(`status-${id}`).textContent=msg;}
 function loadFile(e,id){if(e.target.files?.[0])handleFile(e.target.files[0],id)}
@@ -953,7 +727,7 @@ function handleFile(file,id){
     };
     img.onload=()=>{
       const s=state[id];
-      s.origImg=img;s.currentImg=img;s.foregroundImg=null;s.bgSrc=null;s.shadowImg=null;s.bgImage=null;s.fillColor="transparent";lastSegmentationMask[id]=null;s.mode="normal";document.getElementById(`container-${id}`)?.classList.remove('signature-transparent');s.history=[];s.redo=[];s.offsetX=0;s.offsetY=0;s.shadowRemoved=false;
+      s.origImg=img;s.currentImg=img;s.foregroundImg=null;s.shadowImg=null;s.bgImage=null;s.fillColor="transparent";lastSegmentationMask[id]=null;s.mode="normal";document.getElementById(`container-${id}`)?.classList.remove('signature-transparent');s.history=[];s.redo=[];s.offsetX=0;s.offsetY=0;s.shadowRemoved=false;
       document.getElementById(`drop-${id}`).style.display="none";
       document.getElementById(`container-${id}`).style.display="inline-block";
       document.getElementById(`btn-upload-${id}`).style.display="none";
@@ -987,8 +761,7 @@ function deleteImage(id){
   s.offsetY=0;
   s.shadowRemoved=false;
   s.dragImage=false;
-  s.eraserOn=false;s.restoreMode=false;s.bgSrc=null;
-  document.getElementById(`restore-btn-${id}`)?.classList.remove('eraser-restore');
+  s.eraserOn=false;
   s.eraserCanvas=null;
   s.eraserDrawing=false;
   lastSegmentationMask[id]=null;
@@ -1225,7 +998,7 @@ function loadBGImageDataURL(id,url){
 }
 function updateFrame(id){
   const v=document.getElementById(`frame-${id}`).value;
-  const c=document.getElementById(`frame-color-${id}`)?.value || '#00e5ff';
+  const c=document.getElementById(`frame-color-${id}`)?.value || '#000000';
   const frame=document.querySelector(`#container-${id} .crop-frame`);
   if(frame){
     frame.style.borderWidth=v+'px';
@@ -1350,7 +1123,7 @@ function toggleEraser(id){
     setStatus(id,'Run Remove BG first, then use Eraser on unwanted remaining pixels');
     return;
   }
-  if(s.restoreMode){s.restoreMode=false;s.eraserOn=true;document.getElementById(`restore-btn-${id}`)?.classList.remove('eraser-restore');}else s.eraserOn=!s.eraserOn;
+  s.eraserOn=!s.eraserOn;
   const btn=document.getElementById(`eraser-btn-${id}`);
   btn?.classList.toggle('eraser-on',s.eraserOn);
   document.getElementById(`container-${id}`)?.classList.toggle('eraser-mode',s.eraserOn);
@@ -1359,7 +1132,7 @@ function toggleEraser(id){
     s.eraserCanvas=null;
     const cur=document.getElementById(`eraser-cursor-${id}`); if(cur)cur.style.display='none';
   }
-  setStatus(id,s.eraserOn?'Eraser ON • drag over unwanted pixels • Undo restores them':'Eraser OFF');
+  setStatus(id,s.eraserOn?(s.restoreMode?'Restore brush ON • paint over parts that were removed by mistake • Undo is available':'Eraser ON • drag over unwanted pixels • Undo restores them'):'Eraser OFF');
 }
 
 function getEraserBrushSize(id){
@@ -1386,10 +1159,10 @@ function eraseAt(id,x,y){
   const p=sourcePointFromCanvasPoint(id,x,y),r=getEraserBrushSize(id);
   const ctx=c.getContext('2d');
   ctx.save();
-  if(s.restoreMode){
-    const srcImg=(s.bgSrc&&s.bgSrc.source)||s.currentImg;
+  if(s.restoreMode&&s.currentImg){
+    /* v8 Restore brush: paint the original picture back where the cut-out removed too much */
     ctx.beginPath();ctx.arc(p.x,p.y,r/2,0,Math.PI*2);ctx.clip();
-    ctx.drawImage(srcImg,0,0,c.width,c.height);
+    ctx.drawImage(s.currentImg,0,0,c.width,c.height);
   }else{
     ctx.globalCompositeOperation='destination-out';
     ctx.beginPath();ctx.arc(p.x,p.y,r/2,0,Math.PI*2);ctx.fill();
@@ -1434,7 +1207,7 @@ function setupEraser(id){
     if(s.eraserCanvas){
       const url=s.eraserCanvas.toDataURL('image/png');
       const out=new Image();
-      out.onload=()=>{s.foregroundImg=out;s.eraserCanvas=null;processImage(id);setStatus(id,'Manual erase applied • Undo can restore it');};
+      out.onload=()=>{s.foregroundImg=out;s.eraserCanvas=null;processImage(id);setStatus(id,s.restoreMode?'Restored • Undo is available':'Manual erase applied • Undo can restore it');};
       out.src=url;
     }
   };
@@ -1628,326 +1401,301 @@ function applyAlphaToSource(source,mask,edge){
 }
 
 function refineForeground(id){
-  const s0=state[id];if(s0.bgSrc&&s0.bgSrc.source===s0.currentImg){rerunBG(id);return;}
   const s=state[id],cached=lastSegmentationMask[id];if(!s.currentImg||!cached)return;
   const edge=Number(document.getElementById(`bg-edge-${id}`)?.value||55),clean=Number(document.getElementById(`bg-clean-${id}`)?.value||25),feather=Number(document.getElementById(`bg-feather-${id}`)?.value||35);
   const refined=buildRefinedMask(cached,edge,clean,feather),url=applyAlphaToSource(cached.source,refined,edge),out=new Image();out.onload=()=>{s.foregroundImg=out;processImage(id);setStatus(id,`BG refined`)};out.src=url;
 }
 
-function removeSignatureBackground(id){
+/* ===== v8: signature remover (local paper model) ===== */
+function psBoxBlur(a,w,h,r){
+  /* separable box blur with edge normalisation; a is Float32Array */
+  const t=new Float32Array(w*h),o=new Float32Array(w*h);
+  for(let y=0;y<h;y++){
+    let sum=0,cnt=0;const row=y*w;
+    for(let x=0;x<=Math.min(r,w-1);x++){sum+=a[row+x];cnt++}
+    for(let x=0;x<w;x++){
+      t[row+x]=sum/cnt;
+      const add=x+r+1,rem=x-r;
+      if(add<w){sum+=a[row+add];cnt++}
+      if(rem>=0){sum-=a[row+rem];cnt--}
+    }
+  }
+  for(let x=0;x<w;x++){
+    let sum=0,cnt=0;
+    for(let y=0;y<=Math.min(r,h-1);y++){sum+=t[y*w+x];cnt++}
+    for(let y=0;y<h;y++){
+      o[y*w+x]=sum/cnt;
+      const add=y+r+1,rem=y-r;
+      if(add<h){sum+=t[add*w+x];cnt++}
+      if(rem>=0){sum-=t[rem*w+x];cnt--}
+    }
+  }
+  return o;
+}
+function psLabel(mask,w,h){
+  /* connected components (8-neighbour) of a Uint8Array mask -> {lab,comps[]} */
+  const N=w*h,lab=new Int32Array(N),stack=new Int32Array(N),comps=[];
+  for(let i=0;i<N;i++){
+    if(!mask[i]||lab[i])continue;
+    const id=comps.length+1;let sp=0;stack[sp++]=i;lab[i]=id;
+    let area=0,x0=w,y0=h,x1=0,y1=0,border=false;
+    while(sp){
+      const p=stack[--sp],x=p%w,y=(p-x)/w;area++;
+      if(x<x0)x0=x;if(x>x1)x1=x;if(y<y0)y0=y;if(y>y1)y1=y;
+      if(x===0||y===0||x===w-1||y===h-1)border=true;
+      for(let dy=-1;dy<=1;dy++){const yy=y+dy;if(yy<0||yy>=h)continue;
+        for(let dx=-1;dx<=1;dx++){const xx=x+dx;if(xx<0||xx>=w)continue;const q=yy*w+xx;if(mask[q]&&!lab[q]){lab[q]=id;stack[sp++]=q}}}
+    }
+    comps.push({id,area,x0,y0,x1,y1,border,dens:0});
+  }
+  return {lab,comps};
+}
+function signatureCutout(src,opts){
+  const edge=opts.edge,clean=opts.clean,feather=opts.feather;
+  const w0=src.naturalWidth||src.width,h0=src.naturalHeight||src.height,sc=Math.min(1,2000/Math.max(w0,h0));
+  const W=Math.max(2,Math.round(w0*sc)),H=Math.max(2,Math.round(h0*sc));
+  const c=document.createElement('canvas');c.width=W;c.height=H;
+  const ctx=c.getContext('2d',{willReadFrequently:true});ctx.drawImage(src,0,0,W,H);
+  const im=ctx.getImageData(0,0,W,H),d=im.data,N=W*H;
+  /* 1. small grid (block average) so thin pen strokes vanish and only the paper remains */
+  const k=Math.max(1,Math.round(Math.max(W,H)/320)),sw=Math.ceil(W/k),sh=Math.ceil(H/k);
+  const ch=[new Float32Array(sw*sh),new Float32Array(sw*sh),new Float32Array(sw*sh)],cnt=new Float32Array(sw*sh);
+  for(let y=0;y<H;y++){const sy=Math.min(sh-1,(y/k)|0);for(let x=0;x<W;x++){const sx=Math.min(sw-1,(x/k)|0),si=sy*sw+sx,i=(y*W+x)*4;ch[0][si]+=d[i];ch[1][si]+=d[i+1];ch[2][si]+=d[i+2];cnt[si]++}}
+  for(let i=0;i<sw*sh;i++){const n=cnt[i]||1;ch[0][i]/=n;ch[1][i]/=n;ch[2][i]/=n}
+  /* 2. paper brightness map: blur that ignores dark (ink) pixels, repeated 3 times */
+  const R=Math.max(3,Math.round(0.07*Math.max(sw,sh))),L=new Float32Array(sw*sh);
+  for(let i=0;i<sw*sh;i++)L[i]=.299*ch[0][i]+.587*ch[1][i]+.114*ch[2][i];
+  let m=new Float32Array(sw*sh).fill(1),B=[null,null,null];
+  for(let it=0;it<3;it++){
+    const mb=psBoxBlur(m,sw,sh,R);
+    for(let c3=0;c3<3;c3++){const wv=new Float32Array(sw*sh);for(let i=0;i<wv.length;i++)wv[i]=ch[c3][i]*m[i];const bb=psBoxBlur(wv,sw,sh,R);for(let i=0;i<bb.length;i++)bb[i]=bb[i]/Math.max(1e-4,mb[i]);B[c3]=bb}
+    const nm=new Float32Array(sw*sh);
+    for(let i=0;i<nm.length;i++){const bl=.299*B[0][i]+.587*B[1][i]+.114*B[2][i];nm[i]=L[i]>bl*0.84?1:0.03}
+    m=nm;
+  }
+  /* 3. ink density for every full-resolution pixel (relative darkness against local paper) */
+  const dens=new Float32Array(N),Bfull=new Float32Array(N*3);
+  const bil=(arr,fx,fy)=>{const x0=Math.max(0,Math.min(sw-1,Math.floor(fx))),y0=Math.max(0,Math.min(sh-1,Math.floor(fy))),x1=Math.min(sw-1,x0+1),y1=Math.min(sh-1,y0+1),tx=Math.max(0,Math.min(1,fx-x0)),ty=Math.max(0,Math.min(1,fy-y0));
+    return (arr[y0*sw+x0]*(1-tx)+arr[y0*sw+x1]*tx)*(1-ty)+(arr[y1*sw+x0]*(1-tx)+arr[y1*sw+x1]*tx)*ty};
+  for(let y=0;y<H;y++){const fy=(y+0.5)/k-0.5;for(let x=0;x<W;x++){
+    const fx=(x+0.5)/k-0.5,p=y*W+x,i=p*4,b0=bil(B[0],fx,fy),b1=bil(B[1],fx,fy),b2=bil(B[2],fx,fy);
+    Bfull[p*3]=b0;Bfull[p*3+1]=b1;Bfull[p*3+2]=b2;
+    const bl=Math.max(20,.299*b0+.587*b1+.114*b2),l=.299*d[i]+.587*d[i+1]+.114*d[i+2];
+    const dl=(bl-l)/bl,dm=Math.max((b0-d[i])/Math.max(20,b0),(b1-d[i+1])/Math.max(20,b1),(b2-d[i+2])/Math.max(20,b2));
+    dens[p]=Math.max(0,Math.min(1,Math.max(dl,dm*0.88)));
+  }}
+  /* 4. adaptive threshold from the noise of the paper itself */
+  const bins=400,hist=new Uint32Array(bins+1);
+  for(let p=0;p<N;p+=3)hist[Math.min(bins,(dens[p]*bins)|0)]++;
+  const total=Math.ceil(N/3);let acc=0,med=0;for(let b=0;b<=bins;b++){acc+=hist[b];if(acc>=total/2){med=b/bins;break}}
+  const h2=new Uint32Array(bins+1);for(let p=0;p<N;p+=3)h2[Math.min(bins,(Math.abs(dens[p]-med)*bins)|0)]++;
+  acc=0;let mad=0;for(let b=0;b<=bins;b++){acc+=h2[b];if(acc>=total/2){mad=b/bins;break}}
+  const sigma=1.4826*mad,sens=1.75-(edge/100)*1.25;
+  const t0=Math.max(0.03,Math.min(0.30,(med+3.6*sigma+0.02)*sens)),soft=0.09+(feather/100)*0.2,t1=t0+soft;
+  const alpha=new Float32Array(N);
+  for(let p=0;p<N;p++){const v=dens[p];if(v<=t0)continue;let a=Math.min(1,(v-t0)/(t1-t0));a=a*a*(3-2*a);alpha[p]=Math.pow(a,0.85)}
+  /* 5. clean: dust, border blobs, faint long ruled lines */
+  /* pale marks (ruled lines, shadow edges) survive only right next to real ink */
+  const hh=new Uint32Array(bins+1);let hn=0;for(let p=0;p<N;p+=2){if(dens[p]>t0*1.5){hh[Math.min(bins,(dens[p]*bins)|0)]++;hn++}}
+  let ink98=t0*4;if(hn>30){let ac=0;for(let b=0;b<=bins;b++){ac+=hh[b];if(ac>=hn*0.98){ink98=b/bins;break}}}
+  const strongT=Math.max(t0*2.6,ink98*0.5),strong=new Float32Array(N);
+  for(let p=0;p<N;p++)if(dens[p]>=strongT)strong[p]=1;
+  const near2=psBoxBlur(strong,W,H,Math.max(2,Math.round(Math.max(W,H)*0.002)));
+  for(let p=0;p<N;p++)if(alpha[p]>0&&dens[p]<strongT&&near2[p]<=0.0001)alpha[p]=0;
+  /* big solid regions (table, dark shadow, blots) = opening of the mask; thin pen strokes cannot survive it */
+  let mk=new Float32Array(N);for(let p=0;p<N;p++)if(alpha[p]>0.35)mk[p]=1;
+  const rO=Math.max(4,Math.round(Math.max(W,H)*0.012)),core=psBoxBlur(mk,W,H,rO),cm=new Float32Array(N);
+  for(let p=0;p<N;p++)if(core[p]>0.9999)cm[p]=1;
+  const reg=psBoxBlur(cm,W,H,rO),regM=new Uint8Array(N);for(let p=0;p<N;p++)if(reg[p]>0.0001&&mk[p])regM[p]=1;
+  const rl=psLabel(regM,W,H);
+  rl.comps.forEach(cp=>{if(cp.border||cp.area>N*0.02)for(let y=cp.y0;y<=cp.y1;y++)for(let x=cp.x0;x<=cp.x1;x++){const p=y*W+x;if(rl.lab[p]===cp.id)alpha[p]=0}});
+  const mask=new Uint8Array(N);for(let p=0;p<N;p++)if(alpha[p]>0.35)mask[p]=1;
+  const {lab,comps}=psLabel(mask,W,H);
+  comps.forEach(cp=>{let s=0,n=0;for(let y=cp.y0;y<=cp.y1;y+=2)for(let x=cp.x0;x<=cp.x1;x+=2){const p=y*W+x;if(lab[p]===cp.id){s+=dens[p];n++}}cp.dens=n?s/n:0});
+  const long=Math.max(W,H),minArea=Math.max(8,Math.round(N*0.0000085*(1+clean/18))),big=comps.filter(cp=>cp.area>=minArea*12),near=Math.round(long*0.05);
+  const drop=new Uint8Array(comps.length+1);
+  comps.forEach(cp=>{
+    const bw=cp.x1-cp.x0+1,bh=cp.y1-cp.y0+1,fill=cp.area/(bw*bh);
+    if(cp.area<minArea){let close=false;for(const b of big){if(b===cp)continue;if(cp.x1>=b.x0-near&&cp.x0<=b.x1+near&&cp.y1>=b.y0-near&&cp.y0<=b.y1+near){close=true;break}}if(!close)drop[cp.id]=1}
+    else if(cp.border&&(cp.area>N*0.12||(Math.min(bw,bh)<0.03*long&&Math.max(bw,bh)>0.5*long)))drop[cp.id]=1;
+    else if(bw>0.4*W&&bh<0.025*H&&cp.dens<Math.max(0.17,t0*2.6))drop[cp.id]=1;
+  });
+  /* 6. un-mix paper from the edge pixels so no pale halo appears on dark backgrounds */
+  for(let p=0;p<N;p++){
+    const i=p*4;let a=alpha[p];if(a>0&&drop[lab[p]])a=0;
+    if(a<=0.003){d[i+3]=0;continue}
+    const af=Math.max(a,0.28);
+    for(let q=0;q<3;q++){const v=(d[i+q]-(1-a)*Bfull[p*3+q])/af;d[i+q]=v<0?0:v>255?255:v}
+    d[i+3]=Math.round(255*a);
+  }
+  ctx.putImageData(im,0,0);
+  return c;
+}
+function removeSignatureBackground(id,quiet){
+  const s=state[id];
+  if(!s.currentImg)return;
+  showLoading(id,'Removing paper from signature...');
+  setStatus(id,'Removing paper from signature...');
+  setTimeout(()=>{
+    try{
+      const edge=Number(document.getElementById(`bg-edge-${id}`)?.value||55);
+      const clean=Number(document.getElementById(`bg-clean-${id}`)?.value||25);
+      const feather=Number(document.getElementById(`bg-feather-${id}`)?.value||35);
+      const c=signatureCutout(s.currentImg,{edge,clean,feather});
+      const out=new Image();
+      out.onload=()=>{
+        if(!quiet)pushHistory(id);
+        s.shadowImg=null;s.foregroundImg=out;s.fillColor='transparent';s.mode='sig';s.cutKind='sig';
+        document.getElementById(`container-${id}`)?.classList.add('signature-transparent');
+        processImage(id);hideLoading(id);
+        setStatus(id,'Signature ready • Save PNG or Copy PNG');
+      };
+      out.onerror=()=>{hideLoading(id);setStatus(id,'Signature cut-out failed')};
+      out.src=c.toDataURL('image/png');
+    }catch(err){
+      console.error('Signature BG removal failed:',err);
+      hideLoading(id);setStatus(id,'Signature cut-out failed. Try a clearer picture.');
+    }
+  },30);
+}
+/* ===== v8: colour based photo cut-out (flood fill from the border, never eats the subject) ===== */
+function classicCutout(id,quiet){
+  const s=state[id],src=s.currentImg;if(!src)return {ok:false,msg:'No picture'};
+  const w=src.naturalWidth||src.width,h=src.naturalHeight||src.height,sc=Math.min(1,800/Math.max(w,h)),sw=Math.max(8,Math.round(w*sc)),sh=Math.max(8,Math.round(h*sc)),N=sw*sh;
+  const c=document.createElement('canvas');c.width=sw;c.height=sh;const ctx=c.getContext('2d',{willReadFrequently:true});ctx.drawImage(src,0,0,sw,sh);
+  const d=ctx.getImageData(0,0,sw,sh).data;
+  const edgeV=Number(document.getElementById(`bg-edge-${id}`)?.value||55),clean=Number(document.getElementById(`bg-clean-${id}`)?.value||25),feather=Number(document.getElementById(`bg-feather-${id}`)?.value||35);
+  const ring=Math.max(2,Math.round(Math.min(sw,sh)*0.03)),ringIdx=[];
+  for(let y=0;y<sh;y++)for(let x=0;x<sw;x++)if(x<ring||x>=sw-ring||y<ring||y>=sh-ring)ringIdx.push(y*sw+x);
+  /* dominant border colours (up to 3) */
+  /* learn the background colour only from the top edge and the upper sides: a subject (shirt, card, hand) usually touches the bottom */
+  const sampleIdx=ringIdx.filter(p=>{const y=(p/sw)|0,x=p%sw;return y<ring||((x<ring||x>=sw-ring)&&y<sh*0.6)});
+  const bk={};sampleIdx.forEach(p=>{const i=p*4,key=((d[i]>>4)<<8)|((d[i+1]>>4)<<4)|(d[i+2]>>4),o=bk[key]||(bk[key]={n:0,r:0,g:0,b:0});o.n++;o.r+=d[i];o.g+=d[i+1];o.b+=d[i+2]});
+  const cents=Object.values(bk).sort((a,b)=>b.n-a.n).filter((o,i)=>i===0||o.n>=sampleIdx.length*0.12).slice(0,3).map(o=>[o.r/o.n,o.g/o.n,o.b/o.n]);
+  const dist=i=>{let m=1e9;for(const q of cents){const dr=d[i]-q[0],dg=d[i+1]-q[1],db=d[i+2]-q[2],v=dr*dr*0.9+dg*dg*1.2+db*db*0.9;if(v<m)m=v}return Math.sqrt(m)};
+  let sp=0,sn=0;sampleIdx.forEach(p=>{const v=dist(p*4);if(v<90){sp+=v;sn++}});const spread=sn?sp/sn:8;
+  const baseTol=Math.max(18,Math.min(62,14+2.8*spread))*(0.6+edgeV/100*0.8);
+  const L=new Float32Array(N);for(let p=0;p<N;p++){const i=p*4;L[p]=.299*d[i]+.587*d[i+1]+.114*d[i+2]}
+  const grad=new Float32Array(N);for(let y=1;y<sh-1;y++)for(let x=1;x<sw-1;x++){const p=y*sw+x;grad[p]=Math.abs(L[p+1]-L[p-1])+Math.abs(L[p+sw]-L[p-sw])}
+  const gmax=26+4*spread,dd=new Float32Array(N);for(let p=0;p<N;p++)dd[p]=dist(p*4);
+  const flood=tol=>{
+    const bg=new Uint8Array(N),q=new Int32Array(N);let qh=0,qt=0;
+    ringIdx.forEach(p=>{if(dd[p]<=tol*1.3){bg[p]=1;q[qt++]=p}});
+    while(qh<qt){const p=q[qh++],x=p%sw,y=(p-x)/sw;
+      if(x>0){const n=p-1;if(!bg[n]&&dd[n]<=tol&&grad[n]<gmax){bg[n]=1;q[qt++]=n}}
+      if(x<sw-1){const n=p+1;if(!bg[n]&&dd[n]<=tol&&grad[n]<gmax){bg[n]=1;q[qt++]=n}}
+      if(y>0){const n=p-sw;if(!bg[n]&&dd[n]<=tol&&grad[n]<gmax){bg[n]=1;q[qt++]=n}}
+      if(y<sh-1){const n=p+sw;if(!bg[n]&&dd[n]<=tol&&grad[n]<gmax){bg[n]=1;q[qt++]=n}}}
+    return bg;
+  };
+  const pts=[[.5,.5],[.5,.38],[.5,.62],[.38,.5],[.62,.5]].map(v=>Math.round(v[1]*sh)*sw+Math.round(v[0]*sw));
+  const lowPts=[[.5,.9],[.3,.92],[.7,.92]].map(v=>Math.round(v[1]*sh)*sw+Math.round(v[0]*sw));
+  let bg=null,used=0,fallbackBg=null,fallbackF=0;
+  for(const f of [1,.8,.62,.48,.36,.26]){
+    const b=flood(baseTol*f);let cb=0,lb=0,bc=0;pts.forEach(p=>{if(b[p])cb++});lowPts.forEach(p=>{if(b[p])lb++});for(let p=0;p<N;p++)if(b[p])bc++;
+    const fgFrac=1-bc/N;
+    if(cb<=1&&fgFrac>=0.04&&fgFrac<=0.97){
+      if(lb===0){bg=b;used=f;break}                 /* best: centre kept and the lower body kept */
+      if(!fallbackBg){fallbackBg=b;fallbackF=f}      /* acceptable: centre kept (e.g. a card smaller than the frame) */
+    }
+  }
+  if(!bg&&fallbackBg){bg=fallbackBg;used=fallbackF}
+  if(!bg){let any=0;const t=flood(baseTol);for(let p=0;p<N;p++)if(t[p])any++;
+    return {ok:false,msg:any/N<0.03?'No plain background found around this picture.':'The background touches the subject, so it cannot be separated safely. Crop closer, or use the Eraser / Restore brush.'}}
+  /* keep only the main subject; drop dust */
+  const fg=new Uint8Array(N);for(let p=0;p<N;p++)fg[p]=bg[p]?0:1;
+  const {lab,comps}=psLabel(fg,sw,sh),centre=pts[0];
+  comps.forEach(cp=>{const keep=cp.area>=N*0.012||lab[centre]===cp.id;if(!keep)for(let y=cp.y0;y<=cp.y1;y++)for(let x=cp.x0;x<=cp.x1;x++){const p=y*sw+x;if(lab[p]===cp.id)fg[p]=0}});
+  /* choke away the coloured fringe, then soften the edge */
+  const rad=clean>=60?2:clean>=18?1:0;let cur=fg;
+  for(let r=0;r<rad;r++){const nx=new Uint8Array(N);for(let y=1;y<sh-1;y++)for(let x=1;x<sw-1;x++){const p=y*sw+x;nx[p]=(cur[p]&&cur[p-1]&&cur[p+1]&&cur[p-sw]&&cur[p+sw])?1:0}cur=nx}
+  let af=new Float32Array(N);for(let p=0;p<N;p++)af[p]=cur[p];
+  const br=1+Math.round(feather/100*2.2);af=psBoxBlur(af,sw,sh,br);af=psBoxBlur(af,sw,sh,1);
+  const mc=document.createElement('canvas');mc.width=sw;mc.height=sh;const mctx=mc.getContext('2d'),mid=mctx.createImageData(sw,sh);
+  for(let p=0;p<N;p++){const a=af[p],v=a<0.08?0:a>0.92?1:a,i=p*4;mid.data[i]=255;mid.data[i+1]=255;mid.data[i+2]=255;mid.data[i+3]=Math.round(255*v)}
+  mctx.putImageData(mid,0,0);
+  const out=document.createElement('canvas');out.width=w;out.height=h;const octx=out.getContext('2d');
+  octx.drawImage(src,0,0,w,h);octx.globalCompositeOperation='destination-in';octx.imageSmoothingEnabled=true;octx.imageSmoothingQuality='high';octx.drawImage(mc,0,0,w,h);
+  return {ok:true,canvas:out,tol:baseTol*used};
+}
+function fallbackColorDistanceBG(id,quiet){
+  const s=state[id],r=classicCutout(id,quiet);
+  if(!r.ok){setStatus(id,r.msg);return false}
+  const fg=new Image();
+  fg.onload=()=>{if(!quiet)pushHistory(id);s.foregroundImg=fg;s.shadowImg=null;s.fillColor='transparent';s.cutKind='classic';processImage(id);setStatus(id,'Background removed (colour method) • fine-tune with Edge / Clean / Feather, or use Eraser / Restore')};
+  fg.src=r.canvas.toDataURL('image/png');
+  return true;
+}
+
+async function removeBackgroundAI(id){
   const s=state[id];
   if(!s.currentImg)return;
 
-  showLoading(id,'Removing signature background...');
-  setStatus(id,'Removing signature background...');
+  // The MediaPipe selfie model is designed for people, not handwritten
+  // signatures. Using it on a signature can classify the entire image as
+  // background and produce a blank transparent result.
+  if(s.mode==="sig"){
+    removeSignatureBackground(id);
+    return;
+  }
 
+  showLoading(id,'AI background removal loading...');
+  setStatus(id,'Removing background...');
   try{
-    const src=s.currentImg;
-    const w=src.naturalWidth||src.width, h=src.naturalHeight||src.height;
-    const c=document.createElement('canvas');
-    c.width=w; c.height=h;
-    const ctx=c.getContext('2d',{willReadFrequently:true});
-    ctx.clearRect(0,0,w,h);
-    ctx.drawImage(src,0,0,w,h);
-
-    const im=ctx.getImageData(0,0,w,h);
-    const d=im.data;
-
-    // Robust paper estimate: use corner pixels and the median of each channel.
-    // This works better than an average when the paper contains faint marks.
-    const samples=[];
-    const mx=Math.max(2,Math.floor(w*.10));
-    const my=Math.max(2,Math.floor(h*.10));
-    const step=Math.max(1,Math.floor(Math.min(w,h)/220));
-    for(let y=0;y<h;y+=step){
-      for(let x=0;x<w;x+=step){
-        if((x<mx||x>=w-mx)&&(y<my||y>=h-my)){
-          const i=(y*w+x)*4;
-          samples.push([d[i],d[i+1],d[i+2]]);
-        }
-      }
+    const source=s.currentImg;
+    const segmenter=await getImageSegmenter();
+    const result=segmenter.segment(source);
+    if(!result || !result.confidenceMasks || result.confidenceMasks.length<6){
+      throw new Error('MediaPipe mask unavailable.');
     }
-    const median=v=>{
-      if(!v.length)return 255;
-      v=v.slice().sort((a,b)=>a-b);
-      return v[Math.floor(v.length/2)];
-    };
-    const bg=[
-      median(samples.map(p=>p[0])),
-      median(samples.map(p=>p[1])),
-      median(samples.map(p=>p[2]))
-    ];
+
+    const baseMask=buildBaseMultiMask(result);
+    /* v8: the AI model only knows people. Reject its answer when it found no sensible subject
+       (almost nothing kept, everything kept, or the centre of the picture thrown away). */
+    (function(){
+      const A=baseMask.alpha,mw=baseMask.mw,mh=baseMask.mh;let fgc=0,cc=0,ct=0;
+      for(let y=0;y<mh;y++)for(let x=0;x<mw;x++){const v=A[y*mw+x]>0.5;if(v)fgc++;if(x>=mw*.3&&x<mw*.7&&y>=mh*.3&&y<mh*.7){ct++;if(v)cc++}}
+      const frac=fgc/(mw*mh),cr=ct?cc/ct:0;
+      if(frac<0.05||frac>0.985||cr<0.45){try{result.close?.();}catch{}throw new Error('AI mask rejected (no clear person found)');}
+    })();
+    lastSegmentationMask[id]={source,alpha:baseMask.alpha,mw:baseMask.mw,mh:baseMask.mh};
 
     const edge=Number(document.getElementById(`bg-edge-${id}`)?.value||55);
     const clean=Number(document.getElementById(`bg-clean-${id}`)?.value||25);
     const feather=Number(document.getElementById(`bg-feather-${id}`)?.value||35);
+    const refined=buildRefinedMask(lastSegmentationMask[id],edge,clean,feather);
+    const url=applyAlphaToSource(source,refined,edge);
 
-    // Controls are intentionally tuned for handwritten signatures:
-    // Edge = how aggressively paper is removed, Clean = dark-ink protection,
-    // Feather = anti-aliased edge softness.
-    const paperCut=24 + (100-edge)*0.42;
-    const soft=Math.max(8,14 + feather*0.28);
-    const inkCut=Math.max(70,145 - clean*0.55);
-
-    for(let i=0;i<d.length;i+=4){
-      const r=d[i],g=d[i+1],b=d[i+2];
-      const lum=.299*r+.587*g+.114*b;
-      const dist=Math.hypot(r-bg[0],g-bg[1],b-bg[2]);
-      const chroma=Math.max(r,g,b)-Math.min(r,g,b);
-
-      // Strong dark/colored ink is always retained. This protects blue/black
-      // pen strokes even when the paper is slightly tinted.
-      const darkInk=clamp01((inkCut-lum)/Math.max(1,inkCut-55));
-      const colorInk=clamp01((chroma-10)/55) * clamp01((235-lum)/100);
-      const ink=Math.max(darkInk,colorInk*.82);
-
-      // Pixels close to the paper color are transparent. The soft band keeps
-      // anti-aliased pen edges instead of producing jagged cut-outs.
-      let a;
-      if(dist<=paperCut) a=0;
-      else a=clamp01((dist-paperCut)/soft);
-
-      // Preserve actual ink above the paper-distance test.
-      a=Math.max(a,ink);
-
-      // Very bright paper/highlights remain transparent unless they are clearly
-      // separated from the sampled paper color.
-      if(lum>246 && dist<90) a=0;
-      d[i+3]=Math.round(255*clamp01(a));
-    }
-
-    ctx.putImageData(im,0,0);
-
-    const url=c.toDataURL('image/png');
-    const out=new Image();
-    out.onload=()=>{
-      pushHistory(id);
-      // Signature mode must use the transparent foreground, never an older
-      // shadow-removal result that could visually hide the signature.
-      s.shadowImg=null;
-      s.foregroundImg=out;
-      s.fillColor='transparent';
-      s.mode='sig';
-      document.getElementById(`container-${id}`)?.classList.add('signature-transparent');
-      processImage(id);
-      hideLoading(id);
-      setStatus(id,'Transparent signature ready • Copy Sign / Save Sign PNG');
-    };
-    out.onerror=()=>{
-      hideLoading(id);
-      setStatus(id,'Signature BG removal failed');
-      alert('Could not decode the transparent signature. Please try a clearer image.');
-    };
-    out.src=url;
+    await new Promise((resolve,reject)=>{
+      const out=new Image();
+      out.onload=()=>{
+        pushHistory(id);
+        s.foregroundImg=out;
+        s.fillColor='transparent';
+        processImage(id);
+        hideLoading(id);
+        s.cutKind='ai';setStatus(id,'AI background removed successfully');
+        try{result.close?.();}catch{}
+        resolve();
+      };
+      out.onerror=()=>{
+        try{result.close?.();}catch{}
+        reject(new Error('Image decoding failed for segmentation result'));
+      };
+      out.src=url;
+    });
   }catch(err){
-    console.error('Signature BG removal failed:',err);
-    hideLoading(id);
-    setStatus(id,'Signature BG removal failed');
-    alert('Could not remove the signature background. Please try a clearer signature image.');
-  }
-}
-
-/* ===== v9 Smart Background Removal: border-seeded flood fill + AI person mask, with live Tol/Edge/Clean/Feather ===== */
-function _bgWork(w,h,max){const k=Math.min(1,max/Math.max(w,h));return{ww:Math.max(8,Math.round(w*k)),wh:Math.max(8,Math.round(h*k))};}
-function _boxBlur(a,w,h,r){
-  if(r<1)return a;const t=new Float32Array(a.length),o=new Float32Array(a.length),k=2*r+1;
-  for(let y=0;y<h;y++){let sum=0;const b=y*w;for(let x=-r;x<=r;x++)sum+=a[b+Math.min(w-1,Math.max(0,x))];
-    for(let x=0;x<w;x++){t[b+x]=sum/k;sum+=a[b+Math.min(w-1,x+r+1)]-a[b+Math.max(0,x-r)];}}
-  for(let x=0;x<w;x++){let sum=0;for(let y=-r;y<=r;y++)sum+=t[Math.min(h-1,Math.max(0,y))*w+x];
-    for(let y=0;y<h;y++){o[y*w+x]=sum/k;sum+=t[Math.min(h-1,y+r+1)*w+x]-t[Math.max(0,y-r)*w+x];}}
-  return o;
-}
-function _morph(bin,w,h,r,dil){ // separable max/min filter on Uint8
-  const t=new Uint8Array(bin.length),o=new Uint8Array(bin.length);
-  for(let y=0;y<h;y++)for(let x=0;x<w;x++){let v=dil?0:1;for(let k=-r;k<=r;k++){const xx=x+k;if(xx<0||xx>=w)continue;const q=bin[y*w+xx];if(dil){if(q){v=1;break}}else if(!q){v=0;break}}t[y*w+x]=v;}
-  for(let y=0;y<h;y++)for(let x=0;x<w;x++){let v=dil?0:1;for(let k=-r;k<=r;k++){const yy=y+k;if(yy<0||yy>=h)continue;const q=t[yy*w+x];if(dil){if(q){v=1;break}}else if(!q){v=0;break}}o[y*w+x]=v;}
-  return o;
-}
-function _components(mask,w,h,val){ // label connected comps (4-conn) of mask==val; returns {label,sizes}
-  const N=w*h,label=new Int32Array(N),sizes=[0],q=new Int32Array(N);let n=0;
-  for(let i=0;i<N;i++){if(mask[i]!==val||label[i])continue;n++;let hd=0,tl=0;q[tl++]=i;label[i]=n;let sz=0;
-    while(hd<tl){const p=q[hd++];sz++;const x=p%w,y=(p-x)/w;
-      if(x>0&&mask[p-1]===val&&!label[p-1]){label[p-1]=n;q[tl++]=p-1}
-      if(x<w-1&&mask[p+1]===val&&!label[p+1]){label[p+1]=n;q[tl++]=p+1}
-      if(y>0&&mask[p-w]===val&&!label[p-w]){label[p-w]=n;q[tl++]=p-w}
-      if(y<h-1&&mask[p+w]===val&&!label[p+w]){label[p+w]=n;q[tl++]=p+w}}
-    sizes.push(sz);}
-  return{label,sizes};
-}
-function bgAnalyze(source,P,ai){
-  const w=source.naturalWidth||source.width,h=source.naturalHeight||source.height;
-  const {ww,wh}=_bgWork(w,h,800),N=ww*wh;
-  const c=document.createElement('canvas');c.width=ww;c.height=wh;
-  const ctx=c.getContext('2d',{willReadFrequently:true});ctx.drawImage(source,0,0,ww,wh);
-  const px=ctx.getImageData(0,0,ww,wh).data;
-  const T=P.tol*1.6,e=P.edge/100;
-  // --- border ring samples
-  const bw=Math.max(2,Math.round(Math.min(ww,wh)*0.03)),S=[];
-  for(let y=0;y<wh;y++)for(let x=0;x<ww;x++){if(x<bw||x>=ww-bw||y<bw||y>=wh-bw){if((x+y)%2===0){const i=(y*ww+x)*4;S.push([px[i],px[i+1],px[i+2]]);}}}
-  // --- k-means on border colours
-  const K=P.mode==='color'?1:(P.mode==='multi'?5:3);
-  const d3=(a,b)=>Math.hypot(a[0]-b[0],a[1]-b[1],a[2]-b[2]);
-  let cen=[S.reduce((m,p)=>[m[0]+p[0]/S.length,m[1]+p[1]/S.length,m[2]+p[2]/S.length],[0,0,0])];
-  while(cen.length<K){let best=null,bd=-1;for(const p of S){let m=1e9;for(const q of cen)m=Math.min(m,d3(p,q));if(m>bd){bd=m;best=p}}if(bd<T*0.6)break;cen.push(best.slice());}
-  let cnt=new Array(cen.length).fill(0);
-  for(let it=0;it<6;it++){const sum=cen.map(()=>[0,0,0,0]);for(const p of S){let bi=0,bd=1e9;cen.forEach((q,i)=>{const d=d3(p,q);if(d<bd){bd=d;bi=i}});sum[bi][0]+=p[0];sum[bi][1]+=p[1];sum[bi][2]+=p[2];sum[bi][3]++;}
-    cen=cen.map((q,i)=>sum[i][3]?[sum[i][0]/sum[i][3],sum[i][1]/sum[i][3],sum[i][2]/sum[i][3]]:q);cnt=sum.map(z=>z[3]);}
-  const keep=cen.filter((q,i)=>cnt[i]>=S.length*0.04||i===cnt.indexOf(Math.max(...cnt)));
-  const dom=cen[cnt.indexOf(Math.max(...cnt))];
-  const dcArr=new Float32Array(N);
-  for(let i=0,p=0;i<N;i++,p+=4){let m=1e9;for(const q of keep){const d=Math.hypot(px[p]-q[0],px[p+1]-q[1],px[p+2]-q[2]);if(d<m)m=d}dcArr[i]=m;}
-  const ringFrac=S.filter(p=>keep.some(q=>d3(p,q)<=T)).length/Math.max(1,S.length);
-  const domFrac=S.filter(p=>d3(p,dom)<=T).length/Math.max(1,S.length);
-  // --- flood fill from image edges through background-like pixels
-  const bg=new Uint8Array(N),qu=new Int32Array(N);let hd=0,tl=0;
-  const seed=i=>{if(!bg[i]&&dcArr[i]<=T){bg[i]=1;qu[tl++]=i}};
-  for(let x=0;x<ww;x++){seed(x);seed((wh-1)*ww+x);}for(let y=0;y<wh;y++){seed(y*ww);seed(y*ww+ww-1);}
-  const pd=(a,b)=>Math.hypot(px[a*4]-px[b*4],px[a*4+1]-px[b*4+1],px[a*4+2]-px[b*4+2]);
-  const tryQ=(p,qn)=>{if(bg[qn])return;if(dcArr[qn]<=T||(pd(p,qn)<=T*0.22&&dcArr[qn]<=T*1.8)){bg[qn]=1;qu[tl++]=qn}};
-  while(hd<tl){const p=qu[hd++],x=p%ww,y=(p-x)/ww;if(x>0)tryQ(p,p-1);if(x<ww-1)tryQ(p,p+1);if(y>0)tryQ(p,p-ww);if(y<wh-1)tryQ(p,p+ww);}
-  // multi-colour mode: also drop enclosed background-coloured pockets (gaps between arm/body etc.)
-  if(P.mode==='multi'){const un=new Uint8Array(N);for(let i=0;i<N;i++)un[i]=(!bg[i]&&dcArr[i]<=T*0.7)?1:0;
-    const cc=_components(un,ww,wh,1);for(let i=0;i<N;i++){if(un[i]&&cc.sizes[cc.label[i]]>=N*0.004)bg[i]=1;}}
-  let bgCount=0;for(let i=0;i<N;i++)bgCount+=bg[i];const bgFrac=bgCount/N;
-  // --- colour alpha with soft boundary
-  const colA=new Float32Array(N);const lo=T*(0.9-0.5*e),hi=T*(1.5-0.5*e);
-  for(let i=0;i<N;i++){if(bg[i]){colA[i]=0;continue;}const x=i%ww,y=(i-x)/ww;
-    const nb=(x>0&&bg[i-1])||(x<ww-1&&bg[i+1])||(y>0&&bg[i-ww])||(y<wh-1&&bg[i+ww]);
-    colA[i]=nb?clamp01((dcArr[i]-lo)/Math.max(1,hi-lo)):1;}
-  // --- AI alpha resampled
-  let aiA=null;
-  if(ai){aiA=new Float32Array(N);for(let y=0;y<wh;y++){const sy=Math.min(ai.mh-1,Math.floor(y*ai.mh/wh));for(let x=0;x<ww;x++){const sx=Math.min(ai.mw-1,Math.floor(x*ai.mw/ww));aiA[y*ww+x]=ai.alpha[sy*ai.mw+sx];}}}
-  const uniform=(P.mode==='color'||P.mode==='multi')||(domFrac>=0.55||ringFrac>=0.8)&&bgFrac>0.04&&bgFrac<0.95;
-  let A,used;
-  if(uniform||!aiA){
-    A=colA;used=(P.mode==='multi'?'Multi-colour':'Solid colour');
-    if(aiA&&P.mode==='auto'){for(let i=0;i<N;i++)if(aiA[i]>0.6)A[i]=Math.max(A[i],clamp01((aiA[i]-0.45)/0.35));used='Smart (colour + AI)';}
-  }else{
-    used=P.mode==='person'?'Person AI':'Smart (AI, busy background)';
-    const bin=new Uint8Array(N);const th=0.42-e*0.18;for(let i=0;i<N;i++)bin[i]=aiA[i]>th?1:0;
-    const r=1+Math.round(P.clean/100*2);
-    let m=_morph(_morph(bin,ww,wh,r+1,true),ww,wh,r+1,false);   // closing: fills gaps in clothes/hair
-    m=_morph(m,ww,wh,Math.max(0,Math.round(e*2)),true);          // small grow so edges are not cut
-    A=new Float32Array(N);for(let i=0;i<N;i++)A[i]=Math.max(m[i]?0.92:0,smoothstep(0.2,0.55,aiA[i]));
-  }
-  // --- clean: remove tiny floating specks, keep the main subject(s)
-  const bin2=new Uint8Array(N);for(let i=0;i<N;i++)bin2[i]=A[i]>0.5?1:0;
-  const cc=_components(bin2,ww,wh,1);const big=Math.max(0,...cc.sizes);const minA=Math.max(N*(0.0002+P.clean/100*0.006),Math.min(big*0.08,N*0.01*P.clean/100));
-  for(let i=0;i<N;i++){if(bin2[i]&&cc.sizes[cc.label[i]]<minA&&cc.sizes[cc.label[i]]<big)A[i]=0;}
-  // --- feather
-  const fr=Math.round(P.feather/100*3);if(fr>0)A=_boxBlur(A,ww,wh,fr);
-  return{A,ww,wh,bgColor:dom,used,bgFrac};
-}
-function bgCompose(source,res){
-  const w=source.naturalWidth||source.width,h=source.naturalHeight||source.height;
-  const sm=document.createElement('canvas');sm.width=res.ww;sm.height=res.wh;const sctx=sm.getContext('2d');
-  const id=sctx.createImageData(res.ww,res.wh);for(let i=0,p=0;i<res.A.length;i++,p+=4){id.data[p]=255;id.data[p+1]=255;id.data[p+2]=255;id.data[p+3]=Math.round(clamp01(res.A[i])*255);}sctx.putImageData(id,0,0);
-  const full=document.createElement('canvas');full.width=w;full.height=h;const fctx=full.getContext('2d',{willReadFrequently:true});
-  fctx.imageSmoothingEnabled=true;fctx.imageSmoothingQuality='high';fctx.drawImage(sm,0,0,w,h);const md=fctx.getImageData(0,0,w,h).data;
-  fctx.clearRect(0,0,w,h);fctx.drawImage(source,0,0,w,h);const im=fctx.getImageData(0,0,w,h),d=im.data,bc=res.bgColor||[255,255,255];
-  for(let i=0;i<d.length;i+=4){const a=md[i+3]/255;
-    if(a>0.01&&a<0.99){for(let k=0;k<3;k++){const v=(d[i+k]-(1-a)*bc[k])/a;d[i+k]=Math.max(0,Math.min(255,Math.round(d[i+k]*0.35+v*0.65)));}}
-    d[i+3]=Math.round(d[i+3]*a);}
-  fctx.putImageData(im,0,0);return full.toDataURL('image/png');
-}
-function getBGParams(id){
-  const g=(n,d)=>{const v=Number(document.getElementById(`${n}-${id}`)?.value);return isNaN(v)?d:v;};
-  return{tol:g('bg-tol',38),edge:g('bg-edge',55),clean:g('bg-clean',25),feather:g('bg-feather',35),mode:document.getElementById(`bg-mode-${id}`)?.value||'auto'};
-}
-function applyBG(id,push){
-  const s=state[id],b=s.bgSrc;if(!b||b.source!==s.currentImg)return;
-  try{
-    const res=bgAnalyze(b.source,getBGParams(id),b.ai),url=bgCompose(b.source,res),out=new Image();
-    out.onload=()=>{if(push)pushHistory(id);s.foregroundImg=out;s.shadowImg=null;s.fillColor='transparent';processImage(id);hideLoading(id);
-      setStatus(id,`BG removed • ${res.used} • ${Math.round(res.bgFrac*100)}% background • tune Tol / Edge / Clean / Feather, then 🖌 Restore or 🧽 Eraser`);};
-    out.src=url;
-  }catch(err){console.error(err);hideLoading(id);setStatus(id,'BG removal failed: '+err.message);}
-}
-const _bgTimers={};
-function rerunBG(id){const s=state[id];if(!s.bgSrc||s.bgSrc.source!==s.currentImg){setStatus(id,'Click ✂️ Remove BG again to adjust');return;}
-  clearTimeout(_bgTimers[id]);_bgTimers[id]=setTimeout(()=>applyBG(id,false),120);}
-async function removeBackgroundAI(id){
-  const s=state[id];if(!s.currentImg)return;
-  if(s.mode==="sig"){removeSignatureBackground(id);return;}
-  showLoading(id,'Removing background...');setStatus(id,'Removing background...');
-  const mode=document.getElementById(`bg-mode-${id}`)?.value||'auto';
-  let ai=null;
-  if(mode!=='color'&&mode!=='multi'){
+    console.error('AI BG removal failed:',err);
     try{
-      const seg=await getImageSegmenter(),r=seg.segment(s.currentImg);
-      if(r&&r.confidenceMasks&&r.confidenceMasks.length>=6){const m=buildBaseMultiMask(r);ai={alpha:m.alpha,mw:m.mw,mh:m.mh};}
-      try{r.close?.()}catch(_){}
-    }catch(err){console.warn('AI mask unavailable, using colour method',err);}
-  }
-  s.bgSrc={source:s.currentImg,ai};
-  await new Promise(r=>setTimeout(r,20));
-  applyBG(id,true);
-}
-function toggleRestore(id){
-  const s=state[id];
-  if(!s.foregroundImg){setStatus(id,'Run Remove BG first, then Restore wrongly cut parts');return;}
-  const on=!(s.restoreMode&&s.eraserOn);
-  s.restoreMode=on;s.eraserOn=on;s.eraserDrawing=false;if(!on)s.eraserCanvas=null;
-  document.getElementById(`restore-btn-${id}`)?.classList.toggle('eraser-restore',on);
-  document.getElementById(`eraser-btn-${id}`)?.classList.remove('eraser-on');
-  document.getElementById(`container-${id}`)?.classList.toggle('eraser-mode',on);
-  if(!on){const cur=document.getElementById(`eraser-cursor-${id}`);if(cur)cur.style.display='none';}
-  setStatus(id,on?'Restore ON • paint over parts that were wrongly cut (brush size = Size box)':'Restore OFF');
-}
-
-function fallbackColorDistanceBG(id){
-  const s=state[id];
-  if(!s.currentImg)return;
-
-  const src=s.currentImg;
-  const w=src.naturalWidth||src.width, h=src.naturalHeight||src.height;
-  const c=document.createElement('canvas');
-  c.width=w; c.height=h;
-  const ctx=c.getContext('2d',{willReadFrequently:true});
-  ctx.drawImage(src,0,0,w,h);
-
-  const im=ctx.getImageData(0,0,w,h), d=im.data;
-  const sample=[];
-  const step=Math.max(1,Math.floor(Math.min(w,h)/140));
-
-  for(let y=0;y<h;y+=step){
-    for(let x=0;x<w;x+=step){
-      if(x<Math.max(3,w*.06)||x>w-Math.max(3,w*.06)||
-         y<Math.max(3,h*.06)||y>h-Math.max(3,h*.06)){
-        const i=(y*w+x)*4;
-        sample.push([d[i],d[i+1],d[i+2]]);
-      }
+      const ok=fallbackColorDistanceBG(id);
+      hideLoading(id);
+      if(!ok){/* message already shown by the colour method */}
+    }catch(localErr){
+      console.error(localErr);
+      hideLoading(id);
+      setStatus(id,'BG removal failed');
     }
   }
-
-  const avg=sample.length
-    ? sample.reduce((a,p)=>[a[0]+p[0],a[1]+p[1],a[2]+p[2]],[0,0,0]).map(v=>v/sample.length)
-    : [255,255,255];
-
-  for(let i=0;i<d.length;i+=4){
-    const dist=Math.hypot(d[i]-avg[0],d[i+1]-avg[1],d[i+2]-avg[2]);
-    const lum=.299*d[i]+.587*d[i+1]+.114*d[i+2];
-
-    // Preserve dark foreground while removing a near-uniform background.
-    let a;
-    if(lum<105) a=1;
-    else if(dist<28) a=0;
-    else a=clamp01((dist-28)/28);
-
-    if(lum>245 && dist<70) a=0;
-    d[i+3]=Math.round(255*a);
-  }
-
-  ctx.putImageData(im,0,0);
-
-  const fg=new Image();
-  fg.onload=()=>{
-    pushHistory(id);
-    s.foregroundImg=fg;
-    s.fillColor='transparent';
-    processImage(id);
-  };
-  fg.src=c.toDataURL('image/png');
 }
 
 function setBGColor(id,color){pushHistory(id);state[id].fillColor=color;state[id].bgImage=null;const p=document.getElementById(`picker-${id}`);if(p && color!=="transparent")p.value=color;processImage(id);setStatus(id,color==="transparent"?"Background: Transparent":`Background fill: ${color}`)}
@@ -1985,7 +1733,7 @@ function processImage(id){
   if(s.mode==="sig" && s.foregroundImg && !s.bgImage && s.fillColor==="transparent"){
     const color=document.getElementById(`signature-color-${id}`)?.value;
     const rgb=color?.match(/[0-9a-f]{2}/gi)?.map(v=>parseInt(v,16));
-    if(rgb && rgb.length===3){
+    if(rgb && rgb.length===3 && s.inkCustom){
       const imageData=ctx.getImageData(0,0,w,h),px=imageData.data;
       for(let i=0;i<px.length;i+=4){if(px[i+3]===0)continue;px[i]=rgb[0];px[i+1]=rgb[1];px[i+2]=rgb[2];}
       ctx.putImageData(imageData,0,0);
@@ -1999,6 +1747,7 @@ function setSignatureColor(id, color){
     setStatus(id,'Choose an ink color after clicking Remove BG');
     return;
   }
+  s.inkCustom=true;
   setStatus(id,`Signature ink color set to ${color.toUpperCase()}`);
   processImage(id);
 }
@@ -2031,7 +1780,7 @@ function renderTransparentSignatureCanvas(id){
   const color=document.getElementById(`signature-color-${id}`)?.value;
   if(color){
     const rgb=color.match(/[0-9a-f]{2}/gi)?.map(v=>parseInt(v,16));
-    if(rgb && rgb.length===3){
+    if(rgb && rgb.length===3 && s.inkCustom){
       const imageData=ctx.getImageData(0,0,out.width,out.height);
       const px=imageData.data;
       for(let i=0;i<px.length;i+=4){
@@ -2041,7 +1790,15 @@ function renderTransparentSignatureCanvas(id){
       ctx.putImageData(imageData,0,0);
     }
   }
-  return out;
+  return psTrimCanvas(out,0.05);
+}
+function psTrimCanvas(c,padFrac){
+  const w=c.width,h=c.height,d=c.getContext('2d').getImageData(0,0,w,h).data;
+  let x0=w,y0=h,x1=-1,y1=-1;
+  for(let y=0;y<h;y++)for(let x=0;x<w;x++){if(d[(y*w+x)*4+3]>12){if(x<x0)x0=x;if(x>x1)x1=x;if(y<y0)y0=y;if(y>y1)y1=y}}
+  if(x1<0)return c;
+  const pad=Math.round(Math.max(x1-x0,y1-y0)*padFrac)+2,ax=Math.max(0,x0-pad),ay=Math.max(0,y0-pad),bx=Math.min(w,x1+pad+1),by=Math.min(h,y1+pad+1);
+  const o=document.createElement('canvas');o.width=bx-ax;o.height=by-ay;o.getContext('2d').drawImage(c,ax,ay,o.width,o.height,0,0,o.width,o.height);return o;
 }
 
 function downloadCanvasPNG(id,filename,transparent=false){
@@ -2105,7 +1862,7 @@ function saveAllImages(){
   [1,2].forEach(id=>{
     if(state[id].currentImg){
       const isSign=state[id].mode==="sig" && !!state[id].foregroundImg;
-      downloadCanvasPNG(id,isSign?`signature-pane${id}.png`:`docfix-pane${id}.png`,isSign);
+      downloadCanvasPNG(id,isSign?`signature-pane${id}.png`:`prostudio-pane${id}.png`,isSign);
     }
   });
 }
@@ -2117,7 +1874,7 @@ function isFrameActive(id){
 function getFrameSpec(id){
   const frameEl=document.querySelector(`#container-${id} .crop-frame`);
   const selected=Math.max(1,Math.min(5,Number(document.getElementById(`frame-${id}`)?.value)||3));
-  const color=document.getElementById(`frame-color-${id}`)?.value || '#00e5ff';
+  const color=document.getElementById(`frame-color-${id}`)?.value || '#000000';
   const cssWidth=frameEl ? parseFloat(getComputedStyle(frameEl).borderTopWidth||selected) : selected;
   return {
     active:!!frameEl?.classList.contains('active'),
@@ -2196,7 +1953,7 @@ function openPrintWindow(title,htmlContent){
    */
   const w=window.open('about:blank','_blank','width=900,height=1100');
   if(!w){
-    alert('Pop-up blocked. Please allow pop-ups for DocFix Pro Studio, then click Print again.');
+    alert('Pop-up blocked. Please allow pop-ups for Pro Studio Pro Studio, then click Print again.');
     return null;
   }
 
@@ -2301,7 +2058,6 @@ ${body}
   else window.addEventListener('load',doPrint,{once:true});
 })();
 <\/script>
-
 </body>
 </html>`;
 }
@@ -2355,8 +2111,8 @@ function printIDCardFrontBack(){
        top/bottom anchors so each card can be positioned precisely. */
     @media print{html,body{width:210mm;height:297mm;margin:0;padding:0}}`;
 
-  return openPrintWindow('DocFix ID Card Print',
-    printWindowScaffold('DocFix ID Card Print',pages,css));
+  return openPrintWindow('Pro Studio ID Card Print',
+    printWindowScaffold('Pro Studio ID Card Print',pages,css));
 }
 
 function printPhotoSheet5x5(){
@@ -2423,8 +2179,8 @@ function printPhotoSheet5x5(){
     @media print{html,body{width:210mm;height:297mm}}`;
 
   const page=`<section class="sheet">${rows.join('')}</section>`;
-  return openPrintWindow('DocFix Photo Sheet 5+5',
-    printWindowScaffold('DocFix Photo Sheet 5+5',page,css));
+  return openPrintWindow('Pro Studio Photo Sheet 5+5',
+    printWindowScaffold('Pro Studio Photo Sheet 5+5',page,css));
 }
 
 function triggerSafePrint(){
@@ -2449,8 +2205,8 @@ function triggerSafePrint(){
       -webkit-print-color-adjust:exact;print-color-adjust:exact
     }`;
 
-  return openPrintWindow('DocFix Document Print',
-    printWindowScaffold('DocFix Document Print',imgs,css));
+  return openPrintWindow('Pro Studio Document Print',
+    printWindowScaffold('Pro Studio Document Print',imgs,css));
 }
 
 function printSinglePaneA4(id){
@@ -2481,20 +2237,12 @@ function printSinglePaneA4(id){
       `<img src="${data}" alt="Pane ${id} image">`,css));
 }
 
-function exitStudio(){
-  if(confirm("Exit Pro Studio and go to CSC VLE TOOLS home? Unsaved changes will be cleared.")){
-    try{deleteImage(1);deleteImage(2);}catch(e){}
-    window.location.href="index.html";
-  }
+function hasWork(){try{return !!((state[1]&&(state[1].currentImg||state[1].originalImg||state[1].img))||(state[2]&&(state[2].currentImg||state[2].originalImg||state[2].img)))}catch(e){return false}}
+function leaveStudio(url){
+  if(hasWork() && !confirm("Leave Pro Studio? Photos you loaded and edits you have not exported will be cleared.")) return false;
+  return true;
 }
-
-function toggleStudioLayout(){
-  const m=document.querySelector('.main');
-  const on=m.classList.toggle('stacked');
-  try{sessionStorage.setItem('studioStacked',on?'1':'0');}catch(e){}
-  window.dispatchEvent(new Event('resize'));
-}
-try{if(sessionStorage.getItem('studioStacked')==='1'){document.addEventListener('DOMContentLoaded',()=>document.querySelector('.main').classList.add('stacked'));}}catch(e){}
+function exitStudio(){ if(leaveStudio()) location.href="cat-sheets.html"; }
 
 function getSourcePoints(id){
   const s=state[id];
@@ -2628,6 +2376,319 @@ function applySmartCropDewarp(id){
   }
 }
 </script>
-  <script src="assets/js/demo-mode.js?v=32" defer></script>
+<script>
+/* Pro Studio UI behaviour (v8): tabs, live state, theme menu, photo-sheet planner, ID card options, print panel, brushes, ink. */
+(function(){
+  "use strict";
+  const $=id=>document.getElementById(id);
+  const PANES=[1,2], NAMES={1:'Pane 1 · Front',2:'Pane 2 · Back'};
+  const TABC={adjust:'#0891b2',crop:'#16a34a',bg:'#e11d48',cut:'#9333ea',sign:'#2563eb'};
+
+  /* ================= tabs ================= */
+  function selectTab(n,key,focus){
+    document.querySelectorAll(`#pane-${n} .tab`).forEach(t=>{const on=t.dataset.tab===key;t.setAttribute('aria-selected',on);t.tabIndex=on?0:-1;if(on&&focus)t.focus()});
+    document.querySelectorAll(`#pane-${n} .panel`).forEach(p=>p.hidden=p.id!==`panel-${n}-${key}`);
+    $('pane-'+n).style.setProperty('--tabc',TABC[key]);
+    setCollapsed(n,false);
+  }
+  function setCollapsed(n,c){
+    const pane=$('pane-'+n);pane.classList.toggle('collapsed',c);
+    const b=pane.querySelector('[data-collapse]');b.setAttribute('aria-expanded',String(!c));
+    b.innerHTML=`<svg class="ic" aria-hidden="true"><use href="#i-chev-${c?'d':'u'}"/></svg>`;
+    requestAnimationFrame(()=>{if(typeof fitPreviewToPane==='function')fitPreviewToPane(n)});
+  }
+  document.addEventListener('click',e=>{
+    const tab=e.target.closest('.tab');
+    if(tab){const n=+tab.dataset.pane,pane=$('pane-'+n);
+      if(tab.getAttribute('aria-selected')==='true'&&!pane.classList.contains('collapsed'))setCollapsed(n,true);else selectTab(n,tab.dataset.tab);return}
+    const col=e.target.closest('[data-collapse]');
+    if(col){const n=+col.dataset.collapse;setCollapsed(n,!$('pane-'+n).classList.contains('collapsed'))}
+  });
+  document.addEventListener('keydown',e=>{
+    const tab=e.target.closest&&e.target.closest('.tab');if(!tab||!['ArrowLeft','ArrowRight','Home','End'].includes(e.key))return;
+    const list=[...tab.parentElement.querySelectorAll('.tab')],i=list.indexOf(tab);
+    const j=e.key==='Home'?0:e.key==='End'?list.length-1:(i+(e.key==='ArrowRight'?1:-1)+list.length)%list.length;
+    e.preventDefault();selectTab(+tab.dataset.pane,list[j].dataset.tab,true);
+  });
+
+  /* ================= live state ================= */
+  function setPressed(id,on){const b=$(id);if(b)b.setAttribute('aria-pressed',String(!!on))}
+  function syncUI(){
+    document.querySelectorAll('.sl output').forEach(o=>{const r=$(o.dataset.for);if(r){const v=r.value;o.textContent=(r.id.startsWith('fine-angle')&&+v>0?'+':'')+v}});
+    PANES.forEach(n=>{
+      const s=state[n],pane=$('pane-'+n);
+      pane.classList.toggle('has-image',!!(s.currentImg||s.origImg));
+      setPressed('t-pins-'+n,s.pinsVisible!==false);
+      setPressed('t-move-'+n,!!s.dragImage);
+      setPressed('eraser-btn-'+n,!!s.eraserOn&&!s.restoreMode);
+      setPressed('restore-btn-'+n,!!s.eraserOn&&!!s.restoreMode);
+      const eb=$('eraser-btn-'+n);if(eb)eb.classList.toggle('eraser-on',!!s.eraserOn&&!s.restoreMode);
+      setPressed('t-frame-'+n,!!document.querySelector(`#container-${n} .crop-frame`)?.classList.contains('active'));
+      $('m-doc-'+n).classList.toggle('on',s.mode==='doc');$('m-sig-'+n).classList.toggle('on',s.mode==='sig');
+      const col=($('signature-color-'+n)||{}).value||'';
+      setPressed('ink-orig-'+n,!s.inkCustom);setPressed('ink-black-'+n,!!s.inkCustom&&col.toLowerCase()==='#111111');setPressed('ink-blue-'+n,!!s.inkCustom&&col.toLowerCase()==='#1f3fbf');
+      ['shadowfix','shadowdetail'].forEach(k=>$(`sl-${k}-${n}`).classList.toggle('dim',!s.shadowRemoved));
+    });
+    idInfo();
+  }
+  document.addEventListener('input',syncUI);
+  document.addEventListener('change',syncUI);
+  document.addEventListener('click',()=>requestAnimationFrame(syncUI));
+  const _setStatus=setStatus;setStatus=function(id,msg){_setStatus(id,msg);syncUI()};
+  setInterval(syncUI,800);
+
+  function markActive(){
+    PANES.forEach(n=>$('pane-'+n).classList.toggle('is-active',activePane===n));
+    $('editing-name').textContent=NAMES[activePane];
+  }
+  PANES.forEach(n=>$('pane-'+n).addEventListener('pointerdown',()=>setTimeout(markActive,0)));
+  document.addEventListener('focusin',e=>{const p=e.target.closest&&e.target.closest('.pane');if(p){activePane=+p.id.slice(-1);markActive()}});
+  PANES.forEach(n=>$('pane-'+n).style.setProperty('--tabc',TABC.adjust));
+
+  /* ================= theme menu ================= */
+  const T=window.PSTheme,tbtn=$('theme-open'),tmenu=$('themeMenu');
+  function swatch(kind,i,css,label,on){return `<button type="button" class="opt${on?' on':''}" data-k="${kind}" data-i="${i}" style="background:${css}" title="${label}" aria-label="${label}"></button>`}
+  function renderTheme(){
+    const t=T.get(),dark=t.mode==='dark',bgs=dark?T.BGD:T.BGL,cur=dark?t.bgD:t.bgL;
+    tmenu.innerHTML=
+      `<h4>Mode</h4><div class="opt-seg"><button type="button" class="btn tgl" data-k="mode" data-i="light" aria-pressed="${!dark}">☀ Light</button><button type="button" class="btn tgl" data-k="mode" data-i="dark" aria-pressed="${dark}">🌙 Dark</button></div>`+
+      `<h4>Header colour</h4><div class="opt-row">${T.HEADS.map((h,i)=>swatch('head',i,`linear-gradient(135deg,${h[1]},${h[2]})`,h[0],t.head===i)).join('')}</div>`+
+      `<h4>Main button colour</h4><div class="opt-row">${T.ACCENTS.map((a,i)=>swatch('accent',i,`linear-gradient(135deg,${a[2]},${a[3]})`,a[0],t.accent===i)).join('')}</div>`+
+      `<h4>Workspace background</h4><div class="opt-row">${bgs.map((b,i)=>swatch('bg',i,b[1],b[0],cur.toLowerCase()===b[1])).join('')}<label class="opt" style="display:inline-grid;place-items:center;background:conic-gradient(red,yellow,lime,aqua,blue,magenta,red);position:relative" title="Pick any background colour"><input type="color" id="theme-bg-pick" value="${cur}" style="opacity:0;position:absolute;inset:0;width:100%;height:100%;cursor:pointer" aria-label="Custom background colour"></label></div>`+
+      `<button type="button" class="btn reset" data-k="reset">Reset to default look</button>`;
+  }
+  function toggleTheme(on){tmenu.hidden=!on;tbtn.setAttribute('aria-expanded',String(on));if(on)renderTheme()}
+  tbtn.addEventListener('click',e=>{e.stopPropagation();toggleTheme(tmenu.hidden)});
+  tmenu.addEventListener('click',e=>{
+    e.stopPropagation();const b=e.target.closest('[data-k]');if(!b)return;const k=b.dataset.k,i=b.dataset.i;
+    if(k==='mode')T.set({mode:i});else if(k==='head')T.set({head:+i});else if(k==='accent')T.set({accent:+i});
+    else if(k==='bg'){const dark=T.get().mode==='dark',c=(dark?T.BGD:T.BGL)[+i][1];T.set(dark?{bgD:c}:{bgL:c})}
+    else if(k==='reset')T.reset();
+    renderTheme();
+  });
+  tmenu.addEventListener('input',e=>{if(e.target.id==='theme-bg-pick'){const dark=T.get().mode==='dark';T.set(dark?{bgD:e.target.value}:{bgL:e.target.value})}});
+  document.addEventListener('click',e=>{if(!tmenu.hidden&&!tmenu.contains(e.target)&&e.target!==tbtn)toggleTheme(false)});
+
+  /* ================= print drawer ================= */
+  const drawer=$('printDrawer'),scrim=$('printScrim'),openBtn=$('print-open');
+  function togglePrint(on){
+    drawer.classList.toggle('on',on);scrim.classList.toggle('on',on);drawer.setAttribute('aria-hidden',String(!on));openBtn.setAttribute('aria-expanded',String(on));
+    if(on){toggleTheme(false);psRefresh(true);$('print-close').focus()}else openBtn.focus();
+  }
+  openBtn.addEventListener('click',()=>togglePrint(!drawer.classList.contains('on')));
+  $('print-close').addEventListener('click',()=>togglePrint(false));
+  scrim.addEventListener('click',()=>togglePrint(false));
+  document.addEventListener('keydown',e=>{if(e.key==='Escape'){if(drawer.classList.contains('on'))togglePrint(false);else if(!tmenu.hidden)toggleTheme(false)}});
+  drawer.addEventListener('click',e=>{
+    const b=e.target.closest('[data-print]');if(!b||b.disabled)return;
+    const fn=window[b.dataset.print];if(typeof fn!=='function')return;
+    fn(b.dataset.arg?Number(b.dataset.arg):undefined);     /* run inside the click so pop-up blockers allow the print window */
+    togglePrint(false);
+  });
+
+  /* ================= ID card options ================= */
+  const idType=$('idCardType'),idLay=$('idCardLayout');
+  idType.addEventListener('change',()=>{idLay.value=idType.value==='PAN Card'?'front':'frontback';idInfo()});
+  idLay.addEventListener('change',idInfo);
+  function idInfo(){
+    const lay=idLay.value,has1=!!state[1].currentImg,has2=!!state[2].currentImg,box=$('idInfo');
+    $('idGapRow').style.display=lay==='frontback'?'':'none';
+    $('idTopRow').style.display=lay==='back'?'none':'';
+    $('idBotRow').style.display=lay==='front'?'none':'';
+    let msg='',cls='';
+    if(lay==='frontback'){msg='Prints Pane 1 (front) at the top and Pane 2 (back) at the bottom of one A4 page.';if(!has1||!has2){msg='Both panes are needed: '+(!has1&&!has2?'Pane 1 and Pane 2 are empty.':!has1?'Pane 1 (front) is empty.':'Pane 2 (back) is empty, so only the front will print.');cls='bad'}else cls='ok'}
+    else if(lay==='front'){msg='Prints only Pane 1 (front), centred on A4. Use this for PAN card.';if(!has1){msg='Pane 1 is empty. Upload the card in Pane 1.';cls='bad'}else cls='ok'}
+    else{msg='Prints only Pane 2 (back), centred on A4.';if(!has2){msg='Pane 2 is empty.';cls='bad'}else cls='ok'}
+    box.textContent=msg;box.className='fitnote '+cls;
+  }
+  window.printIDCardSmart=function(){
+    const lay=idLay.value;
+    if(lay!=='back'&&!state[1].currentImg){alert('Pane 1 is empty. Upload the front of the card in Pane 1.');return}
+    if(lay==='back'&&!state[2].currentImg){alert('Pane 2 is empty. Upload the back of the card in Pane 2.');return}
+    if(lay==='frontback'&&!state[2].currentImg&&!confirm('Pane 2 (back) is empty. Print only the front?'))return;
+    return printIDCardFrontBack();
+  };
+
+  /* ================= photo sheet planner ================= */
+  const SIZES=[['Passport photo — 35 × 45 mm',35,45],['Passport / visa — 2 × 2 in (51 × 51 mm)',51,51],['PAN card photo — 25 × 35 mm',25,35],['Small passport — 30 × 40 mm',30,40],['Stamp size — 20 × 25 mm',20,25],['Small stamp — 15 × 20 mm',15,20],['Sticker on book — 30 × 35 mm',30,35]];
+  const PAPER={plain:{label:'A4 Plain paper',margin:8},glossy:{label:'A4 Glossy photo paper',margin:5}};
+  const SK='ps_sizes';
+  const customList=()=>{try{const a=JSON.parse(localStorage.getItem(SK)||'[]');return Array.isArray(a)?a.filter(x=>x&&x.name&&x.w>0&&x.h>0):[]}catch(e){return[]}};
+  const saveCustom=a=>{try{localStorage.setItem(SK,JSON.stringify(a))}catch(e){}};
+  const sSize=$('psSize'),sW=$('psW'),sH=$('psH'),sPaper=$('psPaper'),sGap=$('psGap'),sC1=$('psC1'),sC2=$('psC2'),sMulti=$('psMulti'),sFrame=$('psFrame'),sFt=$('psFt'),sFc=$('psFc'),sFit=document.createElement('select');
+  sFit.id='psFit';sFit.innerHTML='<option value="cover">Crop edges to fit (no stretching)</option><option value="fill">Stretch to the exact size</option>';
+  const fitLabel=document.createElement('label');fitLabel.className='wide';fitLabel.innerHTML='Fit picture to size';fitLabel.appendChild(sFit);
+  sFt.closest('label').parentNode.insertBefore(fitLabel,sFt.closest('label'));
+  let touched=false;
+  function fillSizes(sel){
+    const cs=customList();
+    sSize.innerHTML=SIZES.map((s,i)=>`<option value="i:${i}">${s[0]}</option>`).join('')+cs.map((s,i)=>`<option value="c:${i}">★ ${s.name} — ${s.w} × ${s.h} mm</option>`).join('')+'<option value="custom">Custom size…</option>';
+    if(sel)sSize.value=sel;
+  }
+  function matchSize(){
+    const w=+sW.value,h=+sH.value,cs=customList();
+    for(let i=0;i<SIZES.length;i++)if(SIZES[i][1]===w&&SIZES[i][2]===h)return 'i:'+i;
+    for(let i=0;i<cs.length;i++)if(cs[i].w===w&&cs[i].h===h)return 'c:'+i;
+    return 'custom';
+  }
+  function geo(){
+    const w=+sW.value,h=+sH.value,gap=Math.max(0,+sGap.value||0),m=PAPER[sPaper.value].margin;
+    const ok=w>=10&&h>=10&&w<=190&&h<=277;
+    const cols=ok?Math.floor((210-2*m+gap)/(w+gap)):0,rows=ok?Math.floor((297-2*m+gap)/(h+gap)):0;
+    return {w,h,gap,m,cols,rows,cap:cols*rows,ok:ok&&cols>0&&rows>0};
+  }
+  function countOptions(sel,max,keep,cap,multi){
+    const vals=[];for(let v=0;v<=max;v+=5)vals.push(v);if(max%5&&!vals.includes(max))vals.push(max);
+    sel.innerHTML=vals.map(v=>{const over=!multi&&v>cap;return `<option value="${v}"${over?' disabled':''}>${v===0?'0 (none)':v}${over?' — needs 2 sheets':''}</option>`}).join('');
+    const ok=vals.filter(v=>multi||v<=cap),want=ok.includes(keep)?keep:ok.filter(v=>v<=keep).pop();sel.value=String(want==null?0:want);
+  }
+  function plan(g,c1,c2){
+    const r1=g.cols?Math.ceil(c1/g.cols):0,r2=g.cols?Math.ceil(c2/g.cols):0,total=r1+r2,sheets=g.rows?Math.max(1,Math.ceil(total/g.rows)):1;
+    return {r1,r2,total,sheets,fits:total<=g.rows};
+  }
+  function psRefresh(initial){
+    const g=geo(),has1=!!state[1].currentImg,has2=!!state[2].currentImg;
+    const multi=sMulti.checked;
+    if(initial&&!touched){sC1.dataset.def=has1&&has2?'5':has1?'10':has2?'0':'5';sC2.dataset.def=has1&&has2?'5':has1?'0':has2?'10':'5'}
+    const k1=+(initial&&!touched?sC1.dataset.def:sC1.value)||0,k2=+(initial&&!touched?sC2.dataset.def:sC2.value)||0;
+    const info=$('psInfo'),btn=$('psPrint');
+    if(!g.ok){info.className='fitnote bad';info.textContent='This size does not fit on A4. Make it smaller.';btn.disabled=true;sC1.innerHTML=sC2.innerHTML='<option value="0">0</option>';drawPrev(g,0,0);return}
+    const max=multi?200:Math.max(g.cap,40);
+    countOptions(sC1,max,k1,g.cap,multi);countOptions(sC2,max,k2,g.cap,multi);
+    const c1=+sC1.value,c2=+sC2.value,p=plan(g,c1,c2),paper=PAPER[sPaper.value];
+    let msg=`${paper.label}: ${g.cols} photos per row, ${g.rows} rows, up to ${g.cap} photos on one sheet. `;
+    let cls='ok',can=true;
+    if(c1+c2===0){msg+='Choose how many photos to print.';cls='';can=false}
+    else{
+      msg+=`Pane 1: ${c1} (${p.r1} row${p.r1===1?'':'s'}) · Pane 2: ${c2} (${p.r2} row${p.r2===1?'':'s'}). `;
+      if(p.fits)msg+=`Uses ${p.total} of ${g.rows} rows. ✔`;
+      else if(multi)msg+=`This needs ${p.sheets} A4 sheets.`;
+      else{cls='bad';can=false;const free=Math.max(0,(g.rows-p.r1)*g.cols);msg+=`Too many for one sheet. With ${c1} in Pane 1, Pane 2 can have up to ${Math.floor(free/5)*5}. Or tick “Allow more than one A4 sheet”.`}
+    }
+    if(c1>0&&!has1){cls='bad';can=false;msg+=' Pane 1 has no picture.'}
+    if(c2>0&&!has2){cls='bad';can=false;msg+=' Pane 2 has no picture.'}
+    info.className='fitnote '+cls;info.textContent=msg;btn.disabled=!can;
+    drawPrev(g,c1,c2);
+  }
+  function drawPrev(g,c1,c2){
+    const box=$('psPrev'),k=126/210;box.innerHTML='';if(!g.ok)return;
+    const total=Math.ceil(c1/g.cols)+Math.ceil(c2/g.cols);let row=0;
+    const x0=(210-(g.cols*g.w+(g.cols-1)*g.gap))/2;
+    [[c1,'#4f8cff'],[c2,'#ff9f43']].forEach(([c,col])=>{
+      for(let i=0;i<c;i++){const r=Math.floor(i/g.cols),cc=i%g.cols,rr=row+r;if(rr>=g.rows)break;
+        const el=document.createElement('i');el.style.cssText=`left:${(x0+cc*(g.w+g.gap))*k}px;top:${(g.m+rr*(g.h+g.gap))*k}px;width:${g.w*k}px;height:${g.h*k}px;background:${col}`;box.appendChild(el)}
+      row+=Math.ceil(c/g.cols);
+    });
+  }
+  [sW,sH,sGap].forEach(el=>el.addEventListener('input',()=>{sSize.value=matchSize();syncSave();psRefresh()}));
+  [sPaper,sMulti].forEach(el=>el.addEventListener('change',()=>psRefresh()));
+  [sC1,sC2].forEach(el=>el.addEventListener('change',()=>{touched=true;psRefresh()}));
+  sSize.addEventListener('change',()=>{
+    const v=sSize.value;
+    if(v.startsWith('i:')){const s=SIZES[+v.slice(2)];sW.value=s[1];sH.value=s[2]}
+    else if(v.startsWith('c:')){const s=customList()[+v.slice(2)];if(s){sW.value=s.w;sH.value=s.h}}
+    syncSave();psRefresh();
+  });
+  function syncSave(){
+    const v=sSize.value,row=$('psSaveRow');row.hidden=!(v==='custom'||v.startsWith('c:'));
+    $('psSave').textContent=v.startsWith('c:')?'Remove from list':'Save to list';
+    $('psName').closest('label').style.display=v.startsWith('c:')?'none':'';
+  }
+  $('psSave').addEventListener('click',()=>{
+    const v=sSize.value,list=customList();
+    if(v.startsWith('c:')){list.splice(+v.slice(2),1);saveCustom(list);fillSizes('custom');syncSave();return}
+    const name=$('psName').value.trim(),w=+sW.value,h=+sH.value;
+    if(!name){alert('Type a name for this size, for example “Book sticker”.');return}
+    if(!(w>=10&&h>=10)){alert('Enter a valid width and height in mm.');return}
+    list.push({name,w,h});saveCustom(list);$('psName').value='';fillSizes('c:'+(list.length-1));syncSave();
+  });
+  window.printPhotoSheetV2=function(){
+    const g=geo();if(!g.ok){alert('This photo size does not fit on A4.');return}
+    const c1=+sC1.value||0,c2=+sC2.value||0,p=plan(g,c1,c2);
+    if(c1+c2===0){alert('Choose how many photos to print.');return}
+    if(!p.fits&&!sMulti.checked){alert('Too many photos for one A4 sheet. Reduce the numbers or tick “Allow more than one A4 sheet”.');return}
+    if(c1>0&&!state[1].currentImg){alert('Pane 1 has no picture.');return}
+    if(c2>0&&!state[2].currentImg){alert('Pane 2 has no picture.');return}
+    const PX=mm=>Math.max(8,Math.round(mm/25.4*400)),tw=PX(g.w),th=PX(g.h),cover=sFit.value==='cover';
+    const tile=id=>{
+      const cv=renderExportCanvas(id,{includeFrame:true});if(!cv)return '';
+      const o=document.createElement('canvas');o.width=tw;o.height=th;const x=o.getContext('2d');
+      x.fillStyle='#fff';x.fillRect(0,0,tw,th);x.imageSmoothingEnabled=true;x.imageSmoothingQuality='high';
+      if(cover){const sc=Math.max(tw/cv.width,th/cv.height),sw=tw/sc,sh=th/sc;x.drawImage(cv,(cv.width-sw)/2,(cv.height-sh)/2,sw,sh,0,0,tw,th)}else x.drawImage(cv,0,0,tw,th);
+      return o.toDataURL('image/jpeg',0.95);
+    };
+    const imgs={1:c1?tile(1):'',2:c2?tile(2):''};
+    const x0=(210-(g.cols*g.w+(g.cols-1)*g.gap))/2,ft=+sFt.value,fc=sFc.value;
+    const pages=[];let row=0;
+    const place=(id,count)=>{
+      for(let i=0;i<count;i++){
+        const r=row+Math.floor(i/g.cols),c=i%g.cols,pg=Math.floor(r/g.rows),lr=r%g.rows;
+        (pages[pg]=pages[pg]||[]).push(`<img class="ph" alt="Pane ${id} photo" src="${imgs[id]}" style="left:${(x0+c*(g.w+g.gap)).toFixed(3)}mm;top:${(g.m+lr*(g.h+g.gap)).toFixed(3)}mm">`);
+      }
+      row+=Math.ceil(count/g.cols);
+    };
+    place(1,c1);place(2,c2);
+    const css=`
+      @page{size:A4 portrait;margin:0}
+      .sheet{position:relative;width:210mm;height:297mm;overflow:hidden;background:#fff;page-break-after:always;break-after:page}
+      .ph{position:absolute;display:block;width:${g.w}mm;height:${g.h}mm;margin:0;padding:0;border:0;-webkit-print-color-adjust:exact;print-color-adjust:exact;${sFrame.checked?`outline:${ft}mm solid ${fc};outline-offset:-${ft}mm;`:''}}
+      @media print{html,body{width:210mm;height:297mm;margin:0;padding:0}}`;
+    const html=pages.map(a=>`<section class="sheet">${a.join('')}</section>`).join('');
+    const title=`Pro Studio Photo Sheet ${g.w}x${g.h} (${PAPER[sPaper.value].label})`;
+    return openPrintWindow(title,printWindowScaffold(title,html,css));
+  };
+
+  /* ================= cut-out brushes, ink, smart background removal ================= */
+  window.setBrush=function(n,mode){
+    const s=state[n];
+    if(!s.foregroundImg){setStatus(n,'Run Remove background first, then use Erase or Restore');return}
+    const want=mode==='restore',active=!!s.eraserOn&&(!!s.restoreMode===want);
+    s.restoreMode=want;
+    if(active)toggleEraser(n);                       /* pressing the active brush switches it off */
+    else if(!s.eraserOn)toggleEraser(n);             /* switch the brush on */
+    else setStatus(n,want?'Restore brush ON • paint over parts that were removed by mistake':'Eraser ON • drag over unwanted pixels');
+    syncUI();
+  };
+  window.setInk=function(n,k){
+    const s=state[n];
+    if(k==='orig'){s.inkCustom=false;processImage(n);setStatus(n,'Signature keeps its original ink colour')}
+    else{const col=k==='black'?'#111111':'#1f3fbf';$('signature-color-'+n).value=col;setSignatureColor(n,col)}
+    syncUI();
+  };
+  function looksLikeSignature(img){
+    try{
+      const W=160,w=img.naturalWidth||img.width,h=img.naturalHeight||img.height;if(!w||!h)return false;
+      const c=document.createElement('canvas');c.width=W;c.height=Math.max(8,Math.round(W*h/w));
+      const x=c.getContext('2d',{willReadFrequently:true});x.drawImage(img,0,0,c.width,c.height);
+      const d=x.getImageData(0,0,c.width,c.height).data,n=d.length/4,L=new Uint8Array(n),hist=new Uint32Array(256);
+      for(let i=0,p=0;i<d.length;i+=4,p++){const l=Math.round(.299*d[i]+.587*d[i+1]+.114*d[i+2]);L[p]=l;hist[l]++}
+      let acc=0,med=0;for(let v=0;v<256;v++){acc+=hist[v];if(acc>=n/2){med=v;break}}
+      let near=0,ink=0,sr=0,sg=0,sb=0,sc=0;
+      for(let p=0,i=0;p<n;p++,i+=4){const dv=L[p]-med;if(Math.abs(dv)<=30){near++;sr+=d[i];sg+=d[i+1];sb+=d[i+2];sc++}if(dv<-55)ink++}
+      const sat=sc?Math.max(sr,sg,sb)/sc-Math.min(sr,sg,sb)/sc:255;
+      return med>=140&&sat<=45&&near/n>=.70&&ink/n>=.003&&ink/n<=.22;
+    }catch(e){return false}
+  }
+  window.looksLikeSignature=looksLikeSignature;
+  window.smartRemoveBG=function(n){
+    const s=state[n];if(!s.currentImg){setStatus(n,'Upload a picture first');return}
+    if(s.mode==='sig'||looksLikeSignature(s.currentImg))removeSignatureBackground(n);   /* the person model would erase pen ink */
+    else removeBackgroundAI(n);                                                          /* validates its own answer, falls back to the colour method */
+  };
+  window.sigRemove=function(n){const s=state[n];if(!s.currentImg){setStatus(n,'Upload a picture first');return}removeSignatureBackground(n)};
+  const timers={};
+  window.liveRefine=function(n){
+    const s=state[n];if(!s.foregroundImg)return;
+    const k=s.cutKind;clearTimeout(timers[n]);
+    if(k==='sig')timers[n]=setTimeout(()=>removeSignatureBackground(n,true),350);
+    else if(k==='classic')timers[n]=setTimeout(()=>fallbackColorDistanceBG(n,true),350);
+    else refineForeground(n);
+  };
+
+  window.addEventListener('resize',()=>PANES.forEach(n=>fitPreviewToPane(n)));
+  fillSizes('i:0');syncSave();psRefresh(true);idInfo();markActive();syncUI();
+})();
+
+</script>
 </body>
 </html>
