@@ -275,3 +275,10 @@ button,a,input,select,textarea{touch-action:manipulation}
 }
 /* v31: the Theme menu is taller than a laptop screen now, so it scrolls instead of hiding the Reset button */
 .bgmenu{max-height:calc(100vh - var(--hdr-h,72px) - 20px);overflow-y:auto;overscroll-behavior:contain}
+
+/* v33: Home + Back buttons in the header (all pages except the home page) */
+.hdr-nav{display:flex;gap:6px;align-items:center;flex:0 0 auto}
+.hdr-nav .hn{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.4);color:#fff;text-decoration:none;font:inherit;font-weight:700;font-size:.88rem;padding:6px 11px;border-radius:8px;cursor:pointer;line-height:1.2}
+.hdr-nav .hn:hover{background:rgba(255,255,255,.28)}
+@media(max-width:700px){.hdr-nav .hn span{display:none}.hdr-nav .hn{padding:8px 10px}.hdr .logo-t{display:none}}
+@media print{.hdr-nav{display:none!important}}

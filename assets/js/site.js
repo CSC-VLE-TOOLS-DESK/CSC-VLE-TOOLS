@@ -324,6 +324,16 @@
   }
   CSC.fillSite = fillSite;
 
+  /* Back: the page you came from; if opened directly, the tool's own category page (or the home page) */
+  CSC.goBack = function () {
+    var same = false;
+    try { same = !!document.referrer && new URL(document.referrer).origin === location.origin; } catch (e) {}
+    if (same && history.length > 1) { history.back(); return; }
+    var here = (location.pathname.split('/').pop() || 'index.html').replace(/\.html$/, ''), to = 'index.html';
+    if (/^cat-/.test(here)) to = 'index.html#tools';
+    else { var t = TOOLS.filter(function (x) { return x.file === here; })[0]; if (t && t.cat) to = 'cat-' + t.cat + '.html'; }
+    location.href = to;
+  };
   function chrome() {
     if (!document.querySelector('link[href*="font-awesome"]')) {
       var fa = document.createElement('link'); fa.rel = 'stylesheet'; fa.href = 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css'; document.head.appendChild(fa);
@@ -333,6 +343,7 @@
       var here = location.pathname.split('/').pop() || 'index.html';
       var cur = function (f) { return here === f ? ' aria-current="page"' : ''; };
       h.innerHTML = '<div class="hdr"><a class="logo" href="index.html"><img src="favicon.svg" alt="" width="36" height="36"><span class="logo-t">CSC VLE <b>TOOLS</b></span></a>' +
+        (here === 'index.html' ? '' : '<span class="hdr-nav"><a class="hn" href="index.html" title="Go to the main home page"><b aria-hidden="true">&#127968;</b><span>Home</span></a><button class="hn" type="button" onclick="CSC.goBack()" title="Go back to the previous page"><b aria-hidden="true">&larr;</b><span>Back</span></button></span>') +
         '<button class="nav-toggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="main-nav">&#9776;</button>' +
         '<nav id="main-nav" aria-label="Main"><a href="index.html"' + cur('index.html') + '>Home</a>' +
         '<a href="index.html#tools">Tools</a><a class="nav-daily" href="index.html#daily-use"><i class="fa-solid fa-star" aria-hidden="true"></i> Daily Use App</a><a href="prompt-studio.html"' + cur('prompt-studio.html') + '><i class="fa-solid fa-wand-magic-sparkles" aria-hidden="true"></i> Prompt Studio</a><a class="nav-kids" href="kids-corner.html"' + cur('kids-corner.html') + '><i class="fa-solid fa-child-reaching" aria-hidden="true"></i> Kids Corner</a><a href="web-search.html"' + cur('web-search.html') + '><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i> Web Search</a><a href="index.html#links">Portal Links</a>' +

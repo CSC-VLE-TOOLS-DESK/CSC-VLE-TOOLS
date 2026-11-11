@@ -12,9 +12,9 @@
   <link rel="icon" href="favicon.ico?v=3" sizes="any"><link rel="icon" href="favicon.svg?v=3" type="image/svg+xml"><link rel="apple-touch-icon" href="apple-touch-icon.png?v=3"><link rel="manifest" href="site.webmanifest">
   <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link rel="stylesheet" href="assets/css/portal.css?v=32">
-  <link rel="stylesheet" href="assets/css/csc-system.css?v=32">
-  <link rel="stylesheet" href="assets/css/layout3d.css?v=32">
+  <link rel="stylesheet" href="assets/css/portal.css?v=34">
+  <link rel="stylesheet" href="assets/css/csc-system.css?v=34">
+  <link rel="stylesheet" href="assets/css/layout3d.css?v=34">
 <style>
 #ps{--green:#087b50;--dark:#075b3d;--bg:#f3f7f5;--line:#dce8e1;color:#18352a;margin:0 0 24px}
 #ps *{box-sizing:border-box}
@@ -58,9 +58,9 @@
 #ps #toast.show{opacity:1}
 </style>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://csc-vle-tools-desk.github.io/CSC-VLE-TOOLS/"},{"@type":"ListItem","position":2,"name":"Prompt Studio","item":"https://csc-vle-tools-desk.github.io/CSC-VLE-TOOLS/prompt-studio.html"}]}</script>
-  <script src="assets/js/site.js?v=32" defer></script>
-  <script src="assets/js/chatbot-data.js?v=33" defer></script>
-  <script src="assets/js/chatbot.js?v=33" defer></script>
+  <script src="assets/js/site.js?v=34" defer></script>
+  <script src="assets/js/chatbot-data.js?v=34" defer></script>
+  <script src="assets/js/chatbot.js?v=34" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
@@ -147,6 +147,8 @@
     <section class="cabout"><h2>About Prompt Studio</h2><p>These are the prompts CSC and VLE centres ask for most: restoring old photos, couple and family photos, passport photos, backgrounds and professional portraits. Every prompt has an English and a Hindi version, and works with any AI image tool. Your own prompts are saved only in this browser, so use Export Backup to keep a copy. Always check the result before you give it to a customer, and keep the customer’s permission for using their photo.</p><p><a href="index.html#tools">&larr; Back to all categories</a></p></section>
   </main>
   <footer id="site-footer"></footer>
+<script src="assets/js/prompts-packs.js?v=34"></script>
+<script src="assets/js/prompts-extra.js?v=34"></script>
 <script>
 (function(){
 "use strict";
@@ -268,6 +270,13 @@ var BUILTIN=[
   NEG_PORTRAIT)
 ];
 
+/* All built-in prompts = the 14 above + Prompt Packs + prompts-extra.js */
+function allBuiltins(){
+ var extra=[].concat(window.PS_PACKS||[],window.PS_EXTRA||[]).map(norm).filter(Boolean);
+ return clone(BUILTIN).concat(extra);
+}
+var SEENKEY="ps_seen_ids";
+
 /* ---------- State ---------- */
 var KEY="ps_prompts_v2", LKEY="ps_lang", OLDKEY="ss_prompts";
 var lang="en", activeCategory="All", favouritesOnly=false, prompts=[];
@@ -317,7 +326,7 @@ function init(){
  if(Array.isArray(saved)){
   prompts=saved.map(norm).filter(Boolean);
  }else{
-  prompts=clone(BUILTIN);
+  prompts=allBuiltins();
   /* bring over prompts from the older single-language version, if any */
   var old=null;try{old=JSON.parse(lsGet(OLDKEY)||"null")}catch(e){}
   if(Array.isArray(old)){
@@ -326,6 +335,13 @@ function init(){
   }
   saveData();
  }
+ /* add NEW built-in prompts (packs) for visitors who already have saved prompts; deleted ones are not brought back */
+ var seen=null;try{seen=JSON.parse(lsGet(SEENKEY)||"null")}catch(e){}
+ var all=allBuiltins(),first=!Array.isArray(seen),known={};
+ if(first)BUILTIN.forEach(function(b){known[b.id]=1});else seen.forEach(function(i){known[i]=1});
+ var fresh=all.filter(function(p){return !known[p.id]});
+ if(fresh.length&&!first||(first&&fresh.length)){var r=mergeIn(fresh);if(r.added)saveData()}
+ lsSet(SEENKEY,JSON.stringify(all.map(function(p){return p.id})));
 }
 var storageWarned=false;
 function saveData(){
@@ -479,7 +495,7 @@ function importData(ev){
  reader.readAsText(file);
 }
 function restoreBuiltins(){
- var r=mergeIn(clone(BUILTIN));
+ var r=mergeIn(allBuiltins());
  if(r.added){saveData();renderCategories();renderPrompts()}
  toast(r.added?t("restored").replace("{n}",r.added):t("restoredNone"));
 }
@@ -514,6 +530,6 @@ applyLang();fromHash();
 
 })();
 </script>
-  <script src="assets/js/demo-mode.js?v=32"></script>
+  <script src="assets/js/demo-mode.js?v=34"></script>
 </body>
 </html>

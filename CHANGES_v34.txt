@@ -1,0 +1,12 @@
+CSC VLE TOOLS v34 (Pro Studio)
+- pro-studio.html replaced with your Pro Studio v8 (tabbed tools: Adjust, Crop, Background, Cut-out, Signature; Print drawer; Theme menu).
+- Branding changed to CSC VLE TOOLS (title, header, print windows). Old SEO tags, canonical and structured data kept.
+- Added Home (index.html) and Back buttons. Back returns to the previous page; if opened directly it goes to cat-sheets.html. Exit now goes to Home.
+- Tested: no script errors at 1366px and 390px.
+- NOT done yet: Back/Home and theme on the 8 ledgers, Kirana refine (waiting for your answers in the plan doc).
+- Prompt Studio: added assets/js/prompts-packs.js (120 prompts) and assets/js/prompts-extra.js (empty, for your own new prompts). prompt-studio.html now loads both: 14 + 120 = 134 prompts. Visitors who already had saved prompts get the 120 added once; prompts they deleted are not brought back. "Restore built-in" also restores the packs.
+- Home + Back buttons: all tool, category and info pages (shared header in assets/js/site.js + csc-system.css). Back returns to the page you came from; if opened directly it goes to the tool category page (or Home). The 8 ledgers and Pro Studio have their own Home + Back.
+- 8 ledgers: new assets/js/app-nav.js. 7 ledgers (Stock, House Expense, Insurance, Medical, Book Shop, Sweet Shop, Kirana) now have a Theme button: 7 light themes + Slate + original Dark, and a Background colour picker. Default is Cream (light). Saved on the device, shared by all ledgers. Shop Ledger keeps its own theme button and got Home + Back.
+- Not changed: Kids Corner pages (own layout, no Home/Back yet).
+- Tested: 106 pages, 0 script errors; Home/Back/theme checked on laptop and phone width.
+- All CSS/JS links now use ?v=34 so browsers load the changed site.js and csc-system.css.
