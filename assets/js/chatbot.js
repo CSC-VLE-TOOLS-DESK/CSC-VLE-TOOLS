@@ -7,7 +7,8 @@
   /* site.js stores tools as objects; turn them into [file, name, description, category]. */
   var TOOLS = (C.TOOLS || []).map(function (o) { return Array.isArray(o) ? o : [o.file, o.name, o.desc, o.cat]; });
   if (!TOOLS.length || document.getElementById("cscbot")) return;
-  var NAME_KEY = "csc_visitor_name";
+  var NAME_KEY = "csc_visitor_name", MISS_KEY = "csc_bot_missed";
+  var H = window.CSC_HELP || {}, G = H.guides || {}, PAGES = H.pages || [];
 
   /* Old duplicate pages: do not suggest these (the main tool is suggested instead). */
   var HIDE = { tools_pdf_merge: 1, tools_pdf_split: 1, tools_photo_name_joiner: 1, tools_photo_signature_joiner: 1, tools_passport_photo_sheet: 1, tools_resume_builder: 1 };
@@ -67,7 +68,7 @@
     tools_ai_passport_studio: ["Upload one photo.", "Pick the photo size, count and background colour.", "Adjust brightness/contrast, then Print or Download."]
   };
 
-  var FAQ = [
+  var FAQ0 = [
     { k: "photo size kb limit form upload how many kb required size document size", a: "Every form has its own limit, so always read the notice. As a rough guide: photo about 20-50 KB, signature about 10-20 KB, documents 100-500 KB. Use Photo Resizer or Signature Resizer and type the exact KB limit.", go: "tools_photo_resizer" },
     { k: "print setting printing scale a4 print kaise blurry dhundla print quality", a: "For a clean print: choose A4, set scale to 100% (not 'Fit to page'), turn on Background graphics, and look at the preview first. Use a larger original image if the print looks blurry." },
     { k: "file format jpg png pdf jpeg webp which format difference", a: "JPG is best for photos (small size). PNG is best for signatures and logos (sharp edges). PDF is best for documents and forms. Most government portals accept JPG and PDF." },
@@ -78,7 +79,8 @@
     { k: "demo example try sample", a: "Open any tool and tap the Try Demo button to load example data, so you can see how it works." }
   ];
 
-  var STOP = " a an the i me my to for of in on is are do does can how what want need please kya hai ko ka ki ke se me mujhe chahiye karna kaise kare karo tool tools online free ";
+  var FAQ = (H.faq && H.faq.length) ? H.faq : FAQ0;
+  var STOP = " a an the i me my to for of in on is are do does can how what want need please kya hai ko ka ki ke se me mujhe chahiye karna kaise kare karo tool tools online free want wants open show go dikhao kholo khol find search give tell ";
   var HOMEHINT = "Try words like: Aadhaar print, compress PDF, crop photo, passport photo, resume, PVC card.";
 
   /* ---------- helpers ---------- */
@@ -100,14 +102,18 @@
   function catName(id) { var c = CATS.filter(function (x) { return x.id === id; })[0]; return c ? c.name : ""; }
 
   var LIST = TOOLS.filter(function (t) { return !HIDE[fileOf(t)]; }).map(function (t) {
-    var id = fileOf(t), name = norm(t[1]);
-    return { t: t, id: id, name: name, nameT: toks(t[1]), hay: toks(t[1] + " " + t[2] + " " + (SYN[id] || "")), syn: norm(SYN[id] || "") };
+    var id = fileOf(t), g = G[id] || [], syn = ((SYN[id] || "") + " " + (g[2] || "")).trim();
+    return { t: t, id: id, kind: "tool", name: norm(t[1]), nameT: toks(t[1]), hay: toks(t[1] + " " + t[2] + " " + syn), syn: norm(syn), steps: g[0] ? g[0].split("|") : null, tip: g[1] || "" };
+  });
+  PAGES.forEach(function (p) {
+    var id = p.u.replace(/\.html$/, "");
+    LIST.push({ t: [id, p.n, p.d, "page"], id: id, kind: "page", name: norm(p.n), nameT: toks(p.n), hay: toks(p.n + " " + p.d + " " + (p.k || "")), syn: norm(p.k || ""), steps: p.s ? p.s.split("|") : null, tip: p.t || "" });
   });
 
   function scoreTool(q, qt, o) {
     var s = 0;
     if (q.indexOf(o.name) > -1) s += 12;
-    var phrases = (SYN[o.id] || "").toLowerCase();
+    var phrases = o.syn;
     qt.forEach(function (w) {
       if (o.nameT.indexOf(w) > -1) s += 4;
       else if (o.nameT.some(function (n) { return lev1(w, n); })) s += 3;
@@ -127,14 +133,16 @@
     out.sort(function (a, b) { return b[0] - a[0]; });
     return out;
   }
+  var faqScore = 0;
   function findFaq(text) {
-    var qt = toks(text), best = null, bs = 0;
+    var qt = norm(text).split(" ").filter(function (w) { return w.length > 1 && " a an the i me my to for of in on is are do does can how what want need please it " .indexOf(" " + w + " ") < 0; }), best = null, bs = 0;
     FAQ.forEach(function (f) {
       var ft = f.k.split(" "), s = 0;
       qt.forEach(function (w) { if (ft.indexOf(w) > -1) s += 2; });
       if (s > bs) { bs = s; best = f; }
     });
-    return bs >= 2 ? best : null;
+    faqScore = bs;
+    return bs >= (qt.length <= 2 ? 2 : 4) ? best : null;
   }
   function findCat(text) {
     var q = norm(text), best = null;
@@ -170,7 +178,7 @@
     '<section class="cb-panel" role="dialog" aria-label="CSC VLE TOOLS help chat">' +
     '<div class="cb-head"><span aria-hidden="true" style="font-size:26px">🤖</span><div><b>' + esc(SITE.name || "CSC VLE TOOLS") + ' Helper</b><small>Find tools, steps and help</small></div><button class="cb-x" type="button" aria-label="Close chat">×</button></div>' +
     '<div class="cb-msgs" aria-live="polite"></div><div class="cb-chips"></div>' +
-    '<form class="cb-in"><input type="text" autocomplete="off" aria-label="Type your question" placeholder="Type here, e.g. print Aadhaar card"><button type="submit">Send</button></form></section>' +
+    '<form class="cb-in"><input type="text" autocomplete="off" aria-label="Type your question" placeholder="Ask here, e.g. open Prompt Studio"><button type="submit">Send</button></form></section>' +
     '<button class="cb-fab" type="button" aria-label="Open help chat" aria-expanded="false">💬</button>';
   document.body.appendChild(root);
 
@@ -180,14 +188,28 @@
 
   function add(html, who) { var d = document.createElement("div"); d.className = "cb-m " + (who === "u" ? "cb-u" : "cb-b"); d.innerHTML = html; msgs.appendChild(d); msgs.scrollTop = msgs.scrollHeight; }
   function setChips(a) { chips.innerHTML = ""; a.forEach(function (t) { var b = document.createElement("button"); b.type = "button"; b.className = "cb-chip"; b.textContent = t; b.onclick = function () { ask(t); }; chips.appendChild(b); }); }
-  var DEFAULT_CHIPS = ["Print Aadhaar card", "Compress PDF", "Crop photo to KB", "PVC card print", "Passport photos", "Make resume", "Contact support"];
+  var DEFAULT_CHIPS = ["Print Aadhaar card", "Compress PDF", "Crop photo to KB", "PVC card print", "Passport photos", "Make resume", "Open Prompt Studio", "Help / examples"];
 
   function toolCard(o, withSteps) {
-    var t = o.t, steps = STEPS_BY_TOOL[o.id] || STEPS[CAT_KIND[t[3]] || t[3]] || STEPS.util;
+    var t = o.t, steps = o.steps || STEPS_BY_TOOL[o.id] || STEPS[CAT_KIND[t[3]] || t[3]] || STEPS.util;
     var h = "<b>" + esc(t[1]) + "</b><br><small>" + esc(t[2]) + "</small>";
-    if (withSteps) h += "<ol>" + steps.map(function (s) { return "<li>" + esc(s) + "</li>"; }).join("") + "</ol>";
-    return h + '<br><a class="cb-a o" href="' + esc(hrefOf(t)) + '">Open ' + esc(t[1]) + " →</a>";
+    if (withSteps) h += "<ol>" + steps.map(function (x) { return "<li>" + esc(x) + "</li>"; }).join("") + "</ol>";
+    if (withSteps && o.tip) h += "<small>💡 " + esc(o.tip) + "</small><br>";
+    return h + '<a class="cb-a o" href="' + esc(hrefOf(t)) + '">Open ' + esc(t[1]) + " →</a>";
   }
+  function links(arr) { return arr.map(function (o) { return '<a class="cb-a" href="' + esc(hrefOf(o.t)) + '">' + esc(o.t[1]) + "</a>"; }).join(""); }
+  function nameChips(arr, n) { return arr.slice(0, n).map(function (o) { return o.t[1]; }); }
+  function logMiss(raw) { try { var a = JSON.parse(localStorage.getItem(MISS_KEY) || "[]"); a.push(String(raw).slice(0, 80)); localStorage.setItem(MISS_KEY, JSON.stringify(a.slice(-40))); } catch (e) {} }
+  var HELP_CHIPS = ["Print Aadhaar card", "How to use PDF compressor", "Tip for Photo Resizer", "Photo size for form", "Open Prompt Studio", "Contact support"];
+  function faqReply(f) {
+    var g = "";
+    if (f.go) { var fo = LIST.filter(function (x) { return x.id === f.go; })[0]; if (fo) g = '<br><a class="cb-a o" href="' + esc(hrefOf(fo.t)) + '">Open ' + esc(fo.t[1]) + " →</a>"; }
+    return { html: esc(f.a) + g, chips: DEFAULT_CHIPS };
+  }
+  function helpCard() {
+    return "<b>I can help you with:</b><ol><li>Finding a tool: <i>print Aadhaar card</i></li><li>How to use a tool: <i>how to use PDF compressor</i></li><li>Tips: <i>tip for Photo Resizer</i></li><li>Sizes and printing: <i>photo size for form</i></li><li>Opening pages: <i>open Prompt Studio</i></li><li>Support: <i>contact</i></li></ol>Tap an example below, or type your own question.";
+  }
+
   function contactCard() {
     var h = "<b>Help &amp; support</b>";
     if (SITE.hours) h += "<br>🕒 " + esc(SITE.hours);
@@ -201,36 +223,53 @@
   }
 
   function reply(raw) {
-    var q = norm(raw), nm = raw.match(/(?:my name is|i am|i'm|mera naam|naam)\s+([A-Za-z\u0900-\u097f ]{2,24})$/i);
+    var q = norm(raw), nm = raw.match(/(?:my name is|i am|i'm|mera naam|naam)\s+([A-Za-z\u0900-\u097f ]{2,24})$/i), words = q ? q.split(" ").length : 0;
     if (nm) {
       name = nm[1].trim().replace(/\b[a-z]/g, function (c) { return c.toUpperCase(); });
       try { localStorage.setItem(NAME_KEY, name); } catch (e) {}
       return { html: "Nice to meet you, <b>" + esc(name) + "</b>! What do you want to do today?", chips: DEFAULT_CHIPS };
     }
-    if (/^(hi|hii|hello|hey|helo|namaste|namaskar|good morning|good evening)\b/.test(q)) return { html: (name ? "Hello " + esc(name) : "Hello Dear Visitor") + "! How can I help you?", chips: DEFAULT_CHIPS };
+    if (q === "missed") {
+      var m = []; try { m = JSON.parse(localStorage.getItem(MISS_KEY) || "[]"); } catch (e) {}
+      return { html: m.length ? "<b>Questions I could not answer on this device:</b><ol>" + m.map(function (x) { return "<li>" + esc(x) + "</li>"; }).join("") + "</ol><small>Send this list to Claude to teach the chatbot.</small>" : "No missed questions on this device yet." };
+    }
+    if (/^(hi|hii|hello|hey|helo|namaste|namaskar|good morning|good evening)\b/.test(q) && words <= 3) return { html: (name ? "Hello " + esc(name) : "Hello Dear Visitor") + "! How can I help you? Type <b>help</b> to see examples.", chips: DEFAULT_CHIPS };
     if (/\b(thanks|thank you|thx|shukriya|dhanyavad|dhanyawad)\b/.test(q)) return { html: "You are welcome! 😊 Ask me anything else.", chips: DEFAULT_CHIPS };
-    if (/\b(contact|support|helpline|helpdesk|help desk|whatsapp number|phone number|call|email|address|sampark|complaint|problem|bug)\b/.test(q) && !findTools(raw).some(function (x) { return x[0] >= 8; })) return { html: contactCard() };
+    if (/\b(help|menu|hint|hints|examples?|options|what can you do|kya kya)\b/.test(q) && words <= 5) return { html: helpCard(), chips: HELP_CHIPS };
+    var found = findTools(raw), top = found[0];
+    if (/\b(contact|support|helpline|helpdesk|help desk|whatsapp number|phone number|call|email|address|sampark|complaint|problem|bug)\b/.test(q) && !(top && top[0] >= 8)) return { html: contactCard() };
     if (/\b(portal|portals|quick links|official site|govt site|government site)\b/.test(q)) return { html: 'Official portal links are in the <b>Quick Links</b> menu at the top of the page.<br><a class="cb-a" href="index.html">Go to home page</a>' };
-    if (/\b(home|home page|main page|index)\b/.test(q) && q.split(" ").length <= 4) return { html: '<a class="cb-a o" href="index.html">Open Home page →</a>', go: "index.html" };
-    if (/\b(all tools|tool list|list of tools|what can you do|kya kya|categories|category)\b/.test(q)) {
+    if (/\b(all tools|tool list|list of tools|categories|category|browse)\b/.test(q)) {
       return { html: "Pick a category:<br>" + CATS.filter(function (c) { return c.id !== "all"; }).map(function (c) { return '<a class="cb-a" href="cat-' + esc(c.id) + '.html">' + esc(c.name) + "</a>"; }).join(""), chips: DEFAULT_CHIPS };
     }
-    var how = /\b(how|kaise|steps|explain|guide|samjhao|tarika|use|usage|help)\b/.test(q), open = /^(open|go to|goto|take me|kholo|khol do|show)\b/.test(q);
-    var cat = findCat(raw), found = findTools(raw), top = found[0], faq = findFaq(raw);
-    if (cat && (!top || top[0] < 12)) return { html: "<b>" + esc(cat.name) + '</b><br><a class="cb-a o" href="cat-' + esc(cat.id) + '.html">Open ' + esc(cat.name) + " →</a>", go: open ? "cat-" + cat.id + ".html" : null };
-    if (top && top[0] >= 5 && (!faq || top[0] >= 8 || how)) {
-      var more = found.slice(1, 4).filter(function (x) { return x[0] >= Math.max(5, top[0] * 0.6); });
-      var h = toolCard(top[1], how || top[0] >= 5);
-      if (more.length) h += "<br><br>Also related:<br>" + more.map(function (x) { return '<a class="cb-a" href="' + esc(hrefOf(x[1].t)) + '">' + esc(x[1].t[1]) + "</a>"; }).join("");
-      return { html: h, go: open ? hrefOf(top[1].t) : null, chips: ["Contact support", "All tools"] };
+    var how = /\b(how|kaise|steps|explain|guide|samjhao|tarika|use|usage)\b/.test(q), open = /^(open|go to|goto|take me|kholo|khol do|show|i want|want)\b/.test(q) && /\b(open|kholo|khol|go)\b/.test(q);
+    var tipQ = /\b(tip|tips|hint|hints|advice|suggestion)\b/.test(q);
+    var cat = findCat(raw), faq = findFaq(raw);
+    if (cat && (!top || top[0] < 12)) {
+      var ct = LIST.filter(function (o) { return o.kind === "tool" && o.t[3] === cat.id; });
+      return { html: "<b>" + esc(cat.name) + "</b> has " + ct.length + " tools:<br>" + links(ct) + '<br><a class="cb-a o" href="cat-' + esc(cat.id) + '.html">Open category page →</a>', chips: nameChips(ct, 4), go: open ? "cat-" + cat.id + ".html" : null };
     }
-    if (faq) {
-      var g = "";
-      if (faq.go) { var o = LIST.filter(function (x) { return x.id === faq.go; })[0]; if (o) g = '<br><a class="cb-a o" href="' + esc(hrefOf(o.t)) + '">Open ' + esc(o.t[1]) + " →</a>"; }
-      return { html: esc(faq.a) + g, chips: DEFAULT_CHIPS };
+    var fs = faq ? faqScore : 0;
+    if (faq && fs >= 4 && !how && !open && !tipQ && !(top && top[0] >= 10) && /\b(size|kb|limit|format|difference|settings?|scale|safe|free|price|offline|backup)\b/.test(q)) return faqReply(faq);
+    if (top && top[0] >= 5 && (!faq || top[0] >= 8 || how || tipQ || words <= 2)) {
+      var o = top[1], near = found.filter(function (x) { return x[0] >= 5 && x[0] >= top[0] * 0.75; });
+      if (near.length >= 2 && (top[0] < 12 || near.length >= 3) && !how && !open && !tipQ && words <= 2) {
+        return { html: "I found a few tools. Which one do you mean?<br>" + links(near.slice(0, 6).map(function (x) { return x[1]; })), chips: nameChips(near.map(function (x) { return x[1]; }), 4) };
+      }
+      var more = found.slice(1, 4).filter(function (x) { return x[0] >= Math.max(5, top[0] * 0.6); }).map(function (x) { return x[1]; });
+      if (tipQ) return { html: "<b>Tip for " + esc(o.t[1]) + "</b><br>💡 " + esc(o.tip || "Try the Demo button to see how it works, and check the preview before you print.") + '<br><a class="cb-a o" href="' + esc(hrefOf(o.t)) + '">Open ' + esc(o.t[1]) + " →</a>", chips: ["How to use " + o.t[1]].concat(nameChips(more, 2)) };
+      var h = toolCard(o, o.kind === "tool" || how);
+      if (more.length) h += "<br><br>Also related:<br>" + links(more);
+      var ch = o.tip ? ["Tip for " + o.t[1]] : []; ch = ch.concat(nameChips(more, 2), ["Contact support"]);
+      return { html: h, go: open ? hrefOf(o.t) : null, chips: ch };
     }
-    if (top && top[0] >= 3) return { html: "Did you mean this?<br><br>" + toolCard(top[1], false), chips: DEFAULT_CHIPS };
-    return { html: "Sorry, I could not find that. " + esc(HOMEHINT) + "<br><br>" + contactCard(), chips: DEFAULT_CHIPS };
+    if (faq) return faqReply(faq);
+    if (top && top[0] >= 2) {
+      var sug = found.slice(0, 3).map(function (x) { return x[1]; });
+      return { html: "I am not fully sure. Did you mean one of these?<br>" + links(sug), chips: nameChips(sug, 3).concat(["Help / examples"]) };
+    }
+    logMiss(raw);
+    return { html: "I am still learning, and I could not find that yet. 😊<br>" + helpCard() + '<br>Or <a href="feedback.html">tell us what you wanted</a> and we will add it.', chips: HELP_CHIPS };
   }
 
   function ask(text) {
@@ -250,7 +289,7 @@
     if (open && !started) {
       started = true;
       add((name ? "Welcome back, <b>" + esc(name) + "</b>! 👋" : "Hello Dear Visitor! 👋 <span lang=\"hi\">नमस्ते!</span>") +
-        "<br>I can find a tool, explain how to use it, answer questions about photo and PDF sizes and printing, or open a page for you." +
+        "<br>I can find a tool, explain how to use it step by step, give tips, answer questions about photo and PDF sizes and printing, or open a page for you. Type <b>help</b> for examples." +
         (name ? "" : "<br><small>Tip: type “my name is …” and I will greet you by name.</small>"), "b");
       setChips(DEFAULT_CHIPS);
     }

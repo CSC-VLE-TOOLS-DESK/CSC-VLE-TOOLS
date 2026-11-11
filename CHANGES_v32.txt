@@ -23,3 +23,10 @@ SEO FIXES
 
 ADDED: TEST_CHECKLIST_v32.txt (74 numbered tools), SEO_LAUNCH_GUIDE.md, this file.
 NOT TESTED HERE: real printers, a real phone, AI cut-out model download, camera, PDF/ZIP/OCR helper libraries (blocked in my test browser), your live GitHub site.
+
+UPDATE 2 (chatbot v33)
+- NEW assets/js/chatbot-data.js: how-to steps + a tip + search words for ALL 74 tools, plus Prompt Studio, Step Guides, Home, About, Contact, Feedback, Privacy, Disclaimer, and 11 FAQ answers. Edit this one file to teach the bot.
+- "I want prompt open" / "open Prompt Studio" now opens Prompt Studio.
+- Asks like "tip for Photo Resizer" give a hint. One-word asks ("pdf", "photo", "id card") show a list of matching tools to pick from.
+- "help" shows examples. "show pdf tools" lists a category. Hinglish words added (chota, kam, kaise ...).
+- Unknown question: friendly reply with examples and a Feedback link. The bot also saves the missed questions on that device. Type "/missed" or "missed" in the chat to see them, then send me the list and I will teach the bot.
