@@ -9,7 +9,7 @@
   <link rel="apple-touch-icon" href="apple-touch-icon.png?v=3">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Mukta:wght@400;600;800&display=swap">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link rel="stylesheet" href="assets/css/portal.css?v=34"><link rel="stylesheet" href="assets/css/csc-system.css?v=34">
+  <link rel="stylesheet" href="assets/css/portal.css?v=36"><link rel="stylesheet" href="assets/css/csc-system.css?v=36">
   <meta name="description" content="Join several images into one picture, vertical or horizontal, with spacing and background colour.">
   <meta name="keywords" content="image merger, join images, combine photos, merge images vertically, merge images horizontally, CSC VLE tools, CSC center tools, VLE tools, free online tool, Rohtak Haryana">
   <meta name="author" content="CSC VLE TOOLS">
@@ -58,7 +58,9 @@
 <label>Spacing (px)<input type="number" id="mgSp" value="10" min="0" max="200"></label>
 <label>Background<input type="color" id="mgBg" value="#ffffff"></label>
 <label>Fit<select id="mgFit"><option value="1">Match size</option><option value="0">Keep original</option></select></label>
-<label>Download as<select id="mgFmt"><option value="jpeg">JPG</option><option value="png">PNG</option></select></label></div>
+<label>Download as<select id="mgFmt"><option value="jpeg">JPG</option><option value="png">PNG</option></select></label>
+<label>Max file size (KB, optional)<input type="number" id="mgKb" min="20" placeholder="no limit"></label></div>
+<div class="note" style="font-size:13px;color:var(--muted,#5d6b7a);margin:4px 0 8px">Tip: JPG files are much smaller than PNG for photos. Enter a Max file size to shrink the result (JPG lowers quality first, PNG reduces colours and size).</div>
 <button class="btn" id="mgGo">Merge</button><button class="btn g" id="mgDl" style="display:none">Download</button>
 <div class="pv"><canvas id="mgC"></canvas></div>
 </div>
@@ -75,9 +77,9 @@
     <h3 style="margin:16px 0 10px;color:var(--brand);font-size:1rem">More in Photo &amp; Image Tools</h3><div class="rel"><a href="tools_photo_sign_joiner.html">Photo &amp; Signature Joiner</a><a href="tools_jpg_to_pdf.html">JPG to PDF</a><a href="tools_photo_resizer.html">Photo Resizer</a><a href="tools_image_crop.html">Image Crop Tool</a></div>
   </div></section>
   <footer id="site-footer"></footer>
-  <script src="assets/js/site.js?v=34"></script>
-  <script src="assets/js/chatbot-data.js?v=34" defer></script>
-  <script src="assets/js/chatbot.js?v=34" defer></script>
+  <script src="assets/js/site.js?v=36"></script>
+  <script src="assets/js/chatbot-data.js?v=36" defer></script>
+  <script src="assets/js/chatbot.js?v=36" defer></script>
   <script>(function(){
 
 const $=id=>document.getElementById(id);
@@ -99,13 +101,21 @@ $("mgGo").onclick=async()=>{
   const H=v?sz.reduce((a,s)=>a+s[1],0)+gap:Math.max(...sz.map(s=>s[1]));
   const c=$("mgC");c.width=W;c.height=H;const x=c.getContext("2d");x.fillStyle=$("mgBg").value;x.fillRect(0,0,W,H);
   let p=0;ims.forEach((im,i)=>{const[w,h]=sz[i];const ox=v?Math.round((W-w)/2):p,oy=v?p:Math.round((H-h)/2);x.drawImage(im,ox,oy,w,h);p+=(v?h:w)+sp});
-  mgBlob=await toBlob(c,"image/"+fmt,.92);$("mgDl").style.display="inline-block";$("mgDl").textContent=`Download (${kb(mgBlob.size)})`;
+  const lim=(+$("mgKb").value||0)*1024;let out=c;mgBlob=await toBlob(c,"image/"+fmt,.92);
+  if(lim&&mgBlob.size>lim){
+    const draw=sc=>{const t=document.createElement("canvas");t.width=Math.max(1,Math.round(W*sc));t.height=Math.max(1,Math.round(H*sc));const y=t.getContext("2d");y.fillStyle=$("mgBg").value;y.fillRect(0,0,t.width,t.height);y.imageSmoothingQuality="high";y.drawImage(c,0,0,t.width,t.height);return t};
+    const post=(cv,lv)=>{const y=cv.getContext("2d"),d=y.getImageData(0,0,cv.width,cv.height),a=d.data,st=255/(lv-1);for(let i=0;i<a.length;i+=4){a[i]=Math.round(a[i]/st)*st;a[i+1]=Math.round(a[i+1]/st)*st;a[i+2]=Math.round(a[i+2]/st)*st}y.putImageData(d,0,0)};
+    if(fmt=="png"){outer:for(let sc=1;sc>.15;sc*=.85){for(const lv of [64,32,16,8]){const t=draw(sc);post(t,lv);const b=await toBlob(t,"image/png");out=t;mgBlob=b;if(b.size<=lim)break outer}}}
+    else{let q=.9;for(let t=0;t<9&&mgBlob.size>lim;t++){q-=.1;mgBlob=await toBlob(c,"image/"+fmt,Math.max(q,.05))}
+      for(let sc=.9;mgBlob.size>lim&&sc>.15;sc*=.85){out=draw(sc);mgBlob=await toBlob(out,"image/"+fmt,.6)}}
+  }
+  $("mgDl").style.display="inline-block";$("mgDl").textContent=`Download (${kb(mgBlob.size)}, ${out.width}×${out.height} px)`+(lim&&mgBlob.size>lim?" – could not reach the limit":"");
 };
 $("mgDl").onclick=()=>save(mgBlob,"merged."+($("mgFmt").value=="jpeg"?"jpg":"png"));
 
 
 
 })();</script>
-  <script src="assets/js/demo-mode.js?v=34"></script>
+  <script src="assets/js/demo-mode.js?v=36"></script>
 </body>
 </html>

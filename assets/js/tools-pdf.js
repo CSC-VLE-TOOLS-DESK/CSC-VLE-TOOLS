@@ -124,13 +124,46 @@
       '<div class="field"><label>Margin (mm, A4 only)</label><input type="number" id="mg" value="10" min="0" max="50"></div>' +
       '<div class="field"><label>Quality</label><select id="q"><option value="0.92">High</option><option value="0.75" selected>Medium (smaller file)</option><option value="0.5">Low (smallest file)</option></select></div>' +
       '<div class="t-actions"><button class="btn" id="go" disabled><i class="fa-solid fa-file-pdf"></i> Create PDF</button></div></div>' +
-      '<div class="card"><p class="hint" id="info">Add one or more images. Each image becomes one page, in the order shown.</p></div></div>';
-    var $ = function (s) { return root.querySelector(s); }, items = [];
-    function draw() { fileList($('#ls'), items, draw); $('#go').disabled = !items.length; $('#info').textContent = items.length ? items.length + ' image(s) will become ' + items.length + ' page(s).' : 'Add one or more images. Each image becomes one page, in the order shown.'; }
+      '<div class="card"><b>Preview &amp; output size</b><p class="hint" id="info">Add one or more images. Each image becomes one page, in the order shown.</p><div id="tot" style="margin:6px 0"></div><div id="pv" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;max-height:520px;overflow:auto"></div></div></div>';
+    var $ = function (s) { return root.querySelector(s); }, items = [], estTimer, estTok = 0;
+    function dims(it) {
+      var fit = $('#ps').value === 'fit', mm = parseFloat($('#mg').value) || 0;
+      if (fit) return { pw: it.w * 25.4 / 96, ph: it.h * 25.4 / 96, iw: it.w * 25.4 / 96, ih: it.h * 25.4 / 96, name: 'Same as image' };
+      var land = it.w > it.h, pw = land ? 297 : 210, ph = land ? 210 : 297, s = Math.min((pw - 2 * mm) / it.w, (ph - 2 * mm) / it.h);
+      return { pw: pw, ph: ph, iw: it.w * s, ih: it.h * s, name: 'A4 ' + (land ? 'landscape' : 'portrait') };
+    }
+    function pvDraw() {
+      var tot = 0, ok = true; items.forEach(function (it) { if (it.est) tot += it.est; else ok = false; });
+      $('#tot').innerHTML = items.length ? '<span class="t-stat">' + items.length + ' page(s)</span><span class="t-stat">PDF size ≈ ' + (ok ? CSC.fmtBytes(tot + 1200 * items.length) : 'calculating…') + '</span>' : '';
+      $('#pv').innerHTML = '';
+      items.forEach(function (it, i) {
+        if (!it.w) return; var d = dims(it), W = 140, H = Math.round(W * d.ph / d.pw), fw = Math.round(W * d.iw / d.pw), fh = Math.round(W * d.ih / d.pw);
+        var fig = h('div', { style: 'text-align:center' });
+        fig.innerHTML = '<div style="width:' + W + 'px;height:' + H + 'px;margin:auto;background:#fff;border:1px solid #9aa4b5;box-shadow:0 2px 6px rgba(0,0,0,.18);display:flex;align-items:center;justify-content:center"><img alt="Page ' + (i + 1) + '" src="' + it.url + '" style="width:' + fw + 'px;height:' + fh + 'px;object-fit:contain"></div>' +
+          '<div style="font-size:12px;margin-top:5px"><b>Page ' + (i + 1) + '</b> · ' + d.name + '<br>' + Math.round(d.pw) + ' × ' + Math.round(d.ph) + ' mm<br>Picture ' + Math.round(d.iw) + ' × ' + Math.round(d.ih) + ' mm<br>' + (it.est ? '≈ ' + CSC.fmtBytes(it.est) : '…') + '</div>';
+        $('#pv').appendChild(fig);
+      });
+    }
+    async function estimate() {
+      var my = ++estTok, q = parseFloat($('#q').value);
+      for (var i = 0; i < items.length; i++) {
+        var it = items[i]; if (!it.w || it.estQ === q) continue;
+        try { var img = await CSC.fileToImage(it.file), c = document.createElement('canvas'); c.width = img.naturalWidth; c.height = img.naturalHeight; var x = c.getContext('2d'); x.fillStyle = '#fff'; x.fillRect(0, 0, c.width, c.height); x.drawImage(img, 0, 0); it.est = (await CSC.canvasBlob(c, 'image/jpeg', q)).size; it.estQ = q; } catch (e) { it.est = 0; it.estQ = q; }
+        if (my !== estTok) return; pvDraw();
+      }
+      pvDraw();
+    }
+    function again() { clearTimeout(estTimer); estTimer = setTimeout(estimate, 300); }
+    function draw() {
+      fileList($('#ls'), items, draw); $('#go').disabled = !items.length; $('#info').textContent = items.length ? items.length + ' image(s) will become ' + items.length + ' page(s). Change the order in the list on the left.' : 'Add one or more images. Each image becomes one page, in the order shown.';
+      items.forEach(function (it) { if (!it.url) { it.url = URL.createObjectURL(it.file); var im = new Image(); im.onload = function () { it.w = im.naturalWidth; it.h = im.naturalHeight; pvDraw(); again(); }; im.src = it.url; } });
+      pvDraw(); again();
+    }
     $('#dz').appendChild(CSC.dropzone({
       accept: 'image/*', multiple: true, icon: 'fa-images', label: 'Choose images or drop them here',
       onFiles: function (fs) { fs.forEach(function (f) { if (/^image\//.test(f.type) || /\.(jpe?g|png|webp|gif|bmp)$/i.test(f.name)) items.push({ file: f }); else CSC.toast(f.name + ' is not an image', true); }); draw(); }
     }));
+    ['ps', 'mg', 'q'].forEach(function (i) { $('#' + i).addEventListener('input', function () { pvDraw(); again(); }); $('#' + i).addEventListener('change', function () { pvDraw(); again(); }); });
     $('#go').onclick = async function () {
       var btn = this; btn.disabled = true;
       try {

@@ -282,3 +282,12 @@ button,a,input,select,textarea{touch-action:manipulation}
 .hdr-nav .hn:hover{background:rgba(255,255,255,.28)}
 @media(max-width:700px){.hdr-nav .hn span{display:none}.hdr-nav .hn{padding:8px 10px}.hdr .logo-t{display:none}}
 @media print{.hdr-nav{display:none!important}}
+
+/* v35: smaller preview panes with a size selector */
+.pvbar{display:flex;align-items:center;gap:8px;margin:0 0 6px;font-size:.85rem;font-weight:700;color:var(--muted,#64748b)}
+.pvbar label{white-space:nowrap;margin:0}.pvbar select{width:auto!important;min-width:110px;padding:4px 8px;border:1px solid var(--line,#d9dee8);border-radius:8px;font:inherit;font-weight:600;background:#fff}
+.pv-lim canvas,.pv-lim img{max-height:var(--pvmax,320px);width:auto!important;max-width:100%;height:auto}
+.pv-lim{max-height:calc(var(--pvmax,320px) + 24px)}
+.sz-pill{display:inline-block;margin-top:8px;padding:4px 10px;border-radius:999px;background:#e8eefc;color:#1a3fa6;font-weight:800;font-size:.85rem}
+.sz-pill.warn{background:#fff3cd;color:#8a5a00}
+@media print{.pvbar{display:none!important}}

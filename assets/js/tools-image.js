@@ -202,14 +202,25 @@
       '<div class="field"><label>Output format</label><select id="f"><option value="image/jpeg">JPG</option><option value="image/png">PNG</option><option value="image/webp">WebP</option></select></div>' +
       '<div class="field"><label>Scale output to width (px, optional)</label><input type="number" id="ow" min="1" placeholder="Original crop size"></div>' +
       '<div class="t-actions"><button class="btn" id="go"><i class="fa-solid fa-crop"></i> Crop &amp; Download</button></div></div></div>' +
-      '<div class="card"><div id="host" style="text-align:center"><p class="hint">Choose an image to start.</p></div><div id="stats" style="margin-top:8px"></div></div></div>';
-    var $ = function (s) { return root.querySelector(s); }, cr, name = 'image';
+      '<div class="card"><div id="host" style="text-align:center"><p class="hint">Choose an image to start.</p></div>' +
+      '<div id="pvw" style="display:none;margin-top:12px;border-top:1px solid var(--line,#d9dee8);padding-top:10px"><b>Preview of cropped result</b><div id="pvc" style="margin-top:8px;text-align:center;background:repeating-conic-gradient(#e5e7eb 0% 25%,#fff 0% 50%) 0 0/16px 16px;border:1px solid var(--line,#d9dee8);border-radius:8px;padding:6px"></div><div id="pvs" style="margin-top:6px"></div></div>' +
+      '<div id="stats" style="margin-top:8px"></div></div></div>';
+    var $ = function (s) { return root.querySelector(s); }, cr, name = 'image', pvTimer;
+    function outSize() { var r = cr.rect(), ow = parseInt($('#ow').value, 10), w = ow > 0 ? ow : Math.round(r.w); return { w: w, h: Math.max(1, Math.round(w * r.h / r.w)) }; }
+    function paint(c, type) { if (type === 'image/jpeg') { var f = document.createElement('canvas'); f.width = c.width; f.height = c.height; var x = f.getContext('2d'); x.fillStyle = '#fff'; x.fillRect(0, 0, f.width, f.height); x.drawImage(c, 0, 0); return f; } return c; }
+    function preview() {
+      if (!cr) return; var o = outSize(), k = Math.min(1, 260 / o.w, 220 / o.h), pc = cr.getCanvas(Math.max(1, Math.round(o.w * k)), Math.max(1, Math.round(o.h * k)));
+      pc.style.maxWidth = '100%'; pc.style.height = 'auto'; $('#pvc').innerHTML = ''; $('#pvc').appendChild(pc); $('#pvw').style.display = '';
+      $('#pvs').innerHTML = '<span class="t-stat">' + o.w + ' × ' + o.h + ' px</span><span class="t-stat" id="pve">size: …</span>';
+      clearTimeout(pvTimer); pvTimer = setTimeout(async function () { try { var type = $('#f').value, b = await CSC.canvasBlob(paint(cr.getCanvas(o.w, o.h), type), type, 0.92), e = $('#pve'); if (e) e.textContent = 'size ≈ ' + CSC.fmtBytes(b.size); } catch (e) {} }, 450);
+    }
     $('#dz').appendChild(CSC.dropzone({
       accept: 'image/*', icon: 'fa-image', label: 'Choose an image', onFiles: async function (f) {
-        try { var img = await CSC.fileToImage(f[0]); name = f[0].name.replace(/\.[^.]+$/, ''); $('#o').style.display = ''; var hst = $('#host'); hst.innerHTML = ''; cr = CSC.cropper(img, { aspect: parseFloat($('#ar').value) || 0, maxWidth: 640 }); hst.appendChild(cr.el); } catch (e) { CSC.toast(e.message, true); }
+        try { var img = await CSC.fileToImage(f[0]); name = f[0].name.replace(/\.[^.]+$/, ''); $('#o').style.display = ''; var hst = $('#host'); hst.innerHTML = ''; cr = CSC.cropper(img, { aspect: parseFloat($('#ar').value) || 0, maxWidth: 640, onChange: preview }); hst.appendChild(cr.el); preview(); } catch (e) { CSC.toast(e.message, true); }
       }
     }));
-    $('#ar').onchange = function () { if (cr) cr.setAspect(parseFloat($('#ar').value) || 0); };
+    $('#ar').onchange = function () { if (cr) { cr.setAspect(parseFloat($('#ar').value) || 0); preview(); } };
+    $('#ow').oninput = preview; $('#f').onchange = preview;
     $('#go').onclick = async function () {
       if (!cr) return; var r = cr.rect(), ow = parseInt($('#ow').value, 10), w = ow > 0 ? ow : Math.round(r.w), hh = Math.round(w * r.h / r.w);
       var type = $('#f').value, c = cr.getCanvas(w, hh);
@@ -222,14 +233,22 @@
   /* ================= Image Compressor ================= */
   T.image_compressor = function (root) {
     root.innerHTML = '<div class="t-grid"><div class="card no-print"><div id="dz"></div><div style="margin-top:14px"><div class="row2"><div class="field"><label>Target size (KB)</label><input type="number" id="kb" value="100" min="2"></div>' +
-      '<div class="field"><label>Shrink width to (px, optional)</label><input type="number" id="mw" min="1" placeholder="Keep size"></div></div>' +
+      '<div class="field"><label>Shrink width to (px, optional)</label><select id="mws"><option value="">Keep original width</option><option value="320">320 px</option><option value="480">480 px</option><option value="640">640 px</option><option value="800">800 px</option><option value="1024">1024 px</option><option value="1280">1280 px</option><option value="1600">1600 px</option><option value="1920">1920 px (Full HD)</option><option value="2560">2560 px</option><option value="custom">Custom…</option></select><input type="number" id="mw" min="1" placeholder="Type width in px" style="display:none;margin-top:6px"></div></div>' +
       '<div class="field"><label>Compression style</label><select id="md"><option value="clear">Best clarity (recommended)</option><option value="keep">Keep exact pixel size</option></select></div>' +
       '<p class="hint"><b>Best clarity</b> keeps the picture sharp: it lowers JPG quality only a little and, if the target is still not reached, shrinks the pixels slightly. <b>Keep exact pixel size</b> never changes width and height but can look soft at very small targets. Changing a setting re-compresses your pictures.</p></div></div>' +
-      '<div class="card"><ul class="t-list" id="ls"><li class="hint">No images yet.</li></ul><div class="t-actions"><button class="btn" id="all" disabled><i class="fa-solid fa-file-zipper"></i> Download all (ZIP)</button></div></div></div>';
-    var $ = function (s) { return root.querySelector(s); }, files = [], results = [], timer, token = 0;
+      '<div class="card"><div id="pv" style="display:none;margin-bottom:12px"><b>Preview</b> <span class="hint">(click a picture in the list to preview it)</span><div id="pvg" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px"></div></div><ul class="t-list" id="ls"><li class="hint">No images yet.</li></ul><div class="t-actions"><button class="btn" id="all" disabled><i class="fa-solid fa-file-zipper"></i> Download all (ZIP)</button></div></div></div>';
+    var $ = function (s) { return root.querySelector(s); }, files = [], results = [], timer, token = 0, sel = 0, pvUrls = [];
+    function showPreview() {
+      pvUrls.forEach(function (u) { URL.revokeObjectURL(u); }); pvUrls = []; var r = results[sel]; if (!r) { $('#pv').style.display = 'none'; return; }
+      var u1 = URL.createObjectURL(r.f), u2 = URL.createObjectURL(r.b); pvUrls = [u1, u2];
+      var box = 'style="background:repeating-conic-gradient(#e5e7eb 0% 25%,#fff 0% 50%) 0 0/16px 16px;border:1px solid var(--line,#d9dee8);border-radius:8px;padding:4px;text-align:center"', im = 'style="max-width:100%;max-height:240px;object-fit:contain"';
+      $('#pvg').innerHTML = '<div><div ' + box + '><img ' + im + ' alt="Original" src="' + u1 + '"></div><div style="margin-top:4px"><b>Original</b><br><span class="t-stat">' + CSC.fmtBytes(r.f.size) + '</span><span class="t-stat">' + r.ow + '×' + r.oh + '</span></div></div>' +
+        '<div><div ' + box + '><img ' + im + ' alt="Compressed" src="' + u2 + '"></div><div style="margin-top:4px"><b>Compressed</b><br><span class="t-stat">' + CSC.fmtBytes(r.b.size) + '</span><span class="t-stat">' + r.cw + '×' + r.ch + '</span><span class="t-stat">' + (r.f.size ? Math.max(0, Math.round(100 - r.b.size * 100 / r.f.size)) : 0) + '% smaller</span></div></div>';
+      $('#pv').style.display = '';
+    }
     async function run() {
       if (!files.length) return; var my = ++token, kb = parseFloat($('#kb').value) || 100, mw = parseInt($('#mw').value, 10), keep = $('#md').value === 'keep';
-      $('#ls').innerHTML = ''; results = []; $('#all').disabled = true;
+      $('#ls').innerHTML = ''; results = []; $('#all').disabled = true; if (sel >= files.length) sel = 0;
       for (var i = 0; i < files.length; i++) {
         var f = files[i], li = h('li', {}, [h('span', { class: 'nm' }, f.name + ' …')]); $('#ls').appendChild(li);
         try {
@@ -238,16 +257,18 @@
           c.width = W; c.height = H; var x = c.getContext('2d'); x.imageSmoothingEnabled = true; x.imageSmoothingQuality = 'high'; x.drawImage(img, 0, 0, W, H);
           var b = await CSC.fitToKB(c, kb, 0, { keepDims: keep }); if (my !== token) return;
           var nm = f.name.replace(/\.[^.]+$/, '') + '_compressed.jpg'; results.push({ b: b, nm: nm });
-          var ok = b.size <= kb * 1024, dm = await CSC.fileToImage(b);
+          var ok = b.size <= kb * 1024, dm = await CSC.fileToImage(b); results[results.length - 1].f = f; results[results.length - 1].ow = img.naturalWidth; results[results.length - 1].oh = img.naturalHeight; results[results.length - 1].cw = dm.naturalWidth; results[results.length - 1].ch = dm.naturalHeight;
           li.innerHTML = '<span class="nm">' + esc(f.name) + '</span><span class="t-stat">' + CSC.fmtBytes(f.size) + ' → ' + CSC.fmtBytes(b.size) + '</span><span class="t-stat">' + dm.naturalWidth + '×' + dm.naturalHeight + '</span>' + (ok ? '' : '<span class="err"> above ' + kb + ' KB</span>');
           li.appendChild(h('button', { title: 'Download', 'aria-label': 'Download', onclick: (function (r) { return function () { CSC.download(r.b, r.nm); }; })(results[results.length - 1]) }, [h('i', { class: 'fa-solid fa-download' })]));
+          li.style.cursor = 'pointer'; li.title = 'Click to preview'; li.onclick = (function (k) { return function (e) { if (e.target.closest('button')) return; sel = k; showPreview(); [].forEach.call($('#ls').children, function (x, j) { x.style.outline = j === k ? '2px solid #1a3fa6' : ''; }); }; })(results.length - 1); if (results.length - 1 === sel) { li.style.outline = '2px solid #1a3fa6'; showPreview(); }
         } catch (e) { li.innerHTML = '<span class="nm err">' + esc(f.name) + ': ' + esc(e.message) + '</span>'; }
       }
       $('#all').disabled = results.length < 2;
     }
     function again() { clearTimeout(timer); timer = setTimeout(run, 500); }
     ['kb', 'mw'].forEach(function (i) { $('#' + i).oninput = again; }); $('#md').onchange = run;
-    $('#dz').appendChild(CSC.dropzone({ accept: 'image/*', multiple: true, icon: 'fa-compress', label: 'Choose one or many images', onFiles: function (fs) { files = [].slice.call(fs); run(); } }));
+    $('#mws').onchange = function () { var v = this.value; $('#mw').style.display = v === 'custom' ? '' : 'none'; if (v !== 'custom') $('#mw').value = v; again(); };
+    $('#dz').appendChild(CSC.dropzone({ accept: 'image/*', multiple: true, icon: 'fa-compress', label: 'Choose one or many images', onFiles: function (fs) { files = [].slice.call(fs); sel = 0; run(); } }));
     $('#all').onclick = async function () { await CSC.loadScript(CSC.libs.jszip); var z = new JSZip(); results.forEach(function (r) { z.file(r.nm, r.b); }); CSC.download(await z.generateAsync({ type: 'blob' }), 'compressed_images.zip'); };
   };
 
@@ -318,6 +339,7 @@
       '<div class="t-actions"><button class="btn" id="dl"><i class="fa-solid fa-download"></i> Download</button></div></div></div>' +
       '<div class="card"><div class="t-preview" id="pv"><p class="hint">Choose a photo to start.</p></div></div></div>';
     var $ = function (s) { return root.querySelector(s); }, src, cut, aiRaw, name = 'photo', timer;
+    pvSize($('#pv'), 'bgremover', 260);
     function ai() { return $('#mode').value === 'ai'; }
     function bgColor() { var v = $('#bg').value; return v === 'none' ? null : v === 'custom' ? $('#cu').value : v; }
     function compose(c) {
@@ -358,6 +380,16 @@
     $('#dl').onclick = async function () { if (!cut) return; var o = compose(cut), bc = bgColor(); CSC.download(await CSC.canvasBlob(o, bc ? 'image/jpeg' : 'image/png', 0.95), name + (bc ? '_bg.jpg' : '_nobg.png')); };
   };
 
+  /* v35: preview-size selector (Small / Medium / Large / Full) for image previews */
+  function pvSize(pv, key, def) {
+    var sizes = [['Small', 260], ['Medium', 380], ['Large', 560], ['Full', 0]], cur = CSC.safe.get('csc_pvsize_' + key, null); if (cur == null) cur = def;
+    var bar = document.createElement('div'); bar.className = 'pvbar no-print';
+    bar.innerHTML = '<label>Preview size</label><select aria-label="Preview size">' + sizes.map(function (z) { return '<option value="' + z[1] + '"' + (+cur === z[1] ? ' selected' : '') + '>' + z[0] + '</option>'; }).join('') + '</select>';
+    function apply(v) { v = +v; if (v) { pv.classList.add('pv-lim'); pv.style.setProperty('--pvmax', v + 'px'); } else { pv.classList.remove('pv-lim'); } }
+    bar.querySelector('select').onchange = function () { CSC.safe.set('csc_pvsize_' + key, +this.value); apply(this.value); };
+    pv.parentNode.insertBefore(bar, pv); apply(cur);
+  }
+
   /* ================= Passport & stamp photo studio ================= */
   T.ai_passport_studio = function (root) {
     var SIZES = [['Passport 35 × 45 mm', 35, 45], ['Stamp 25 × 35 mm', 25, 35], ['Small stamp 20 × 25 mm', 20, 25], ['Square 51 × 51 mm (2 × 2 in)', 51, 51], ['Visa 33 × 48 mm', 33, 48], ['Custom', 0, 0]];
@@ -365,10 +397,10 @@
     root.innerHTML = '<div class="t-grid3"><div class="card no-print opt"><div id="dz"></div><div id="o" style="display:none;margin-top:14px">' +
       '<div class="field"><label>Photo size</label><select id="sz">' + SIZES.map(function (s, i) { return '<option value="' + i + '">' + s[0] + '</option>'; }).join('') + '</select></div>' +
       '<div class="row2" id="cust" style="display:none"><div class="field"><label>Width (mm)</label><input type="number" id="cw" value="35"></div><div class="field"><label>Height (mm)</label><input type="number" id="ch" value="45"></div></div>' +
-      '<div class="row2"><div class="field"><label>Paper</label><select id="sh">' + SHEETS.map(function (s, i) { return '<option value="' + i + '">' + s[0] + '</option>'; }).join('') + '</select></div><div class="field"><label>Copies (0 = fill page)</label><input type="number" id="n" value="0" min="0" max="200"></div></div>' +
+      '<div class="row2"><div class="field"><label>Paper</label><select id="sh">' + SHEETS.map(function (s, i) { return '<option value="' + i + '">' + s[0] + '</option>'; }).join('') + '</select></div><div class="field"><label>Copies</label><select id="n"><option value="5" selected>5</option><option value="10">10</option><option value="15">15</option><option value="20">20</option><option value="25">25</option><option value="30">30</option><option value="35">35</option><option value="full">Full A4 Sheet</option></select></div></div>' +
       '<div class="row2"><div class="field"><label>Background</label><select id="bg"><option value="keep">Keep original</option><option value="#ffffff">White</option><option value="#1e66d0">Blue</option><option value="#d12b2b">Red</option><option value="#e8e8e8">Light grey</option></select></div><div class="field"><label>Remove colour strength</label><input type="range" id="tol" min="10" max="100" value="40"></div></div>' +
       '<p class="hint">To change the background, pick a colour above. The plain wall colour in the photo corners is replaced. Use a photo with an even background.</p>' +
-      '<div class="field"><label><input type="checkbox" id="fr"> Add a frame around each photo</label></div><div class="row2" id="frBox" style="display:none"><div class="field"><label>Frame width: <span id="fwv">2</span> px</label><input type="range" id="fw" min="1" max="5" value="2"></div><div class="field"><label>Frame colour</label><input type="color" id="fc" value="#000000"></div></div>' +
+      '<div class="field"><label><input type="checkbox" id="fr"> Add a frame around each photo</label></div><div class="row2" id="frBox" style="display:none"><div class="field"><label>Frame width: <span id="fwv">0.6</span> mm</label><input type="range" id="fw" min="3" max="20" value="6"></div><div class="field"><label>Frame colour</label><input type="color" id="fc" value="#000000"></div></div>' +
       '<label><input type="checkbox" id="ln" checked> Thin cut lines</label>' +
       '<p class="hint" style="margin-top:8px">Drag the crop box over the face first. Then press Make sheet.</p>' +
       '<div class="t-actions"><button class="btn" id="go"><i class="fa-solid fa-table-cells"></i> Make sheet</button></div></div></div>' +
@@ -378,7 +410,7 @@
     function size() { var s = SIZES[+$('#sz').value]; return s[1] ? { w: s[1], h: s[2] } : { w: +$('#cw').value || 35, h: +$('#ch').value || 45 }; }
     function asp() { var s = size(); if (cr) cr.setAspect(s.w / s.h); }
     $('#fr').onchange = function () { $('#frBox').style.display = this.checked ? '' : 'none'; };
-    $('#fw').oninput = function () { $('#fwv').textContent = this.value; };
+    $('#fw').oninput = function () { $('#fwv').textContent = (this.value / 10).toFixed(1); };
     $('#sz').onchange = function () { $('#cust').style.display = SIZES[+this.value][1] ? 'none' : ''; asp(); };
     ['cw', 'ch'].forEach(function (i) { $('#' + i).oninput = asp; });
     $('#dz').appendChild(CSC.dropzone({
@@ -390,14 +422,13 @@
       if (!cr) return; var s = size(), pw = MM(s.w, DPI), ph = MM(s.h, DPI), sh = SHEETS[+$('#sh').value], SW = MM(sh[1], DPI), SH = MM(sh[2], DPI);
       var one = cr.getCanvas(pw, ph), bg = $('#bg').value;
       if (bg !== 'keep') { var cut = CSC.removeBg(one, cornerColor(one), +$('#tol').value, true, 60), f = document.createElement('canvas'); f.width = pw; f.height = ph; var fx = f.getContext('2d'); fx.fillStyle = bg; fx.fillRect(0, 0, pw, ph); fx.drawImage(cut, 0, 0); one = f; }
-      if ($('#fr').checked) CSC.addFrame(one, +$('#fw').value, $('#fc').value);
       var gap = MM(2, DPI), margin = MM(6, DPI), cols = Math.max(1, Math.floor((SW - 2 * margin + gap) / (pw + gap))), rows = Math.max(1, Math.floor((SH - 2 * margin + gap) / (ph + gap)));
-      var cap = cols * rows, n = parseInt($('#n').value, 10) || 0; if (n <= 0 || n > cap) n = cap;
+      var cap = cols * rows, n = $('#n').value === 'full' ? cap : (parseInt($('#n').value, 10) || 5); if (n <= 0 || n > cap) n = cap;
       sheet = document.createElement('canvas'); sheet.width = SW; sheet.height = SH; var x = sheet.getContext('2d'); x.fillStyle = '#fff'; x.fillRect(0, 0, SW, SH);
       var used = Math.min(cols, n), gridW = used * pw + (used - 1) * gap, x0 = Math.round((SW - gridW) / 2);
-      for (var i = 0; i < n; i++) { var cx = x0 + (i % cols) * (pw + gap), cy = margin + Math.floor(i / cols) * (ph + gap); x.drawImage(one, cx, cy); if ($('#ln').checked) { x.strokeStyle = '#888'; x.lineWidth = 1; x.strokeRect(cx - 0.5, cy - 0.5, pw + 1, ph + 1); } }
+      for (var i = 0; i < n; i++) { var cx = x0 + (i % cols) * (pw + gap), cy = margin + Math.floor(i / cols) * (ph + gap); x.drawImage(one, cx, cy); if ($('#fr').checked) { var fpx = Math.max(3, Math.round(+$('#fw').value / 10 / 25.4 * DPI)); x.fillStyle = $('#fc').value; x.fillRect(cx, cy, pw, fpx); x.fillRect(cx, cy + ph - fpx, pw, fpx); x.fillRect(cx, cy, fpx, ph); x.fillRect(cx + pw - fpx, cy, fpx, ph); } if ($('#ln').checked) { x.strokeStyle = '#888'; x.lineWidth = 1; x.strokeRect(cx - 0.5, cy - 0.5, pw + 1, ph + 1); } }
       $('#pv').innerHTML = ''; $('#pv').appendChild(sheet); sheet.style.maxHeight = '620px'; sheet.style.width = 'auto';
-      $('#st').innerHTML = '<span class="t-stat">' + n + ' photos</span><span class="t-stat">' + s.w + ' × ' + s.h + ' mm</span><span class="t-stat">' + sh[0] + '</span>' + (n === cap ? '' : '');
+      $('#st').innerHTML = '<span class="t-stat">' + n + ' photos</span><span class="t-stat">' + s.w + ' × ' + s.h + ' mm</span><span class="t-stat">' + sh[0] + '</span>' + (n === cap ? '<span class="t-stat">Page full</span>' : '<span class="t-stat">' + cap + ' fit on this paper</span>');
       
     };
     function jpg() { return CSC.canvasBlob(sheet, 'image/jpeg', 0.95); }
@@ -407,7 +438,7 @@
       var im = await doc.embedJpg(await (await jpg()).arrayBuffer()); pg.drawImage(im, { x: 0, y: 0, width: pg.getWidth(), height: pg.getHeight() });
       CSC.download(new Blob([await doc.save()], { type: 'application/pdf' }), 'photo_sheet.pdf');
     };
-    $('#pr').onclick = function () { if (!sheet) return; var sh = SHEETS[+$('#sh').value]; CSC.printHTML('<img src="' + sheet.toDataURL('image/jpeg', .95) + '" style="width:' + sh[1] + 'mm;height:' + sh[2] + 'mm;display:block">', '@page{size:' + sh[1] + 'mm ' + sh[2] + 'mm;margin:0}'); };
+    $('#pr').onclick = function () { if (!sheet) return; var sh = SHEETS[+$('#sh').value]; CSC.printHTML('<img src="' + sheet.toDataURL('image/jpeg', .95) + '" style="width:' + sh[1] + 'mm;height:' + sh[2] + 'mm;display:block">', '@page{size:' + sh[1] + 'mm ' + sh[2] + 'mm;margin:0}img{-webkit-print-color-adjust:exact;print-color-adjust:exact}'); };
   };
 
   /* ================= Name & date on photo ================= */
@@ -421,6 +452,16 @@
       '<div class="card"><div class="t-preview" id="pv"><p class="hint">Choose a photo to start.</p></div></div></div>';
     var $ = function (s) { return root.querySelector(s); }, img, c, nm0 = 'photo';
     $('#dt').value = today();
+    pvSize($('#pv'), 'namedate', 260);
+    var szBox = document.createElement('div'); szBox.style.textAlign = 'center'; $('#pv').parentNode.appendChild(szBox); var szTimer, szSeq = 0;
+    function showSize() {
+      clearTimeout(szTimer); szTimer = setTimeout(async function () {
+        if (!c) return; var my = ++szSeq, kb = parseFloat($('#kb').value), b = kb > 0 ? await CSC.fitToKB(c, kb) : await CSC.canvasBlob(c, 'image/jpeg', 0.95); if (my !== szSeq) return;
+        var k = b.size / 1024, over = kb > 0 && k > kb + 0.5;
+        szBox.innerHTML = '<span class="sz-pill' + (over ? ' warn' : '') + '">Download size: ' + k.toFixed(1) + ' KB' + (kb > 0 ? ' (limit ' + kb + ' KB)' : ' (no limit)') + ' &middot; ' + c.width + ' &times; ' + c.height + ' px' + (over ? ' &middot; could not reach the limit, use a smaller width' : '') + '</span>';
+      }, 250);
+    }
+    $('#kb').addEventListener('input', showSize);
     function draw() {
       if (!img) return; var W = Math.max(100, +$('#w').value || 400), ph = Math.round(W * img.naturalHeight / img.naturalWidth), lines = [], m = $('#ls').value;
       if (m !== 'date' && $('#nm').value.trim()) lines.push($('#nm').value.trim().toUpperCase()); if (m !== 'name' && $('#dt').value.trim()) lines.push($('#dt').value.trim());
@@ -429,7 +470,7 @@
       x.fillStyle = $('#bc').value; x.fillRect(0, 0, c.width, c.height); x.drawImage(img, 0, 0, W, ph);
       x.fillStyle = $('#tc').value; x.textAlign = 'center'; x.textBaseline = 'middle'; x.font = '700 ' + fs + 'px Arial, sans-serif';
       lines.forEach(function (t, i) { var f = fs; x.font = '700 ' + f + 'px Arial'; while (x.measureText(t).width > W * 0.94 && f > 8) { f--; x.font = '700 ' + f + 'px Arial'; } x.fillText(t, W / 2, ph + fs * 0.2 + fs * 0.675 + i * fs * 1.35 + fs * 0.1); });
-      $('#pv').innerHTML = ''; $('#pv').appendChild(c);
+      $('#pv').innerHTML = ''; $('#pv').appendChild(c); showSize();
     }
     ['nm', 'dt', 'w', 'bc', 'tc', 'ls'].forEach(function (i) { $('#' + i).oninput = draw; });
     $('#dz').appendChild(CSC.dropzone({ accept: 'image/*', icon: 'fa-image', label: 'Choose a photo', onFiles: async function (f) { try { img = await CSC.fileToImage(f[0]); nm0 = f[0].name.replace(/\.[^.]+$/, ''); $('#o').style.display = ''; draw(); } catch (e) { CSC.toast(e.message, true); } } }));

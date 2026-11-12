@@ -49,6 +49,12 @@
       '<button class="btn alt" id="rs" type="button">Clear form</button></div><p class="hint" style="margin-top:8px">In the print window choose "Save as PDF" to get a PDF file. Details stay on this device only.</p></div>' +
       '<div><div id="pv" class="' + (cfg.paper === false ? '' : 't-paper') + '" style="overflow:auto"></div></div></div>';
     var $ = function (s) { return root.querySelector(s); };
+    if (cfg.zoom) {
+      var zb = document.createElement('div'), zs0 = CSC.safe.get('csc_pvzoom_' + cfg.key, null); zb.className = 'pvbar no-print'; if (zs0 == null) zs0 = cfg.zoom;
+      zb.innerHTML = '<label>Preview size</label><select id="zs" aria-label="Preview size"><option value="0.4">Small</option><option value="0.55">Medium</option><option value="0.75">Large</option><option value="1">Full page</option></select>';
+      $('#pv').parentNode.insertBefore(zb, $('#pv')); $('#zs').value = String(zs0); if ($('#zs').value !== String(zs0)) $('#zs').value = '0.55';
+      $('#zs').onchange = function () { CSC.safe.set('csc_pvzoom_' + cfg.key, +this.value); update(); };
+    }
     var itemsData = {};
     cfg.fields.filter(function (f) { return f.type === 'items'; }).forEach(function (f) {
       itemsData[f.id] = (saved[f.id] && saved[f.id].length ? saved[f.id] : (f.def || [{}]));
@@ -76,7 +82,7 @@
     function update() {
       var v = values(), keep = {}; Object.keys(v).forEach(function (k) { if (typeof v[k] === 'string' && v[k].length > 2000 && v[k].indexOf('data:') === 0) return; keep[k] = v[k]; });
       CSC.safe.set(store, keep);
-      try { $('#pv').innerHTML = '<style>' + (cfg.css || '') + '</style>' + cfg.render(v); } catch (e) { $('#pv').innerHTML = '<p class="err">' + esc(e.message) + '</p>'; }
+      try { var html = '<style>' + (cfg.css || '') + '</style>' + cfg.render(v); if (cfg.zoom) { var z = +$('#zs').value || 0.55; html = '<div style="width:' + Math.round(793.7 * z) + 'px;height:' + Math.round(1122.5 * z) + 'px;margin:0 auto;overflow:hidden"><div style="width:210mm;height:297mm;transform:scale(' + z + ');transform-origin:0 0">' + html + '</div></div>'; } $('#pv').innerHTML = html; } catch (e) { $('#pv').innerHTML = '<p class="err">' + esc(e.message) + '</p>'; }
     }
     cfg.fields.filter(function (f) { return f.type === 'photo'; }).forEach(function (f) {
       $('#f_' + f.id).addEventListener('change', function () { var fl = this.files[0]; if (!fl) { files[f.id] = ''; return update(); } readPhoto(fl, f.max).then(function (u) { files[f.id] = u; update(); }, function (e) { CSC.toast(e.message, true); }); });
@@ -427,7 +433,7 @@
       '.bm table{width:100%;border-collapse:collapse}.bm td{padding:3px 4px;vertical-align:top}.bm td:first-child{width:38%;font-weight:700}.bm .gt{font-weight:800;padding:3px 8px;margin:7px 0 2px;border-radius:3px;font-size:1em}' +
       '.bm img.ph{object-fit:cover;border:2px solid;padding:2px;background:#fff;display:block}.bm .row{display:flex;gap:10px;align-items:flex-start}.bm .grow{flex:1;min-width:0}';
     CSC.docTool(root, {
-      key: 'aibiodata', css: css, printCss: ' .nop{}', fields: fields,
+      key: 'aibiodata', zoom: 0.55, css: css, printCss: ' .nop{}', fields: fields,
       render: function (v) {
         var hi = v.lang === 'hi', bd = v.bd || 'gold', I = (CSC.borders && CSC.borders.info[bd]) || { c1: '#7b1e1e', c2: '#d4a017', soft: '#fff', ink: '#333' }, fs = +v.fs || 11.5, tpl = v.tpl || 'classic';
         var groups = G.map(function (g) {

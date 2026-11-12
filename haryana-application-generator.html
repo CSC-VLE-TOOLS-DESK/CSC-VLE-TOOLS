@@ -43,7 +43,7 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--pr);border-color
   <link rel="apple-touch-icon" href="apple-touch-icon.png?v=3">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Mukta:wght@400;600;800&display=swap">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<link rel="stylesheet" href="assets/css/portal.css?v=34"><link rel="stylesheet" href="assets/css/csc-system.css?v=34">
+<link rel="stylesheet" href="assets/css/portal.css?v=36"><link rel="stylesheet" href="assets/css/csc-system.css?v=36">
 <style>
 /* CSC VLE TOOLS compatibility skin: maps this tool's old variables onto the shared portal tokens */
 :root:root{--card:var(--surface);--tx:var(--text);--mu:var(--muted);--bd:var(--line);--pr:var(--brand);--pr2:var(--soft);--on:var(--on-brand)}
@@ -428,9 +428,9 @@ $("phx").onclick=function(){PHOTO="";$("photo").value="";$("phx").style.display=
 $("photo").onchange=function(){var f=this.files[0];if(!f)return;if(f.size>3e6){note(L("Photo must be under 3 MB|फोटो 3 MB से छोटी होनी चाहिए"));this.value="";return}var r=new FileReader();r.onload=function(){PHOTO=r.result;$("phx").style.display="";$("phn").textContent=L("Photo added – it will print at the top right.|फोटो जुड़ गई – यह ऊपर दाईं ओर छपेगी।")};r.readAsDataURL(f)};
 render();
 </script>
-<script src="assets/js/site.js?v=34"></script>
-  <script src="assets/js/chatbot-data.js?v=34" defer></script>
-  <script src="assets/js/chatbot.js?v=34" defer></script>
-  <script src="assets/js/demo-mode.js?v=34" defer></script>
+<script src="assets/js/site.js?v=36"></script>
+  <script src="assets/js/chatbot-data.js?v=36" defer></script>
+  <script src="assets/js/chatbot.js?v=36" defer></script>
+  <script src="assets/js/demo-mode.js?v=36" defer></script>
 </body>
 </html>
