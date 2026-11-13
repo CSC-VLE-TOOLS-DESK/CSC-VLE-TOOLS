@@ -403,7 +403,7 @@
       '<div class="field"><label><input type="checkbox" id="fr"> Add a frame around each photo</label></div><div class="row2" id="frBox" style="display:none"><div class="field"><label>Frame width: <span id="fwv">0.6</span> mm</label><input type="range" id="fw" min="3" max="20" value="6"></div><div class="field"><label>Frame colour</label><input type="color" id="fc" value="#000000"></div></div>' +
       '<label><input type="checkbox" id="ln" checked> Thin cut lines</label>' +
       '<p class="hint" style="margin-top:8px">Drag the crop box over the face first. Then press Make sheet.</p>' +
-      '<div class="t-actions"><button class="btn" id="go"><i class="fa-solid fa-table-cells"></i> Make sheet</button></div></div></div>' +
+      '<div class="t-actions"><button class="btn" id="go"><i class="fa-solid fa-table-cells"></i> Make sheet</button><button class="btn alt" id="clr" type="button" title="Remove this photo and start again" style="color:#b3261e"><i class="fa-solid fa-trash"></i> Remove image</button></div></div></div>' +
       '<div class="card" id="cc"><h3 class="pane-t">1. Crop</h3><div id="host" style="text-align:center"><p class="hint">Choose a photo to start.</p></div></div>' +
       '<div class="card" id="oc"><h3 class="pane-t">2. Photo sheet</h3><div id="st"></div><div class="t-preview" id="pv" style="margin-top:8px"><p class="hint">Your photo sheet will show here, next to the crop.</p></div><div class="t-actions"><button class="btn" id="dlj"><i class="fa-solid fa-image"></i> Download JPG</button><button class="btn alt" id="dlp"><i class="fa-solid fa-file-pdf"></i> Download PDF</button><button class="btn alt" id="pr"><i class="fa-solid fa-print"></i> Print</button></div></div></div>';
     var $ = function (s) { return root.querySelector(s); }, cr, sheet, DPI = 300;
@@ -418,6 +418,12 @@
         try { var im = await CSC.fileToImage(f[0]); $('#o').style.display = ''; $('#pv').innerHTML = '<p class="hint">Press Make sheet. The result will show here, next to the crop.</p>'; $('#st').innerHTML = ''; var hst = $('#host'); hst.innerHTML = ''; var s = size(); cr = CSC.cropper(im, { aspect: s.w / s.h, maxWidth: 420 }); hst.appendChild(cr.el); } catch (e) { CSC.toast(e.message, true); }
       }
     }));
+    $('#clr').onclick = function () {
+      cr = null; sheet = null; $('#o').style.display = 'none';
+      $('#host').innerHTML = '<p class="hint">Choose a photo to start.</p>';
+      $('#pv').innerHTML = '<p class="hint">Your photo sheet will show here, next to the crop.</p>'; $('#st').innerHTML = '';
+      CSC.toast('Image removed. Choose a new photo.');
+    };
     $('#go').onclick = function () {
       if (!cr) return; var s = size(), pw = MM(s.w, DPI), ph = MM(s.h, DPI), sh = SHEETS[+$('#sh').value], SW = MM(sh[1], DPI), SH = MM(sh[2], DPI);
       var one = cr.getCanvas(pw, ph), bg = $('#bg').value;

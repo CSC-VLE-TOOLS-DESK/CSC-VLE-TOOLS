@@ -360,7 +360,8 @@
       var q = [[mx, my], [src.width - mx, my], [src.width - mx, src.height - my], [mx, src.height - my]], isSet = false;
       var box = document.createElement('div'); box.className = 'adj';
       box.innerHTML = '<div class="adj-h">Pane ' + n + ' &bull; ' + (n === 1 ? 'Front' : 'Back') + ': drag the 4 pins to the corners of the card</div><div class="adj-cv"><canvas width="' + DW + '" height="' + DH + '" tabindex="0" aria-label="Pane ' + n + ' corner pins"></canvas></div>' +
-        '<div class="t-actions"><button type="button" class="btn" data-a="set"><i class="fa-solid fa-check"></i> Set (Enter)</button><button type="button" class="btn alt" data-a="reset">Reset pins</button></div><p class="hint adj-st">Pins not set yet. The full image is used until you press Set.</p>';
+        '<div class="t-actions"><button type="button" class="btn" data-a="set"><i class="fa-solid fa-check"></i> Set (Enter)</button><button type="button" class="btn alt" data-a="reset">Reset pins</button></div>' +
+        '<div class="t-actions"><button type="button" class="btn alt" data-a="rl" title="Rotate 90 degrees to the left"><i class="fa-solid fa-rotate-left"></i> Rotate left</button><button type="button" class="btn alt" data-a="rr" title="Rotate 90 degrees to the right"><i class="fa-solid fa-rotate-right"></i> Rotate right</button><button type="button" class="btn alt" data-a="r180" title="Turn upside down">180&deg;</button><button type="button" class="btn alt" data-a="del" title="Remove this image" style="color:#b3261e"><i class="fa-solid fa-trash"></i> Remove image</button></div><p class="hint adj-st">Pins not set yet. The full image is used until you press Set.</p>';
       var cv = box.querySelector('canvas'), cx = cv.getContext('2d'), st = box.querySelector('.adj-st'), drag = -1;
       function draw() {
         cx.clearRect(0, 0, DW, DH); cx.drawImage(src, 0, 0, DW, DH); cx.beginPath(); q.forEach(function (p, i) { cx[i ? 'lineTo' : 'moveTo'](p[0] * k, p[1] * k); }); cx.closePath();
@@ -374,20 +375,36 @@
       function apply() { var s = cardPx(); imgs[n - 1] = warp(src, q, s[0], s[1]); isSet = true; st.textContent = 'Set. Pane ' + n + ' is fixed to the card size. Move a pin and press Set again to change it.'; st.className = 'hint adj-st ok'; build(); }
       box.querySelector('[data-a=set]').onclick = apply;
       box.querySelector('[data-a=reset]').onclick = function () { q = [[mx, my], [src.width - mx, my], [src.width - mx, src.height - my], [mx, src.height - my]]; isSet = false; imgs[n - 1] = raws[n - 1]; st.textContent = 'Pins reset. The full image is used until you press Set.'; st.className = 'hint adj-st'; draw(); build(); };
+      function rotate(deg) {
+        var w = src.width, h = src.height, sw = deg === 180 ? w : h, sh = deg === 180 ? h : w, t = document.createElement('canvas');
+        t.width = sw; t.height = sh; var tx = t.getContext('2d'); tx.translate(sw / 2, sh / 2); tx.rotate(deg * Math.PI / 180); tx.drawImage(src, -w / 2, -h / 2);
+        src.width = sw; src.height = sh; src.getContext('2d').drawImage(t, 0, 0);
+        DH = Math.round(DW * sh / sw); k = DW / sw; mx = sw * 0.04; my = sh * 0.04; cv.height = DH;
+        q = [[mx, my], [sw - mx, my], [sw - mx, sh - my], [mx, sh - my]]; isSet = false;
+        raws[n - 1] = t; imgs[n - 1] = t;
+        st.textContent = 'Rotated. Move the pins to the card corners and press Set.'; st.className = 'hint adj-st';
+        draw(); build();
+      }
+      box.querySelector('[data-a=rl]').onclick = function () { rotate(-90); };
+      box.querySelector('[data-a=rr]').onclick = function () { rotate(90); };
+      box.querySelector('[data-a=r180]').onclick = function () { rotate(180); };
+      box.querySelector('[data-a=del]').onclick = function () { removePane(n); };
       box.addEventListener('keydown', function (ev) { if (ev.key === 'Enter' && ev.target.tagName !== 'BUTTON') { ev.preventDefault(); apply(); } });
       draw();
       return { el: box, isSet: function () { return isSet; }, reapply: function () { if (isSet) apply(); } };
     }
-    var imgs = [null, null];
+    var imgs = [null, null], pv0 = $('#pv').innerHTML;
+    function showPanes() { var wrap = $('#adj'); wrap.innerHTML = ''; adj.forEach(function (a) { if (a) wrap.appendChild(a.el); }); }
+    function removePane(n) { raws[n - 1] = null; imgs[n - 1] = null; adj[n - 1] = null; showPanes(); build(); CSC.toast('Pane ' + n + ' image removed'); }
     [1, 2].forEach(function (n) { $('#d' + n).appendChild(CSC.dropzone({ accept: 'image/*', icon: 'fa-id-card', label: n === 1 ? 'Choose front image' : 'Choose back image', onFiles: async function (f) {
       try {
         var im = await CSC.fileToImage(f[0]); raws[n - 1] = im; imgs[n - 1] = im; adj[n - 1] = makeAdjuster(n, im);
-        var wrap = $('#adj'); wrap.innerHTML = ''; adj.forEach(function (a) { if (a) wrap.appendChild(a.el); }); build();
+        showPanes(); build();
       } catch (e) { CSC.toast(e.message, true); }
     } })); });
     var page = null;
     function build() {
-      if (!imgs[0] && !imgs[1]) return; var d = 300, W = Math.round(210 / 25.4 * d), H = Math.round(297 / 25.4 * d), s = $('#sz').value.split('x'), cw = Math.round(+s[0] / 25.4 * d), ch = Math.round(+s[1] / 25.4 * d);
+      if (!imgs[0] && !imgs[1]) { page = null; $('#pv').innerHTML = pv0; return; } var d = 300, W = Math.round(210 / 25.4 * d), H = Math.round(297 / 25.4 * d), s = $('#sz').value.split('x'), cw = Math.round(+s[0] / 25.4 * d), ch = Math.round(+s[1] / 25.4 * d);
       var c = document.createElement('canvas'); c.width = W; c.height = H; var x = c.getContext('2d'); x.fillStyle = '#fff'; x.fillRect(0, 0, W, H);
       var side = $('#lay').value === 'side', list = imgs.filter(Boolean), g = Math.round(8 / 25.4 * d), tw = side ? list.length * cw + (list.length - 1) * g : cw, th = side ? ch : list.length * ch + (list.length - 1) * g, ox = Math.round((W - tw) / 2), oy = Math.round(20 / 25.4 * d);
       list.forEach(function (im, i) { var px = side ? ox + i * (cw + g) : ox, py = side ? oy : oy + i * (ch + g); x.drawImage(im, px, py, cw, ch); if ($('#bd').value === '1') { x.strokeStyle = '#999'; x.lineWidth = 2; x.setLineDash([10, 8]); x.strokeRect(px, py, cw, ch); x.setLineDash([]); } });

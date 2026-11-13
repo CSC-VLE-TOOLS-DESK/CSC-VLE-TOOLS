@@ -221,9 +221,7 @@
     var s1 = mix(c, '#ffffff', 0.4), s3 = mix(c, '#000000', 0.38), dk = mix(c, '#000000', 0.5), rgb = hex2rgb(c),
         light = (0.299 * rgb[0] + 0.587 * rgb[1] + 0.114 * rgb[2]) / 255 > 0.72, tx = light ? '#1b2430' : '#ffffff', grad = 'linear-gradient(180deg,' + s1 + ' 0%,' + c + ' 45%,' + s3 + ' 100%)';
     return '.catnav,.n-home .catnav{background:' + grad + ' !important;border-color:rgba(255,255,255,.45) !important}' +
-      '.catnav .cn-t,.n-home .cn-t{color:' + tx + ' !important;text-shadow:none !important}' +
-      '.catnav .cn-a:not(.on),.n-home .catnav .cn-a:not(.on){color:' + tx + ' !important;text-shadow:none !important;box-shadow:0 5px 0 ' + dk + ',0 9px 14px rgba(0,0,0,.25),inset 0 2px 0 rgba(255,255,255,.5) !important}' +
-      '.catnav .cn-a:not(.on):hover,.n-home .catnav .cn-a:not(.on):hover{box-shadow:0 7px 0 ' + dk + ',0 12px 16px rgba(0,0,0,.28),inset 0 2px 0 rgba(255,255,255,.6) !important}';
+      '.catnav .cn-t,.n-home .cn-t{color:' + tx + ' !important;text-shadow:none !important}';
   }
   function rightCss(c) {
     var s1 = mix(c, '#ffffff', 0.4), s3 = mix(c, '#000000', 0.38), rgb = hex2rgb(c),

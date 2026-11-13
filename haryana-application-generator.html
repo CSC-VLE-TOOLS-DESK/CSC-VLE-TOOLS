@@ -43,7 +43,7 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--pr);border-color
   <link rel="apple-touch-icon" href="apple-touch-icon.png?v=3">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Mukta:wght@400;600;800&display=swap">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<link rel="stylesheet" href="assets/css/portal.css?v=36"><link rel="stylesheet" href="assets/css/csc-system.css?v=36">
+<link rel="stylesheet" href="assets/css/portal.css?v=37"><link rel="stylesheet" href="assets/css/csc-system.css?v=37">
 <style>
 /* CSC VLE TOOLS compatibility skin: maps this tool's old variables onto the shared portal tokens */
 :root:root{--card:var(--surface);--tx:var(--text);--mu:var(--muted);--bd:var(--line);--pr:var(--brand);--pr2:var(--soft);--on:var(--on-brand)}
@@ -69,6 +69,7 @@ main{max-width:900px}
   <link rel="icon" href="favicon.ico?v=3" sizes="any">
   <script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebApplication", "name": "Application Generator", "url": "https://csc-vle-tools-desk.github.io/CSC-VLE-TOOLS/haryana-application-generator.html", "description": "Free Hindi and English application and affidavit maker: pension, ration card, electricity, DOB verification, grievance. Print on A4 or save as PDF.", "applicationCategory": "UtilitiesApplication", "operatingSystem": "Any (web browser)", "browserRequirements": "Requires JavaScript", "inLanguage": "en-IN", "isAccessibleForFree": true, "offers": {"@type": "Offer", "price": "0", "priceCurrency": "INR"}, "publisher": {"@type": "Organization", "name": "CSC VLE TOOLS", "url": "https://csc-vle-tools-desk.github.io/CSC-VLE-TOOLS/"}}</script>
   <script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://csc-vle-tools-desk.github.io/CSC-VLE-TOOLS/"}, {"@type": "ListItem", "position": 2, "name": "Application Generator", "item": "https://csc-vle-tools-desk.github.io/CSC-VLE-TOOLS/haryana-application-generator.html"}]}</script>
+<script src="assets/js/app-theme.js?v=37"></script>
 </head>
 <body>
 <a class="skip-link" href="#main">Skip to content</a>
@@ -428,9 +429,9 @@ $("phx").onclick=function(){PHOTO="";$("photo").value="";$("phx").style.display=
 $("photo").onchange=function(){var f=this.files[0];if(!f)return;if(f.size>3e6){note(L("Photo must be under 3 MB|फोटो 3 MB से छोटी होनी चाहिए"));this.value="";return}var r=new FileReader();r.onload=function(){PHOTO=r.result;$("phx").style.display="";$("phn").textContent=L("Photo added – it will print at the top right.|फोटो जुड़ गई – यह ऊपर दाईं ओर छपेगी।")};r.readAsDataURL(f)};
 render();
 </script>
-<script src="assets/js/site.js?v=36"></script>
-  <script src="assets/js/chatbot-data.js?v=36" defer></script>
-  <script src="assets/js/chatbot.js?v=36" defer></script>
-  <script src="assets/js/demo-mode.js?v=36" defer></script>
+<script src="assets/js/site.js?v=37"></script>
+  <script src="assets/js/chatbot-data.js?v=37" defer></script>
+  <script src="assets/js/chatbot.js?v=37" defer></script>
+  <script src="assets/js/demo-mode.js?v=37" defer></script>
 </body>
 </html>

@@ -42,6 +42,20 @@ body{font:12px/1.35 "Segoe UI",system-ui,-apple-system,Roboto,sans-serif;backgro
 button,input,select,textarea{font:inherit;color:inherit}
 .num{font-variant-numeric:tabular-nums}
 
+
+/* v37: theme drop-down list */
+.thdd{position:relative;display:inline-block}
+.thmenu{position:absolute;right:0;top:calc(100% + 6px);z-index:500;min-width:230px;max-height:70vh;overflow:auto;background:var(--card);color:var(--ink);border:1px solid var(--rule);border-radius:10px;padding:6px;box-shadow:0 12px 30px rgba(0,0,0,.3)}
+.thmenu[hidden]{display:none}
+.thmenu .thi{display:flex;align-items:center;gap:9px;width:100%;text-align:left;background:transparent;color:var(--ink);border:1px solid transparent;border-radius:7px;padding:6px 8px;font-weight:600;cursor:pointer}
+.thmenu .thi:hover{background:var(--hl)}
+.thmenu .thi.on{border-color:var(--accent);background:var(--hl)}
+.thmenu .thi .chip{display:inline-flex;width:34px;height:18px;border-radius:5px;overflow:hidden;border:1px solid rgba(0,0,0,.25);flex:none}
+.thmenu .thi .chip i{flex:1}
+.thmenu .thbg{display:flex;align-items:center;gap:8px;margin-top:6px;padding:8px 8px 4px;border-top:1px solid var(--rule);font-weight:600}
+.thmenu .thbg input[type=color]{width:36px;height:26px;padding:0;border:1px solid var(--rule);border-radius:5px;background:var(--field)}
+.thmenu .thbg button{margin-left:auto;background:var(--hl);color:var(--ink);border:1px solid var(--rule);border-radius:6px;padding:3px 8px;cursor:pointer}
+
 /* top bar */
 header{background:var(--head);color:var(--headtxt);display:flex;align-items:center;flex-wrap:wrap;gap:6px 8px;padding:4px 8px;flex:0 0 auto}
 header h1{font-size:13px;margin:0;font-weight:700;letter-spacing:.2px;white-space:nowrap}
@@ -197,7 +211,7 @@ tfoot td{font-weight:700;background:var(--hl);position:sticky;bottom:0}
   <link rel="icon" href="favicon.ico?v=3" sizes="any">
   <script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebApplication", "name": "Shop Ledger", "url": "https://csc-vle-tools-desk.github.io/CSC-VLE-TOOLS/shop-ledger.html", "description": "Shop Ledger for daily shop income, expenses, cash-in-hand tracking and closing reports.", "applicationCategory": "UtilitiesApplication", "operatingSystem": "Any (web browser)", "browserRequirements": "Requires JavaScript", "inLanguage": "en-IN", "isAccessibleForFree": true, "offers": {"@type": "Offer", "price": "0", "priceCurrency": "INR"}, "publisher": {"@type": "Organization", "name": "CSC VLE TOOLS", "url": "https://csc-vle-tools-desk.github.io/CSC-VLE-TOOLS/"}}</script>
   <script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://csc-vle-tools-desk.github.io/CSC-VLE-TOOLS/"}, {"@type": "ListItem", "position": 2, "name": "Shop Ledger", "item": "https://csc-vle-tools-desk.github.io/CSC-VLE-TOOLS/shop-ledger.html"}]}</script>
-<script src="assets/js/app-nav.js?v=36" data-own-theme></script>
+<script src="assets/js/app-nav.js?v=37" data-own-theme></script>
 </head>
 <body>
 
@@ -206,7 +220,7 @@ tfoot td{font-weight:700;background:var(--hl);position:sticky;bottom:0}
   <span class="today num" id="todayStat"></span>
   <button class="winbtn pend" id="pendBtn" title="Show all pending payments" style="display:none"></button>
   <button class="winbtn" id="chgBtn" title="Add an expense (money you spent)">+ Expense</button>
-  <button class="winbtn" id="themeBtn" title="Change colour theme">🎨</button>
+  <span class="thdd"><button class="winbtn" id="themeBtn" title="Change colour theme" aria-haspopup="true" aria-expanded="false">🎨 Theme ▾</button><div class="thmenu" id="thMenu" hidden></div></span>
   <button class="winbtn" id="winBtn" title="Switch between small and full window"></button>
 </header>
 
@@ -1268,10 +1282,26 @@ $('#swatches').addEventListener('click',e=>{
   const b=e.target.closest('.sw');if(!b)return;
   prefs.theme=b.dataset.th;save(LS_P,prefs);applyTheme();
 });
-$('#themeBtn').onclick=()=>{
-  const ids=THEMES.map(t=>t[0]);const i=(ids.indexOf(prefs.theme)+1)%ids.length;
-  prefs.theme=ids[i];save(LS_P,prefs);applyTheme();toast('Theme: '+THEMES[i][1]);
-};
+/* v37: Theme button opens a drop-down list of all themes + a page background picker */
+(function(){
+  const btn=$('#themeBtn'),menu=$('#thMenu');
+  function build(){
+    menu.innerHTML=THEMES.map(t=>`<button type="button" class="thi${t[0]===prefs.theme?' on':''}" data-th="${t[0]}"><span class="chip" style="background:${t[2]}"><i style="background:${t[3]}"></i><i style="background:${t[4]}"></i></span>${esc(t[1])}</button>`).join('')
+      +`<div class="thbg"><label for="thBgIn">Page background</label><input type="color" id="thBgIn" value="${effHex('--paper')}"><button type="button" id="thBgReset">Reset</button></div>`;
+  }
+  build();
+  const close=()=>{menu.hidden=true;btn.setAttribute('aria-expanded','false')};
+  btn.onclick=e=>{e.stopPropagation();if(menu.hidden)build();menu.hidden=!menu.hidden;btn.setAttribute('aria-expanded',String(!menu.hidden))};
+  menu.addEventListener('click',e=>{
+    e.stopPropagation();
+    const b=e.target.closest('.thi');
+    if(b){prefs.theme=b.dataset.th;delete prefs.colors['--paper'];save(LS_P,prefs);applyColors();applyTheme();build();toast('Theme: '+(THEMES.find(t=>t[0]===prefs.theme)||[,''])[1]);}
+    if(e.target.id==='thBgReset'){delete prefs.colors['--paper'];save(LS_P,prefs);applyColors();try{syncColorUI()}catch(_){}build();}
+  });
+  menu.addEventListener('input',e=>{if(e.target.id==='thBgIn'){prefs.colors['--paper']=e.target.value;save(LS_P,prefs);applyColors();try{syncColorUI()}catch(_){}}});
+  document.addEventListener('click',e=>{if(!menu.contains(e.target)&&e.target!==btn)close()});
+  document.addEventListener('keydown',e=>{if(e.key==='Escape')close()});
+})();
 $('#pShop').value=prefs.shop;$('#pAddr').value=prefs.addr;$('#iBrowser').value=prefs.browser;$('#iWin').value=prefs.win;
 $('#pShop').addEventListener('input',()=>{prefs.shop=$('#pShop').value;save(LS_P,prefs);applyShop()});
 $('#pAddr').addEventListener('input',()=>{prefs.addr=$('#pAddr').value;save(LS_P,prefs)});
@@ -1857,6 +1887,6 @@ $('#fName').focus();
 })();
 </script>
 
-  <script src="assets/js/demo-mode.js?v=36"></script>
+  <script src="assets/js/demo-mode.js?v=37"></script>
 </body>
 </html>

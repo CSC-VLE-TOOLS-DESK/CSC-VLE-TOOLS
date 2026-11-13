@@ -148,3 +148,20 @@ html body .upnext a.cn-a.rn:active{transform:translateY(4px);box-shadow:0 1px 0 
 /* phones and small tablets: bar under the header, no floating gap */
 @media (max-width:760px){.catnav{margin:0;border-radius:0;max-height:none;height:auto;top:var(--hdr-h,64px);padding:10px;border:0;border-bottom:4px solid var(--accent,#ff9800)}}
 @media print{.catnav,.upnext{display:none!important}}
+
+/* ===== v37: LEFT sidebar now has the same style as the RIGHT one (white 3D tiles, dark readable text, coloured icon box). Only the panel colour differs. ===== */
+html body .catnav a.cn-a{--c:#0891b2;display:flex;align-items:center;gap:10px;margin:0 0 12px;padding:9px 10px;border-radius:16px;background:linear-gradient(180deg,#fff,color-mix(in srgb,var(--c) 10%,#fff));color:#12263a;text-shadow:none;border:0;font-weight:800;font-size:.88rem;line-height:1.15;box-shadow:0 5px 0 var(--c),0 10px 16px rgba(0,30,50,.28),inset 0 1px 0 #fff}
+html body .catnav a.cn-a:hover{transform:translate(3px,-2px);background:linear-gradient(180deg,#fff,color-mix(in srgb,var(--c) 18%,#fff));color:#12263a;box-shadow:0 7px 0 var(--c),0 14px 20px rgba(0,30,50,.33),inset 0 1px 0 #fff}
+html body .catnav a.cn-a:active{transform:translateY(4px);box-shadow:0 1px 0 var(--c),0 2px 6px rgba(0,30,50,.3)}
+html body .catnav a.cn-a i{flex:none;width:36px;height:36px;border-radius:12px;display:grid;place-items:center;font-size:1rem;color:#fff;background:linear-gradient(145deg,var(--c),color-mix(in srgb,var(--c) 55%,#000));box-shadow:0 3px 0 rgba(0,0,0,.25),inset 0 2px 0 rgba(255,255,255,.4)}
+html body .catnav a.cn-a span{flex:1;min-width:0;display:block}
+html body .catnav a.cn-a em{flex:none;font-style:normal;font-weight:800;font-size:.7rem;color:#fff;background:var(--c);border-radius:99px;padding:2px 8px;text-shadow:none}
+html body .catnav a.cn-a.on{--c:#e68600;background:linear-gradient(180deg,#fff3d6,#ffd98a);color:#2b1700;box-shadow:0 5px 0 #e68600,0 10px 16px rgba(120,60,0,.3),inset 0 1px 0 #fff}
+html body .catnav a.cn-a.on i{background:linear-gradient(145deg,#ffb020,#e68600)}
+html body .catnav a.cn-a.on em{background:#7a4500;color:#fff}
+html body .catnav a.cn-kids{background:linear-gradient(135deg,#ec4899,#8b5cf6);color:#fff;text-shadow:0 1px 2px rgba(60,0,80,.5);box-shadow:0 5px 0 #5b21b6,0 10px 16px rgba(60,20,120,.35),inset 0 1px 0 rgba(255,255,255,.5)}
+html body .catnav a.cn-kids:hover{background:linear-gradient(135deg,#f472b6,#a78bfa);color:#fff}
+html body .catnav a.cn-kids i{background:rgba(255,255,255,.25)}
+.catnav .cn-t{color:#fff;text-shadow:0 1px 2px rgba(0,40,60,.5);font-size:.78rem}
+@media (min-width:1280px) and (max-width:1499px){html body .catnav a.cn-a{padding:8px 9px;font-size:.84rem}html body .catnav a.cn-a i{width:32px;height:32px}}
+@media (max-width:760px){html body .catnav a.cn-a{flex:none;white-space:nowrap;margin:0 0 6px;padding:6px 10px 6px 7px;font-size:.82rem;box-shadow:0 4px 0 var(--c),0 6px 10px rgba(0,30,50,.25),inset 0 1px 0 #fff}html body .catnav a.cn-a i{width:28px;height:28px;font-size:.85rem;border-radius:9px}}
