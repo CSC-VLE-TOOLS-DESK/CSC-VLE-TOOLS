@@ -1,0 +1,12 @@
+CSC VLE TOOLS v38  (13 Nov 2026)  quick cards below hero, Passport Studio enhance + many customers
+
+1. Home page: 13 small 3D quick-tool cards just below the hero (WhatsApp Print, Photo Resizer, PDF Compressor, PAN & Aadhaar Print, Document Scan Crop & Clean, AI Background Remover, Image Merger, Name & Date on Photo, Photo & Signature Joiner, Passport & Stamp Photo Studio, Signature Resizer, Thumb Impression Resizer, Image Compressor). 2 per row on phones. Nothing was removed from Most Used Tools, All Categories or Daily Use Apps yet (next step, as you said).
+   NOTE: WhatsApp Print and Document Scan, Crop & Clean are the same tool (your tested file), so both cards open the same page.
+2. Passport & Stamp Photo Studio:
+   - Brightness and Contrast sliders (-60 to +60), "Auto enhance" ON/OFF button and Reset. The sheet redraws as you move them (one-customer mode).
+   - New "Sheet type" drop-down: "One customer - same photo repeated" (as before) or "Many customers - each customer on a new line".
+   - Many customers: choose photo, crop, pick Copies, press "Add customer to sheet". Each customer starts on a new line; more copies than fit in a line continue on the next line (35 x 45 mm: 5 per line on A4, so 5 photos = 1 line, 10 photos = 2 lines). The list shows each customer with a remove button, plus Clear all customers. A customer that does not fit is refused with a message.
+   - Copies drop-down now has 1, 2, 3, 4, 5, 6, 8, 10 ... 35, Full.
+   - Brightness / contrast / auto enhance are applied to each customer's photo when it is added.
+- All CSS/JS links now use ?v=38.
+- Tested here: functional test with a test photo (single sheet, enhance, 3 customers = 4 lines, overflow refused, clear all); 0 script errors. Not tested: real browser look, real printing.

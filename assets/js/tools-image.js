@@ -397,7 +397,11 @@
     root.innerHTML = '<div class="t-grid3"><div class="card no-print opt"><div id="dz"></div><div id="o" style="display:none;margin-top:14px">' +
       '<div class="field"><label>Photo size</label><select id="sz">' + SIZES.map(function (s, i) { return '<option value="' + i + '">' + s[0] + '</option>'; }).join('') + '</select></div>' +
       '<div class="row2" id="cust" style="display:none"><div class="field"><label>Width (mm)</label><input type="number" id="cw" value="35"></div><div class="field"><label>Height (mm)</label><input type="number" id="ch" value="45"></div></div>' +
-      '<div class="row2"><div class="field"><label>Paper</label><select id="sh">' + SHEETS.map(function (s, i) { return '<option value="' + i + '">' + s[0] + '</option>'; }).join('') + '</select></div><div class="field"><label>Copies</label><select id="n"><option value="5" selected>5</option><option value="10">10</option><option value="15">15</option><option value="20">20</option><option value="25">25</option><option value="30">30</option><option value="35">35</option><option value="full">Full A4 Sheet</option></select></div></div>' +
+      '<div class="row2"><div class="field"><label>Paper</label><select id="sh">' + SHEETS.map(function (s, i) { return '<option value="' + i + '">' + s[0] + '</option>'; }).join('') + '</select></div><div class="field"><label>Copies</label><select id="n"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5" selected>5</option><option value="6">6</option><option value="8">8</option><option value="10">10</option><option value="15">15</option><option value="20">20</option><option value="25">25</option><option value="30">30</option><option value="35">35</option><option value="full">Full A4 Sheet</option></select></div></div>' +
+      '<div class="field"><label>Sheet type</label><select id="mode"><option value="one">One customer - same photo repeated</option><option value="many">Many customers - each customer on a new line</option></select></div>' +
+      '<div id="manyBox" style="display:none"><p class="hint">For each customer: choose the photo, crop it, pick Copies (for example 5 or 10), press <b>Add customer to sheet</b>. Every customer starts on a new line of the sheet.</p><div id="grp"></div><div class="t-actions"><button class="btn" id="add" type="button"><i class="fa-solid fa-user-plus"></i> Add customer to sheet</button><button class="btn alt" id="clrAll" type="button" style="color:#b3261e"><i class="fa-solid fa-broom"></i> Clear all customers</button></div></div>' +
+      '<div class="row2"><div class="field"><label>Brightness: <span id="brv">0</span></label><input type="range" id="br" min="-60" max="60" value="0"></div><div class="field"><label>Contrast: <span id="ctv">0</span></label><input type="range" id="ct" min="-60" max="60" value="0"></div></div>' +
+      '<div class="t-actions"><button class="btn alt" id="ae" type="button" aria-pressed="false">&#10024; Auto enhance: OFF</button><button class="btn alt" id="aer" type="button">Reset</button></div><p class="hint">Auto enhance stretches dull, dark or washed-out photos to a clear range. Brightness and contrast are applied to the photo before the sheet is made.</p>' +
       '<div class="row2"><div class="field"><label>Background</label><select id="bg"><option value="keep">Keep original</option><option value="#ffffff">White</option><option value="#1e66d0">Blue</option><option value="#d12b2b">Red</option><option value="#e8e8e8">Light grey</option></select></div><div class="field"><label>Remove colour strength</label><input type="range" id="tol" min="10" max="100" value="40"></div></div>' +
       '<p class="hint">To change the background, pick a colour above. The plain wall colour in the photo corners is replaced. Use a photo with an even background.</p>' +
       '<div class="field"><label><input type="checkbox" id="fr"> Add a frame around each photo</label></div><div class="row2" id="frBox" style="display:none"><div class="field"><label>Frame width: <span id="fwv">0.6</span> mm</label><input type="range" id="fw" min="3" max="20" value="6"></div><div class="field"><label>Frame colour</label><input type="color" id="fc" value="#000000"></div></div>' +
@@ -415,28 +419,103 @@
     ['cw', 'ch'].forEach(function (i) { $('#' + i).oninput = asp; });
     $('#dz').appendChild(CSC.dropzone({
       accept: 'image/*', icon: 'fa-user-large', label: 'Choose a photo', onFiles: async function (f) {
-        try { var im = await CSC.fileToImage(f[0]); $('#o').style.display = ''; $('#pv').innerHTML = '<p class="hint">Press Make sheet. The result will show here, next to the crop.</p>'; $('#st').innerHTML = ''; var hst = $('#host'); hst.innerHTML = ''; var s = size(); cr = CSC.cropper(im, { aspect: s.w / s.h, maxWidth: 420 }); hst.appendChild(cr.el); } catch (e) { CSC.toast(e.message, true); }
+        try { var im = await CSC.fileToImage(f[0]); $('#o').style.display = ''; if ($('#mode').value === 'one') { $('#pv').innerHTML = '<p class="hint">Press Make sheet. The result will show here, next to the crop.</p>'; $('#st').innerHTML = ''; } var hst = $('#host'); hst.innerHTML = ''; var s = size(); cr = CSC.cropper(im, { aspect: s.w / s.h, maxWidth: 420 }); hst.appendChild(cr.el); } catch (e) { CSC.toast(e.message, true); }
       }
     }));
     $('#clr').onclick = function () {
-      cr = null; sheet = null; $('#o').style.display = 'none';
+      cr = null; if ($('#mode').value === 'one') { sheet = null; $('#o').style.display = 'none'; }
       $('#host').innerHTML = '<p class="hint">Choose a photo to start.</p>';
-      $('#pv').innerHTML = '<p class="hint">Your photo sheet will show here, next to the crop.</p>'; $('#st').innerHTML = '';
+      if ($('#mode').value === 'one') { $('#pv').innerHTML = '<p class="hint">Your photo sheet will show here, next to the crop.</p>'; $('#st').innerHTML = ''; }
       CSC.toast('Image removed. Choose a new photo.');
     };
-    $('#go').onclick = function () {
-      if (!cr) return; var s = size(), pw = MM(s.w, DPI), ph = MM(s.h, DPI), sh = SHEETS[+$('#sh').value], SW = MM(sh[1], DPI), SH = MM(sh[2], DPI);
-      var one = cr.getCanvas(pw, ph), bg = $('#bg').value;
+    /* ---- photo enhance (brightness, contrast, auto levels) ---- */
+    var autoOn = false;
+    function enhance(c) {
+      var b = +$('#br').value, k = +$('#ct').value;
+      if (!autoOn && !b && !k) return c;
+      var x = c.getContext('2d'), id = x.getImageData(0, 0, c.width, c.height), d = id.data, i, n = d.length;
+      var lo = 0, hi = 255;
+      if (autoOn) {
+        var h = new Uint32Array(256), tot = 0;
+        for (i = 0; i < n; i += 4) { h[Math.round(0.299 * d[i] + 0.587 * d[i + 1] + 0.114 * d[i + 2])]++; tot++; }
+        var acc = 0, p1 = tot * 0.01, p99 = tot * 0.99;
+        for (i = 0; i < 256; i++) { acc += h[i]; if (acc >= p1) { lo = i; break; } }
+        acc = 0; for (i = 0; i < 256; i++) { acc += h[i]; if (acc >= p99) { hi = i; break; } }
+        if (hi - lo < 60) { var mid = (hi + lo) / 2; lo = Math.max(0, mid - 30); hi = Math.min(255, mid + 30); }
+      }
+      var sc = 255 / (hi - lo), cc = k * 2.55, f = (259 * (cc + 255)) / (255 * (259 - cc)), add = b * 1.7;
+      var lut = new Uint8ClampedArray(256);
+      for (i = 0; i < 256; i++) { var v = autoOn ? (i - lo) * sc : i; if (autoOn) v = 255 * Math.pow(Math.max(0, Math.min(1, v / 255)), 0.92); v = f * (v - 128) + 128 + add; lut[i] = v; }
+      for (i = 0; i < n; i += 4) { d[i] = lut[d[i]]; d[i + 1] = lut[d[i + 1]]; d[i + 2] = lut[d[i + 2]]; }
+      x.putImageData(id, 0, 0); return c;
+    }
+    function processOne() {
+      var s = size(), pw = MM(s.w, DPI), ph = MM(s.h, DPI), one = enhance(cr.getCanvas(pw, ph)), bg = $('#bg').value;
       if (bg !== 'keep') { var cut = CSC.removeBg(one, cornerColor(one), +$('#tol').value, true, 60), f = document.createElement('canvas'); f.width = pw; f.height = ph; var fx = f.getContext('2d'); fx.fillStyle = bg; fx.fillRect(0, 0, pw, ph); fx.drawImage(cut, 0, 0); one = f; }
-      var gap = MM(2, DPI), margin = MM(6, DPI), cols = Math.max(1, Math.floor((SW - 2 * margin + gap) / (pw + gap))), rows = Math.max(1, Math.floor((SH - 2 * margin + gap) / (ph + gap)));
-      var cap = cols * rows, n = $('#n').value === 'full' ? cap : (parseInt($('#n').value, 10) || 5); if (n <= 0 || n > cap) n = cap;
-      sheet = document.createElement('canvas'); sheet.width = SW; sheet.height = SH; var x = sheet.getContext('2d'); x.fillStyle = '#fff'; x.fillRect(0, 0, SW, SH);
-      var used = Math.min(cols, n), gridW = used * pw + (used - 1) * gap, x0 = Math.round((SW - gridW) / 2);
-      for (var i = 0; i < n; i++) { var cx = x0 + (i % cols) * (pw + gap), cy = margin + Math.floor(i / cols) * (ph + gap); x.drawImage(one, cx, cy); if ($('#fr').checked) { var fpx = Math.max(3, Math.round(+$('#fw').value / 10 / 25.4 * DPI)); x.fillStyle = $('#fc').value; x.fillRect(cx, cy, pw, fpx); x.fillRect(cx, cy + ph - fpx, pw, fpx); x.fillRect(cx, cy, fpx, ph); x.fillRect(cx + pw - fpx, cy, fpx, ph); } if ($('#ln').checked) { x.strokeStyle = '#888'; x.lineWidth = 1; x.strokeRect(cx - 0.5, cy - 0.5, pw + 1, ph + 1); } }
-      $('#pv').innerHTML = ''; $('#pv').appendChild(sheet); sheet.style.maxHeight = '620px'; sheet.style.width = 'auto';
-      $('#st').innerHTML = '<span class="t-stat">' + n + ' photos</span><span class="t-stat">' + s.w + ' × ' + s.h + ' mm</span><span class="t-stat">' + sh[0] + '</span>' + (n === cap ? '<span class="t-stat">Page full</span>' : '<span class="t-stat">' + cap + ' fit on this paper</span>');
-      
+      return { c: one, w: s.w, h: s.h };
+    }
+    /* groups: [{c, w, h, n}]. Every group starts on a new line. Returns {canvas, ok, lines} */
+    function layout(groups, sh) {
+      var SW = MM(sh[1], DPI), SH = MM(sh[2], DPI), gap = MM(2, DPI), margin = MM(6, DPI), cv = document.createElement('canvas');
+      cv.width = SW; cv.height = SH; var x = cv.getContext('2d'); x.fillStyle = '#fff'; x.fillRect(0, 0, SW, SH);
+      var y = margin, ok = true, lines = 0, fpx = Math.max(3, Math.round(+$('#fw').value / 10 / 25.4 * DPI));
+      groups.forEach(function (g) {
+        if (!ok) return;
+        var pw = g.c.width, ph = g.c.height, cols = Math.max(1, Math.floor((SW - 2 * margin + gap) / (pw + gap))), left = g.n, j;
+        while (left > 0) {
+          if (y + ph > SH - margin + 1) { ok = false; return; }
+          var used = Math.min(cols, left), gridW = used * pw + (used - 1) * gap, x0 = Math.round((SW - gridW) / 2);
+          for (j = 0; j < used; j++) {
+            var cx = x0 + j * (pw + gap), cy = y; x.drawImage(g.c, cx, cy);
+            if ($('#fr').checked) { x.fillStyle = $('#fc').value; x.fillRect(cx, cy, pw, fpx); x.fillRect(cx, cy + ph - fpx, pw, fpx); x.fillRect(cx, cy, fpx, ph); x.fillRect(cx + pw - fpx, cy, fpx, ph); }
+            if ($('#ln').checked) { x.strokeStyle = '#888'; x.lineWidth = 1; x.strokeRect(cx - 0.5, cy - 0.5, pw + 1, ph + 1); }
+          }
+          left -= used; y += ph + gap; lines++;
+        }
+      });
+      return { canvas: cv, ok: ok, lines: lines };
+    }
+    function showSheet(cv, html) { sheet = cv; $('#pv').innerHTML = ''; $('#pv').appendChild(sheet); sheet.style.maxHeight = '620px'; sheet.style.width = 'auto'; $('#st').innerHTML = html; }
+    function copiesVal() { var v = $('#n').value; return v === 'full' ? 'full' : (parseInt(v, 10) || 5); }
+    $('#go').onclick = function () {
+      if (!cr) return; var o = processOne(), sh = SHEETS[+$('#sh').value], SW = MM(sh[1], DPI), SH = MM(sh[2], DPI), pw = o.c.width, ph = o.c.height;
+      var gap = MM(2, DPI), margin = MM(6, DPI), cols = Math.max(1, Math.floor((SW - 2 * margin + gap) / (pw + gap))), rows = Math.max(1, Math.floor((SH - 2 * margin + gap) / (ph + gap))), cap = cols * rows;
+      var c = copiesVal(), n = c === 'full' ? cap : c; if (n <= 0 || n > cap) n = cap;
+      var r = layout([{ c: o.c, w: o.w, h: o.h, n: n }], sh);
+      showSheet(r.canvas, '<span class="t-stat">' + n + ' photos</span><span class="t-stat">' + o.w + ' × ' + o.h + ' mm</span><span class="t-stat">' + sh[0] + '</span>' + (n === cap ? '<span class="t-stat">Page full</span>' : '<span class="t-stat">' + cap + ' fit on this paper</span>'));
     };
+    /* ---- many customers on one sheet ---- */
+    var groups = [];
+    function renderMany() {
+      var sh = SHEETS[+$('#sh').value];
+      $('#grp').innerHTML = groups.length ? groups.map(function (g, i) { return '<div style="display:flex;gap:8px;align-items:center;margin:4px 0"><span class="t-stat">Line ' + (i + 1) + '</span><span style="flex:1">Customer ' + (i + 1) + ': ' + g.n + ' photos (' + g.w + ' × ' + g.h + ' mm)</span><button class="btn alt" type="button" data-rm="' + i + '" title="Remove this customer" style="color:#b3261e">✖</button></div>'; }).join('') : '<p class="hint">No customers added yet.</p>';
+      if (!groups.length) { sheet = null; $('#pv').innerHTML = '<p class="hint">Your photo sheet will show here, next to the crop.</p>'; $('#st').innerHTML = ''; return; }
+      var r = layout(groups, sh), tot = groups.reduce(function (a, g) { return a + g.n; }, 0);
+      showSheet(r.canvas, '<span class="t-stat">' + groups.length + ' customers</span><span class="t-stat">' + tot + ' photos</span><span class="t-stat">' + r.lines + ' lines used</span><span class="t-stat">' + sh[0] + '</span>' + (r.ok ? '' : '<span class="t-stat" style="color:#b3261e">Sheet is full - remove a customer</span>'));
+    }
+    $('#mode').onchange = function () {
+      var many = this.value === 'many'; $('#manyBox').style.display = many ? '' : 'none'; $('#go').style.display = many ? 'none' : '';
+      if (many) renderMany(); else { sheet = null; $('#pv').innerHTML = '<p class="hint">Press Make sheet. The result will show here, next to the crop.</p>'; $('#st').innerHTML = ''; }
+    };
+    $('#add').onclick = function () {
+      if (!cr) return CSC.toast('Choose and crop a customer photo first', true);
+      var o = processOne(), sh = SHEETS[+$('#sh').value], SW = MM(sh[1], DPI), gap = MM(2, DPI), margin = MM(6, DPI);
+      var cols = Math.max(1, Math.floor((SW - 2 * margin + gap) / (o.c.width + gap)));
+      var c = copiesVal(), n = c === 'full' ? cols : c; if (n < 1) n = 1;
+      groups.push({ c: o.c, w: o.w, h: o.h, n: n });
+      if (!layout(groups, sh).ok) { groups.pop(); return CSC.toast('No space left on this sheet for ' + n + ' more photos. Try fewer copies or a bigger paper.', true); }
+      renderMany(); cr = null; $('#host').innerHTML = '<p class="hint">Customer ' + groups.length + ' added. Choose the next customer\'s photo.</p>';
+      CSC.toast('Customer ' + groups.length + ' added');
+    };
+    $('#grp').addEventListener('click', function (e) { var b = e.target.closest('[data-rm]'); if (!b) return; groups.splice(+b.dataset.rm, 1); renderMany(); });
+    $('#clrAll').onclick = function () { groups = []; renderMany(); };
+    $('#sh').addEventListener('change', function () { if ($('#mode').value === 'many') { var sh = SHEETS[+this.value]; if (groups.length && !layout(groups, sh).ok) CSC.toast('These customers do not fit on this paper. Remove one or choose a bigger paper.', true); renderMany(); } });
+    /* brightness / contrast / auto enhance: redraw the single-customer sheet at once */
+    var tm; function again() { if ($('#mode').value === 'one' && cr && sheet) { clearTimeout(tm); tm = setTimeout($('#go').onclick, 180); } }
+    $('#br').oninput = function () { $('#brv').textContent = this.value; again(); };
+    $('#ct').oninput = function () { $('#ctv').textContent = this.value; again(); };
+    $('#ae').onclick = function () { autoOn = !autoOn; this.setAttribute('aria-pressed', autoOn); this.innerHTML = '&#10024; Auto enhance: ' + (autoOn ? 'ON' : 'OFF'); again(); };
+    $('#aer').onclick = function () { $('#br').value = 0; $('#ct').value = 0; $('#brv').textContent = '0'; $('#ctv').textContent = '0'; autoOn = false; var a = $('#ae'); a.setAttribute('aria-pressed', 'false'); a.innerHTML = '&#10024; Auto enhance: OFF'; again(); };
     function jpg() { return CSC.canvasBlob(sheet, 'image/jpeg', 0.95); }
     $('#dlj').onclick = async function () { if (sheet) CSC.download(await jpg(), 'photo_sheet.jpg'); };
     $('#dlp').onclick = async function () {

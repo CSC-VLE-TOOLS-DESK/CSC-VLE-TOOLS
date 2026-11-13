@@ -56,7 +56,7 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--pr);border-color
   <link rel="apple-touch-icon" href="apple-touch-icon.png?v=3">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Mukta:wght@400;600;800&display=swap">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<link rel="stylesheet" href="assets/css/portal.css?v=37"><link rel="stylesheet" href="assets/css/csc-system.css?v=37">
+<link rel="stylesheet" href="assets/css/portal.css?v=38"><link rel="stylesheet" href="assets/css/csc-system.css?v=38">
 <style>
 /* CSC VLE TOOLS compatibility skin: maps this tool's old variables onto the shared portal tokens */
 :root:root{--card:var(--surface);--tx:var(--text);--mu:var(--muted);--bd:var(--line);--pr:var(--brand);--pr2:var(--soft);--on:var(--on-brand)}
@@ -291,9 +291,9 @@ $("deli").onclick=function(){var r=cur();if(!r){note(L("First click inside the i
 $("addi").onclick=function(){var r=cur();if(!r||r.tagName!="LI"){note(L("Click inside a bullet item first.|पहले किसी बुलेट पंक्ति में क्लिक करें।"));return}var n=document.createElement("li");n.innerHTML="&nbsp;";r.after(n);edited=true;var g=document.createRange();g.selectNodeContents(n);getSelection().removeAllRanges();getSelection().addRange(g)};
 build();
 </script>
-<script src="assets/js/site.js?v=37"></script>
-  <script src="assets/js/chatbot-data.js?v=37" defer></script>
-  <script src="assets/js/chatbot.js?v=37" defer></script>
-  <script src="assets/js/demo-mode.js?v=37" defer></script>
+<script src="assets/js/site.js?v=38"></script>
+  <script src="assets/js/chatbot-data.js?v=38" defer></script>
+  <script src="assets/js/chatbot.js?v=38" defer></script>
+  <script src="assets/js/demo-mode.js?v=38" defer></script>
 </body>
 </html>

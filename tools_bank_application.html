@@ -6,7 +6,7 @@
   <link rel="apple-touch-icon" href="apple-touch-icon.png?v=3">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Mukta:wght@400;600;800&display=swap">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<link rel="stylesheet" href="assets/css/portal.css?v=37"><link rel="stylesheet" href="assets/css/csc-system.css?v=37">
+<link rel="stylesheet" href="assets/css/portal.css?v=38"><link rel="stylesheet" href="assets/css/csc-system.css?v=38">
 <style>@page{size:A4;margin:0}.doc{width:210mm;min-height:297mm;padding:25mm 22mm;background:#fff;color:#111;font:12.5pt/1.8 "Segoe UI","Noto Sans Devanagari",Arial,sans-serif;max-width:100%}.doc p{margin-bottom:12px}.doc .sb{font-weight:bold;text-decoration:underline}</style>  <meta name="description" content="Standard English and Hindi letters for common bank work. Free online tool for CSC &amp; VLE centres, cyber cafes and students.">
   <meta name="keywords" content="Bank Applications, application format, affidavit format, government application, Haryana, bank application, CSC VLE tools, CSC center tools, VLE tools, free online tool, Rohtak Haryana">
   <meta name="author" content="CSC VLE TOOLS">
@@ -33,9 +33,9 @@
     <h3 style="margin:16px 0 10px;color:var(--brand);font-size:1rem">More in Govt Applications &amp; Affidavits</h3><div class="rel"><a href="haryana-application-generator.html">Application Generator</a><a href="tools_affidavit_format.html">Affidavit Formats</a><a href="tools_agreement_format_generator.html">Agreement Generator</a><a href="tools_mppeb_template.html">MPPEB Document Editor</a></div>
   </div></section>
   <footer id="site-footer"></footer>
-<script src="assets/js/site.js?v=37"></script>
-  <script src="assets/js/chatbot-data.js?v=37" defer></script>
-  <script src="assets/js/chatbot.js?v=37" defer></script><script>
+<script src="assets/js/site.js?v=38"></script>
+  <script src="assets/js/chatbot-data.js?v=38" defer></script>
+  <script src="assets/js/chatbot.js?v=38" defer></script><script>
 const $=id=>document.getElementById(id);
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const dl=(blob,name)=>{const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),4000);};
@@ -64,5 +64,5 @@ const body=B[$('lg').value][t](n,a,$('bk').value,e);
 $('sheet').innerHTML=(hi?'<p>सेवा में,<br>शाखा प्रबंधक,<br>'+esc($('bk').value)+',<br>'+esc($('br').value)+'</p><p><span class="sb">विषय: '+X[t][2]+' प्रार्थना पत्र।</span></p><p>महोदय / महोदया,</p>':'<p>To,<br>The Branch Manager,<br>'+esc($('bk').value)+',<br>'+esc($('br').value)+'</p><p><span class="sb">Subject: Application for '+X[t][1].toLowerCase()+'.</span></p><p>Respected Sir / Madam,</p>')+'<p style="text-align:justify">'+esc(body)+'</p><p>'+(hi?'धन्यवाद।':'Thank you.')+'</p><p style="margin-top:30px">'+(hi?'भवदीय,':'Yours faithfully,')+'<br><br><br><b>'+esc(n)+'</b><br>'+(hi?'खाता संख्या: ':'A/c No.: ')+esc(a)+'<br>'+(hi?'मोबाइल: ':'Mobile: ')+esc($('mo').value)+'</p><p>'+(hi?'स्थान: ':'Place: ')+esc($('pl').value)+'<br>'+(hi?'दिनांक: ':'Date: ')+esc(dmy($('dt').value))+'</p>';}
 $('ty').onchange=lab;['lg','bk','br','nm','ac','mo','ex','pl','dt'].forEach(k=>$(k).oninput=draw);$('lg').onchange=draw;$('pr').onclick=()=>window.print();lab();
 </script>
-  <script src="assets/js/demo-mode.js?v=37"></script>
+  <script src="assets/js/demo-mode.js?v=38"></script>
 </body></html>
