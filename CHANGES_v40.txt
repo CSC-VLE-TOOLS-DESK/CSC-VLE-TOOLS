@@ -1,0 +1,22 @@
+CSC VLE TOOLS v40  (15 Nov 2026)  NEW LAYOUT (SevaSphere-style). Colours are unchanged: everything still follows your blue brand colour, orange accent and the Theme menu.
+
+WHAT CHANGED
+1. Header on every page (assets/js/site.js, chrome()): dark utility bar (Feedback / Contact / Help, Home + Back on inner pages), white row with logo + "CSC VLE Tools Desk" + search box with live suggestions, and a 3D navigation bar:
+   Home | All Tools | Categories (drop-down) | Kids Corner | Pro Studio | Ledger Templates | Guides & Help (drop-down) | Contact | Theme.
+   Phone: bar collapses to a Menu button.
+2. Footer on every page: 4 columns (brand, Quick Links, Categories, Follow Us + Suggest a tool) and a bottom bar with Privacy / Disclaimer.
+3. HOME (index.html): 3D hero (same brand-colour 3D look: raised edge + floating 3D tiles) -> Quick Categories (6) -> Popular Tools | Featured Tools | Latest Updates + promo -> your existing Daily Use Apps, Prompt Studio, All Categories, Search the Web, Why, How it works, Popular Topics, Portal Quick Links, FAQ, Feedback band. The old left and right sidebars are removed. SEO text, FAQ and structured data are kept.
+4. NEW PAGES (built from the tool list in site.js, so new tools appear automatically):
+   all-tools.html  - category list on the left, 3-column tool cards, 24 per page with page numbers, works with the header search (?q=pdf, ?c=pdf).
+   categories.html - category cards.
+   ledger-templates.html - all ledger templates (insurance, book shop, medical, sweet, kirana, garment, cloth, shop, stock, house expense).
+5. Category pages (cat-*.html): same tool list, new look: white category list on the left, banner, 3-column cards with an "Open Tool" button. The right "New Tools" panel is gone from these pages.
+6. Tool pages: the title strip is now a brand-colour banner. Tool screens themselves are untouched.
+7. New stylesheet: assets/css/seva.css (loaded last on every page). To go back to the old look, remove that one line from the pages.
+8. All CSS/JS links now use ?v=40. sitemap.xml has the 3 new pages.
+
+NOT CHANGED: Kids Corner, Pro Studio and the ledger apps (they are stand-alone pages with their own header, as before), 404 page layout.
+
+HERO PHOTO (optional): put a PNG with transparent background at assets/img/hero-photo.png (about 900 x 700). It is shown on the right of the hero on top of the 3D tiles. If the file is missing the 3D tiles show alone.
+
+TESTED HERE: 96 pages at 1440 px and 390 px: header + footer present, no script errors, no sideways scroll. Not tested: real printer output, a real phone, the Font Awesome icons (the test machine could not reach the CDN; they load normally online).

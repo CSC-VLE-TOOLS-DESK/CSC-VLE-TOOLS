@@ -283,7 +283,7 @@
   // keep the sticky sidebar exactly below the sticky header
   function hdrHeight() {
     var h = $('#site-header'); if (!h) return;
-    var set = function () { document.documentElement.style.setProperty('--hdr-h', h.offsetHeight + 'px'); };
+    var set = function () { var nb = h.querySelector('.sv-navbar'); document.documentElement.style.setProperty('--hdr-h', ((nb || h).offsetHeight) + 'px'); };
     set(); window.addEventListener('resize', set); window.addEventListener('load', set);
   }
 
@@ -338,32 +338,56 @@
     if (!document.querySelector('link[href*="font-awesome"]')) {
       var fa = document.createElement('link'); fa.rel = 'stylesheet'; fa.href = 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css'; document.head.appendChild(fa);
     }
+    var here = location.pathname.split('/').pop() || 'index.html';
     var h = $('#site-header');
     if (h && !h.firstChild) {
-      var here = location.pathname.split('/').pop() || 'index.html';
       var cur = function (f) { return here === f ? ' aria-current="page"' : ''; };
-      h.innerHTML = '<div class="hdr"><a class="logo" href="index.html"><img src="favicon.svg" alt="" width="36" height="36"><span class="logo-t">CSC VLE <b>TOOLS</b></span></a>' +
-        (here === 'index.html' ? '' : '<span class="hdr-nav"><a class="hn" href="index.html" title="Go to the main home page"><b aria-hidden="true">&#127968;</b><span>Home</span></a><button class="hn" type="button" onclick="CSC.goBack()" title="Go back to the previous page"><b aria-hidden="true">&larr;</b><span>Back</span></button></span>') +
-        '<button class="nav-toggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="main-nav">&#9776;</button>' +
-        '<nav id="main-nav" aria-label="Main"><a href="index.html"' + cur('index.html') + '>Home</a>' +
-        '<a href="index.html#tools">Tools</a><a class="nav-daily" href="index.html#daily-use"><i class="fa-solid fa-star" aria-hidden="true"></i> Daily Use App</a><a href="prompt-studio.html"' + cur('prompt-studio.html') + '><i class="fa-solid fa-wand-magic-sparkles" aria-hidden="true"></i> Prompt Studio</a><a class="nav-kids" href="kids-corner.html"' + cur('kids-corner.html') + '><i class="fa-solid fa-child-reaching" aria-hidden="true"></i> Kids Corner</a><a href="web-search.html"' + cur('web-search.html') + '><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i> Web Search</a><a href="index.html#links">Portal Links</a>' +
-        '<a href="feedback.html"' + cur('feedback.html') + '>Feedback</a><a href="contact.html"' + cur('contact.html') + '>Contact</a></nav></div>';
+      var catLinks = CATS.filter(function (c) { return c.id !== 'kids'; }).map(function (c) {
+        return '<a href="cat-' + c.id + '.html"><i class="fa-solid ' + c.icon + '" aria-hidden="true"></i> ' + esc(c.name) + '</a>';
+      }).join('');
+      var inCat = /^cat-/.test(here) ? ' aria-current="page"' : '';
+      /* Layout v40: utility bar + logo/search row + 3D navigation bar */
+      h.innerHTML =
+        '<div class="sv-top"><div class="sv-w"><span class="sv-top-l">' +
+          (here === 'index.html' ? '<span><i class="fa-solid fa-shield-heart" aria-hidden="true"></i> 100% free &middot; No login &middot; Files stay on your device</span>' :
+            '<a class="sv-mini" href="index.html" title="Go to the main home page"><i class="fa-solid fa-house" aria-hidden="true"></i> Home</a><button class="sv-mini" type="button" onclick="CSC.goBack()" title="Go back to the previous page"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Back</button>') +
+          '</span><span class="sv-top-r"><a href="feedback.html"><i class="fa-solid fa-comments" aria-hidden="true"></i> Feedback</a><a href="contact.html"><i class="fa-solid fa-headset" aria-hidden="true"></i> Contact</a><a href="my-step-guides.html"><i class="fa-solid fa-circle-question" aria-hidden="true"></i> Help</a></span></div></div>' +
+        '<div class="sv-main"><div class="sv-w">' +
+          '<a class="logo" href="index.html" aria-label="CSC VLE TOOLS home"><img src="favicon.svg" alt="" width="44" height="44"><span class="logo-t"><b class="l1">CSC VLE <em>TOOLS</em></b><small>Digital Seva &middot; Smart Tools &middot; Better Tomorrow</small></span></a>' +
+          '<span class="sv-tag"><b>CSC VLE Tools Desk</b><small><span class="sv-count">' + LIST.length + '</span>+ Ready Tools for VLE &amp; Common Citizens</small></span>' +
+          '<form class="sv-search" role="search" action="all-tools.html" method="get"><input id="hdr-search" name="q" type="search" placeholder="Search tools... (e.g. PDF, Photo, Ledger)" autocomplete="off" aria-label="Search tools"><button type="submit" aria-label="Search"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i></button></form>' +
+        '</div></div>' +
+        '<div class="sv-navbar"><div class="sv-w"><button class="nav-toggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="main-nav"><i class="fa-solid fa-bars" aria-hidden="true"></i> Menu</button>' +
+        '<nav id="main-nav" aria-label="Main">' +
+          '<a href="index.html"' + cur('index.html') + '><i class="fa-solid fa-house" aria-hidden="true"></i> Home</a>' +
+          '<a href="all-tools.html"' + cur('all-tools.html') + '><i class="fa-solid fa-grip" aria-hidden="true"></i> All Tools</a>' +
+          '<div class="dd"><a href="categories.html"' + (here === 'categories.html' ? ' aria-current="page"' : inCat) + ' aria-haspopup="true"><i class="fa-solid fa-folder-open" aria-hidden="true"></i> Categories <i class="fa-solid fa-chevron-down dd-c" aria-hidden="true"></i></a><div class="dd-m">' + catLinks + '</div></div>' +
+          '<a class="nav-kids" href="kids-corner.html"' + cur('kids-corner.html') + '><i class="fa-solid fa-gamepad" aria-hidden="true"></i> Kids Corner</a>' +
+          '<a href="pro-studio.html"' + cur('pro-studio.html') + '><i class="fa-solid fa-camera-retro" aria-hidden="true"></i> Pro Studio</a>' +
+          '<a href="ledger-templates.html"' + cur('ledger-templates.html') + '><i class="fa-solid fa-book-open" aria-hidden="true"></i> Ledger Templates</a>' +
+          '<div class="dd"><a href="my-step-guides.html"' + cur('my-step-guides.html') + ' aria-haspopup="true"><i class="fa-solid fa-circle-info" aria-hidden="true"></i> Guides &amp; Help <i class="fa-solid fa-chevron-down dd-c" aria-hidden="true"></i></a><div class="dd-m">' +
+            '<a href="my-step-guides.html"><i class="fa-solid fa-list-check" aria-hidden="true"></i> Step Guides</a><a href="prompt-studio.html"><i class="fa-solid fa-wand-magic-sparkles" aria-hidden="true"></i> Prompt Studio</a><a href="web-search.html"><i class="fa-solid fa-globe" aria-hidden="true"></i> Web Search</a><a href="index.html#links"><i class="fa-solid fa-link" aria-hidden="true"></i> Portal Quick Links</a><a href="about.html"><i class="fa-solid fa-building" aria-hidden="true"></i> About Us</a><a href="feedback.html"><i class="fa-solid fa-comments" aria-hidden="true"></i> Feedback</a></div></div>' +
+          '<a href="contact.html"' + cur('contact.html') + '><i class="fa-solid fa-envelope" aria-hidden="true"></i> Contact</a>' +
+        '</nav></div></div>';
       themePicker(h);
       var tg = h.querySelector('.nav-toggle'), nv = h.querySelector('nav');
       tg.onclick = function () { var o = nv.classList.toggle('open'); tg.setAttribute('aria-expanded', o); };
+      $$('.dd > a', h).forEach(function (a) { a.addEventListener('click', function (e) { if (window.innerWidth <= 900 && !a.parentNode.classList.contains('open')) { e.preventDefault(); a.parentNode.classList.add('open'); } }); });
+      headerSearch(h);
     }
     hdrHeight();
     var f = $('#site-footer');
     if (f && !f.firstChild) {
       var yr = new Date().getFullYear();
-      f.innerHTML = '<div class="ftr2"><div class="ftr-grid">' +
-        '<div class="ftr-brand"><a class="logo" href="index.html"><img src="favicon.svg" alt="" width="36" height="36"><span class="logo-t">CSC VLE <b>TOOLS</b></span></a>' +
-        '<p>Free, fast online tools for CSC and VLE centres, cyber cafes and students: photo and signature resizer, ID card and passport photo print, PDF tools, resumes, applications and calculators.</p>' +
-        '<div class="soc" aria-label="Social links">' + socialHTML() + '</div></div>' +
-        '<div><h4>Explore</h4><a href="index.html">Home</a><a href="index.html#tools">All Tools</a><a href="index.html#links">Portal Links</a><a href="pro-studio.html">Pro Studio</a><a href="shop-ledger.html">Shop Ledger</a><a href="stock-ledger.html">Stock Ledger</a><a href="house-expense.html">House Expense</a><a href="kids-corner.html">Kids Corner</a><a href="prompt-studio.html">Prompt Studio</a><a href="my-step-guides.html">Step Guides</a><a href="web-search.html">Web Search</a><a href="tools_handwriting_converter.html">Handwriting Converter</a></div>' +
-        '<div><h4>Popular Tools</h4><a href="tools_photo_resizer.html">Photo Resizer</a><a href="tools_pdf_merger.html">PDF Merger</a><a href="tools_ai_passport_studio.html">Passport Photo Studio</a><a href="haryana-resume-generator.html">Resume Builder</a><a href="tools_loan_emi_calculator.html">Loan EMI Calculator</a></div>' +
-        '<div><h4>Support</h4><a href="feedback.html">Send Feedback</a><a href="contact.html">Contact Us</a><a href="about.html">About Us</a><a href="disclaimer.html">Disclaimer</a><a href="privacy.html">Privacy Policy</a></div>' +
-        '</div><div class="ftr-bar"><span>&copy; ' + yr + ' CSC VLE TOOLS. All rights reserved.</span><span>Made with <span class="heart" aria-label="love">&#10084;</span> in Rohtak, Haryana</span></div>' +
+      var fc = CATS.filter(function (c) { return ['resize', 'pdf', 'docs', 'bill', 'studio', 'calc'].indexOf(c.id) > -1; }).map(function (c) { return '<a href="cat-' + c.id + '.html"><i class="fa-solid fa-check" aria-hidden="true"></i> ' + esc(c.name) + '</a>'; }).join('');
+      f.innerHTML = '<div class="svf"><div class="svf-grid">' +
+        '<div class="svf-brand"><a class="logo" href="index.html"><img src="favicon.svg" alt="" width="44" height="44"><span class="logo-t"><b class="l1">CSC VLE <em>TOOLS</em></b><small>Digital Seva &middot; Smart Tools &middot; Better Tomorrow</small></span></a>' +
+        '<p>Free, fast online tools for CSC and VLE centres, cyber cafes and students: photo and signature resizer, ID card and passport photo print, PDF tools, resumes, applications, ledgers and calculators.</p></div>' +
+        '<div><h4>Quick Links</h4><a href="index.html"><i class="fa-solid fa-house" aria-hidden="true"></i> Home</a><a href="all-tools.html"><i class="fa-solid fa-grip" aria-hidden="true"></i> All Tools</a><a href="categories.html"><i class="fa-solid fa-folder-open" aria-hidden="true"></i> Categories</a><a href="pro-studio.html"><i class="fa-solid fa-camera-retro" aria-hidden="true"></i> Pro Studio</a><a href="ledger-templates.html"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Ledger Templates</a><a href="kids-corner.html"><i class="fa-solid fa-gamepad" aria-hidden="true"></i> Kids Corner</a><a href="my-step-guides.html"><i class="fa-solid fa-circle-info" aria-hidden="true"></i> Guides &amp; Help</a><a href="contact.html"><i class="fa-solid fa-envelope" aria-hidden="true"></i> Contact Us</a></div>' +
+        '<div><h4>Categories</h4>' + fc + '<a href="categories.html"><i class="fa-solid fa-arrow-right" aria-hidden="true"></i> All categories</a></div>' +
+        '<div><h4>Follow Us</h4><div class="soc" aria-label="Social links">' + socialHTML() + '</div>' +
+        '<h4 class="svf-h2">Stay Updated</h4><p class="svf-p">New tools are added often. Tell us what to build next.</p><a class="svf-btn" href="feedback.html"><i class="fa-solid fa-lightbulb" aria-hidden="true"></i> Suggest a tool</a></div>' +
+        '</div><div class="svf-bar"><span>&copy; ' + yr + ' CSC VLE TOOLS. All rights reserved.</span><span class="svf-legal"><a href="privacy.html">Privacy Policy</a> | <a href="disclaimer.html">Disclaimer</a> | <a href="about.html">About</a></span><span>Made with <span class="heart" aria-label="love">&#10084;</span> in Rohtak, Haryana</span></div>' +
         '<p class="ftr-note">CSC VLE TOOLS is an independent project. It is not affiliated with, endorsed by or connected to CSC e-Governance Services India Ltd, UIDAI, or any government department. <a href="disclaimer.html">Read the full disclaimer</a>.</p></div>';
       var tt = document.createElement('button'); tt.type = 'button'; tt.id = 'to-top'; tt.className = 'to-top no-print'; tt.setAttribute('aria-label', 'Back to top'); tt.innerHTML = '&uarr;'; tt.hidden = true;
       tt.onclick = function () { window.scrollTo({ top: 0, behavior: 'smooth' }); };
@@ -371,6 +395,76 @@
       window.addEventListener('scroll', function () { tt.hidden = window.scrollY < 600; }, { passive: true });
     }
     fillSite();
+  }
+
+  /* ---------- Header search with suggestions (all pages) ---------- */
+  function headerSearch(h) {
+    var q = $('#hdr-search', h); if (!q) return;
+    var form = q.closest('form'), pop = document.createElement('div'); pop.className = 'spop'; pop.hidden = true; pop.setAttribute('role', 'listbox'); form.appendChild(pop);
+    var cn = function (id) { var c = CATS.filter(function (x) { return x.id === id; })[0]; return c ? c.name : ''; };
+    function suggest() {
+      var term = q.value.trim().toLowerCase(); if (!term) { pop.hidden = true; return; }
+      var words = term.split(/\s+/);
+      var m = LIST.map(function (t) {
+        var n = t.name.toLowerCase(), hay = (n + ' ' + t.desc + ' ' + t.file.replace(/[_-]/g, ' ')).toLowerCase();
+        if (!words.every(function (w) { return hay.indexOf(w) > -1; })) return null;
+        return { t: t, s: n.indexOf(term) === 0 ? 3 : n.indexOf(term) > -1 ? 2 : 1 };
+      }).filter(Boolean).sort(function (x, y) { return y.s - x.s; }).slice(0, 7);
+      pop.innerHTML = (m.length ? m.map(function (x) { return '<a role="option" href="' + x.t.file + '.html"><i class="' + iconClass(x.t.icon) + '" aria-hidden="true"></i><span><b>' + esc(x.t.name) + '</b><small>' + esc(cn(x.t.cat)) + '</small></span></a>'; }).join('') : '<p class="empty" style="padding:10px 14px;margin:0;text-align:left">No tool found. Try another word.</p>') +
+        '<a class="spop-web" href="web-search.html"><i class="fa-solid fa-globe" aria-hidden="true"></i><span><b>Search the web instead</b><small>Open Web Search</small></span></a>';
+      pop.hidden = false;
+    }
+    q.addEventListener('input', suggest);
+    q.addEventListener('keydown', function (e) { if (e.key === 'Escape') pop.hidden = true; });
+    document.addEventListener('click', function (e) { if (!form.contains(e.target)) pop.hidden = true; });
+    var m0 = /[?&]q=([^&]*)/.exec(location.search); if (m0 && /all-tools/.test(location.pathname)) { try { q.value = decodeURIComponent(m0[1].replace(/\+/g, ' ')); } catch (e) { } }
+  }
+
+  /* ---------- All Tools / Categories / Ledger Templates pages (data comes from the registry above) ---------- */
+  function cardHTML(t, i) {
+    return '<a class="tc sv-tool" style="' + colorVars(i) + '" href="' + t.file + '.html"><span class="ti"><i class="' + iconClass(t.icon) + '" aria-hidden="true"></i></span><b>' + esc(t.name) + '</b><span class="td">' + esc(t.desc) + '</span><span class="sv-open">Open Tool <i class="fa-solid fa-caret-right" aria-hidden="true"></i></span></a>';
+  }
+  function hubPages() {
+    var page = document.body.getAttribute('data-page'); if (!page) return;
+    var cnt = function (id) { return LIST.filter(function (t) { return t.cat === id; }).length; };
+    var cats = CATS.filter(function (c) { return c.id !== 'kids' && cnt(c.id) > 0; });
+    $$('.sv-count').forEach(function (e) { e.textContent = LIST.length; });
+    if (page === 'categories') {
+      var g = $('#cat-grid'); if (!g) return;
+      g.innerHTML = cats.map(function (c, i) {
+        return '<a class="tc sv-cat" style="' + colorVars(i) + '" href="cat-' + c.id + '.html"><span class="ti"><i class="fa-solid ' + c.icon + '" aria-hidden="true"></i></span><b>' + esc(c.name) + '</b><span class="td">' + cnt(c.id) + ' free tools</span><span class="sv-open">View Tools <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></span></a>';
+      }).join('') + '<a class="tc sv-cat" style="--c:#ec4899;--c2:#9d174d" href="kids-corner.html"><span class="ti"><i class="fa-solid fa-gamepad" aria-hidden="true"></i></span><b>Kids Corner</b><span class="td">38 picture games</span><span class="sv-open">Play Now <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></span></a>';
+    } else if (page === 'all-tools') {
+      var PER = 24, cat = 'all', pg = 1, grid = $('#tool-grid'), nav = $('#cat-side'), pgr = $('#pager'), ttl = $('#all-count'), qi = $('#hdr-search');
+      var mq = /[?&]c=([a-z]+)/.exec(location.search); if (mq) cat = mq[1];
+      function filt() {
+        var term = (qi && qi.value || '').trim().toLowerCase(), words = term ? term.split(/\s+/) : [];
+        return LIST.filter(function (t) {
+          if (cat !== 'all' && t.cat !== cat) return false;
+          var hay = (t.name + ' ' + t.desc + ' ' + t.file.replace(/[_-]/g, ' ')).toLowerCase();
+          return words.every(function (w) { return hay.indexOf(w) > -1; });
+        });
+      }
+      function draw() {
+        var items = filt(), pages = Math.max(1, Math.ceil(items.length / PER)); if (pg > pages) pg = pages;
+        grid.innerHTML = items.length ? items.slice((pg - 1) * PER, pg * PER).map(function (t) { return cardHTML(t, toolIndex(t.file)); }).join('') : '<p class="empty">No tool found. Try another word.</p>';
+        var b = ''; for (var i = 1; i <= pages; i++) b += '<button type="button" class="pgb' + (i === pg ? ' on' : '') + '" data-p="' + i + '"' + (i === pg ? ' aria-current="page"' : '') + '>' + i + '</button>';
+        pgr.innerHTML = pages > 1 ? b : '';
+        $$('.pgb', pgr).forEach(function (x) { x.onclick = function () { pg = +x.getAttribute('data-p'); draw(); window.scrollTo({ top: 0, behavior: 'smooth' }); }; });
+        ttl.textContent = items.length;
+        $$('a', nav).forEach(function (a) { a.classList.toggle('on', a.getAttribute('data-c') === cat); });
+      }
+      nav.innerHTML = '<h2 class="sv-side-t"><i class="fa-solid fa-list" aria-hidden="true"></i> Categories</h2><a href="#" data-c="all"><span>All Tools</span><em>' + LIST.length + '</em></a>' + cats.map(function (c) { return '<a href="#" data-c="' + c.id + '"><i class="fa-solid ' + c.icon + '" aria-hidden="true"></i><span>' + esc(c.name) + '</span><em>' + cnt(c.id) + '</em></a>'; }).join('');
+      $$('a', nav).forEach(function (a) { a.onclick = function (e) { e.preventDefault(); cat = a.getAttribute('data-c'); pg = 1; draw(); }; });
+      if (qi) qi.addEventListener('input', function () { pg = 1; draw(); });
+      var f0 = $('.sv-search', document); if (f0) f0.addEventListener('submit', function (e) { e.preventDefault(); pg = 1; draw(); });
+      draw();
+    } else if (page === 'ledgers') {
+      var gl = $('#ledger-grid'); if (!gl) return;
+      var items = LIST.filter(function (t) { return /ledger|house-expense/.test(t.file); });
+      gl.innerHTML = items.map(function (t) { return '<a class="tc sv-tool" style="' + colorVars(toolIndex(t.file)) + '" href="' + t.file + '.html"><span class="ti"><i class="' + iconClass(t.icon) + '" aria-hidden="true"></i></span><b>' + esc(t.name) + '</b><span class="td">' + esc(t.desc) + '</span><span class="sv-open">Open Template <i class="fa-solid fa-caret-right" aria-hidden="true"></i></span></a>'; }).join('');
+      var n = $('#ledger-n'); if (n) n.textContent = items.length;
+    }
   }
 
   /* ---------- Home page ---------- */
@@ -384,6 +478,7 @@
   function home() {
     quickLinks();
     var lb = $('#ledger-btn'); if (lb && SHOP_LEDGER_URL) { lb.href = SHOP_LEDGER_URL; lb.hidden = false; }
+    $$('.sv-count,#tool-count').forEach(function (e) { e.textContent = LIST.length; });
     var list = $('#tool-list'); if (!list) return;
     var cats = $('#cats'), side = $('#category-list'), q = $('#tool-search');
     var active = 'all';
@@ -762,6 +857,6 @@
     }, { passive: true });
   }
 
-  function init() { chrome(); home(); tagline(); pageIcon(); tilt(); }
+  function init() { chrome(); home(); hubPages(); tagline(); pageIcon(); tilt(); }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
 })();
