@@ -1,0 +1,9 @@
+CSC VLE TOOLS v39  (15 Nov 2026)  two new ledgers
+
+1. New tool: Garment Store Ledger (garment-store-ledger.html) - readymade garments, size-wise stock (men, women, kids, winter), colour and brand, billing, returns, udhaar khata, staff salary, reports.
+2. New tool: Cloth Shop Ledger (cloth-shop-ledger.html) - fabric sold by meter with quick cuts, than/roll purchase, many fabric types, colours and widths, udhaar khata, staff salary, daily to yearly reports.
+Both open from Receipts & Billing (cat-bill.html), are in the tool list/search (site.js), the chatbot help (chatbot-data.js) and sitemap.xml.
+Receipts & Billing count is now 14 everywhere (left sidebar on all pages, home category card, page text).
+Not added to Daily Use Apps or the New Tools sidebar (kept clean for the later duplicate clean-up).
+All CSS/JS links now use ?v=39.
+Tested here: both pages open, Theme/background window opens, Load sample data works (0 script errors). Not tested: real browser look, printing.

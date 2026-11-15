@@ -67,6 +67,8 @@
     ['book-shop-ledger', 'Book Shop Ledger', 'Books and stationery stock, buying with trade discount, selling bills, transport expense, GST and party dues.', 'bill', 'fa-book'],
     ['sweet-shop-ledger', 'Sweet Shop Ledger', 'Sweet names dropdown, sell by weight and price, stock, raw material buying, employee salary records and daily to yearly reports.', 'bill', 'fa-cookie-bite'],
     ['kirana-store-ledger', 'Kirana Store Ledger', 'Items by weight and price, stock, buying, udhaar customers, employee salary records and daily to yearly reports.', 'bill', 'fa-basket-shopping'],
+    ['garment-store-ledger', 'Garment Store Ledger', 'Readymade garments with size-wise stock, colour and brand, billing, returns, udhaar khata, staff salary and reports.', 'bill', 'fa-shirt'],
+    ['cloth-shop-ledger', 'Cloth Shop Ledger', 'Sell fabric by meter with quick cuts, than and roll purchase, udhaar khata, staff salary and daily to yearly reports.', 'bill', 'fa-scroll'],
     // Billing
     ['tools_bill_receipt_generator', 'Bill & Receipt Generator', 'Receipts for utility, recharge and other payments.', 'bill', 'fa-receipt'],
     // Calculators
