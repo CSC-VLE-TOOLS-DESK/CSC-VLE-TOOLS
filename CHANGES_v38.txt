@@ -10,3 +10,5 @@ CSC VLE TOOLS v38  (13 Nov 2026)  quick cards below hero, Passport Studio enhanc
    - Brightness / contrast / auto enhance are applied to each customer's photo when it is added.
 - All CSS/JS links now use ?v=38.
 - Tested here: functional test with a test photo (single sheet, enhance, 3 customers = 4 lines, overflow refused, clear all); 0 script errors. Not tested: real browser look, real printing.
+
+v38.2 (14 Nov 2026): new page tools_ai_voice_generator.html = "Coming soon" only (noindex, not in sitemap) and a "Coming soon" card at the end of the home quick-tool strip. The real AI Voice Generator is a PRIVATE file (AI_Voice_Generator_PERSONAL.html) and is NOT part of this zip. Do not upload it to GitHub.
