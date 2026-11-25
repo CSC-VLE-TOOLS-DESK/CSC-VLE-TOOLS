@@ -6,6 +6,7 @@
   var saved = new Map(), active = false;
   var style = document.createElement('style');
   style.textContent = `
+    body.n-home #ss-demo-launch,body.n-cat #ss-demo-launch,body.n-home #ss-demo-panel,body.n-cat #ss-demo-panel,body.n-home #ss-demo-notice,body.n-cat #ss-demo-notice{display:none!important}
     #ss-demo-launch{position:fixed;left:22px;bottom:22px;z-index:2147483000;border:0;border-radius:999px;padding:13px 19px;background:#1a3fa6;color:#fff;font:700 14px/1.2 system-ui,sans-serif;box-shadow:0 8px 24px #063d2b44;cursor:pointer;letter-spacing:.1px}
     #ss-demo-launch:hover{background:#0f2a73;transform:translateY(-1px)}
     /* v27.2: small round button so it no longer covers the sidebar or the tool form; the label opens on hover/focus */

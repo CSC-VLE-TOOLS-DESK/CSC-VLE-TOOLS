@@ -123,3 +123,28 @@ body.n-home{background:radial-gradient(900px 420px at 8% -5%,#dfe9ff 0,transpare
 
 /* v27.2: show the right "New Tools" panel on ordinary 1366 px laptops too (it was hidden below 1500 px) */
 @media (min-width:1280px) and (max-width:1499px){.upnext{display:block;width:226px}.upnext .tc{padding:10px 12px}.catnav{width:218px}}
+
+/* ===== v31: both sidebars ===== */
+/* Floating panels: a gap under the header and from the screen edge, rounded corners, same height rule on every page */
+.catnav,.upnext{box-sizing:border-box;position:sticky;top:calc(var(--hdr-h,70px) + 10px);height:calc(100vh - var(--hdr-h,70px) - 20px);max-height:calc(100vh - var(--hdr-h,70px) - 20px);margin-top:10px;margin-bottom:10px;border-radius:20px;scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.55) transparent}
+.catnav{margin-left:10px;padding:14px 12px 16px;border:3px solid rgba(255,255,255,.35)}
+.n-home .catnav{border:3px solid rgba(255,255,255,.55)}
+.catnav::-webkit-scrollbar,.upnext::-webkit-scrollbar{width:7px}
+.catnav::-webkit-scrollbar-thumb,.upnext::-webkit-scrollbar-thumb{background:rgba(255,255,255,.5);border-radius:9px}
+.content{padding-top:10px}
+/* Right "New Tools" sidebar: same family as the left one (3D raised buttons) but a different colour (violet) and style (white tiles with a coloured icon) */
+.upnext{display:none;width:262px;flex:none;margin-right:10px;margin-left:0;padding:14px 12px 16px;background:linear-gradient(180deg,#c084fc 0%,#9333ea 42%,#6b21a8 100%);border:3px solid rgba(255,255,255,.45);box-shadow:inset 4px 0 0 rgba(255,255,255,.3),inset -8px 0 14px rgba(40,0,80,.28),-8px 0 22px rgba(124,58,237,.3);overflow-y:auto;overflow-x:hidden}
+.upnext .cn-t{margin:0 0 12px 4px;color:#fff;font-size:.78rem;text-shadow:0 1px 2px rgba(40,0,80,.5)}
+html body .upnext a.cn-a.rn{display:flex;align-items:center;gap:10px;margin:0 0 12px;padding:9px 10px;border-radius:16px;background:linear-gradient(180deg,#fff,#f3eeff);color:#2a1457;text-shadow:none;border:0;box-shadow:0 5px 0 var(--c,#7c3aed),0 10px 16px rgba(30,0,70,.3),inset 0 1px 0 #fff}
+html body .upnext a.cn-a.rn:hover{transform:translate(-3px,-2px);background:linear-gradient(180deg,#fff,#ebe2ff);box-shadow:0 7px 0 var(--c,#7c3aed),0 14px 20px rgba(30,0,70,.35),inset 0 1px 0 #fff;color:#2a1457}
+html body .upnext a.cn-a.rn:active{transform:translateY(4px);box-shadow:0 1px 0 var(--c,#7c3aed),0 2px 6px rgba(30,0,70,.3)}
+.upnext .rn i{flex:none;width:38px;height:38px;border-radius:12px;display:grid;place-items:center;font-size:1rem;color:#fff;background:linear-gradient(145deg,var(--c,#7c3aed),color-mix(in srgb,var(--c,#7c3aed) 55%,#000));box-shadow:0 3px 0 rgba(0,0,0,.25),inset 0 2px 0 rgba(255,255,255,.4)}
+.upnext .rn span{flex:1;min-width:0;display:block;font-weight:800;font-size:.86rem;line-height:1.15}
+.upnext .rn small{display:block;margin-top:2px;font-weight:500;font-size:.72rem;line-height:1.25;color:#5b4a86}
+.upnext .rn em{flex:none;align-self:flex-start;font-style:normal;font-weight:800;font-size:.6rem;letter-spacing:.04em;color:#fff;background:#16a34a;border-radius:99px;padding:2px 7px}
+.upnext .up-s{margin-top:4px}
+@media (min-width:1280px){.upnext{display:block}}
+@media (min-width:1280px) and (max-width:1499px){.upnext{width:232px}.catnav{width:220px}.upnext .rn small{display:none}}
+/* phones and small tablets: bar under the header, no floating gap */
+@media (max-width:760px){.catnav{margin:0;border-radius:0;max-height:none;height:auto;top:var(--hdr-h,64px);padding:10px;border:0;border-bottom:4px solid var(--accent,#ff9800)}}
+@media print{.catnav,.upnext{display:none!important}}
